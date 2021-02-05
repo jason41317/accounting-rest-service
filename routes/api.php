@@ -18,6 +18,10 @@ Route::group(['prefix' => 'v1'], function () {
     // Route::post('/login', 'AuthController@login');
 
     Route::resource('/service-categories', 'ServiceCategoryController');
+    Route::resource('/business-styles', 'BusinessStyleController');
+    Route::resource('/business-types', 'BusinessTypeController');
+    Route::resource('/clients', 'ClientController');
+    
     Route::group(['middleware' => ['auth:api']], function () {
     });
 });

@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\BusinessStyle;
 use Illuminate\Http\Request;
+use App\Models\BusinessStyle;
+use App\Services\BusinessStyleService;
+use App\Http\Resources\BusinessStyleResource;
 
 class BusinessStyleController extends Controller
 {
@@ -12,9 +14,15 @@ class BusinessStyleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $businessStyleService = new BusinessStyleService();
+        $perPage = $request->per_page ?? 20;
+        $isPaginated = !$request->has('paginate') || $request->paginate === 'true';
+        $businessStyles = $businessStyleService->list($isPaginated, $perPage);
+        return BusinessStyleResource::collection(
+            $businessStyles
+        );
     }
 
     /**

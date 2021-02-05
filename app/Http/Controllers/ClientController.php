@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Client;
 use Illuminate\Http\Request;
+use App\Services\ClientService;
+use App\Http\Resources\ClientResource;
+use App\Http\Requests\ClientStoreRequest;
+use App\Http\Requests\ClientUpdateRequest;
 
 class ClientController extends Controller
 {
@@ -12,20 +16,17 @@ class ClientController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $clientService = new ClientService();
+        $perPage = $request->per_page ?? 20;
+        $isPaginated = !$request->has('paginate') || $request->paginate === 'true';
+        $clients = $clientService->list($isPaginated, $perPage);
+        return ClientResource::collection(
+            $clients
+        );
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -33,9 +34,13 @@ class ClientController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ClientStoreRequest $request)
     {
-        //
+        $clientService = new ClientService();
+        $client = $clientService->store($request->all());
+        return (new ClientResource($client))
+            ->response()
+            ->setStatusCode(201);
     }
 
     /**
@@ -44,20 +49,11 @@ class ClientController extends Controller
      * @param  \App\Models\Client  $client
      * @return \Illuminate\Http\Response
      */
-    public function show(Client $client)
+    public function show(int $id)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Client  $client
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Client $client)
-    {
-        //
+        $clientService = new ClientService();
+        $client = $clientService->get($id);
+        return new ClientResource($client);
     }
 
     /**
@@ -67,9 +63,14 @@ class ClientController extends Controller
      * @param  \App\Models\Client  $client
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Client $client)
+    public function update(ClientUpdateRequest $request, int $id)
     {
-        //
+        $clientService = new ClientService();
+        $client = $clientService->update($request->all(), $id);
+
+        return (new ClientResource($client))
+            ->response()
+            ->setStatusCode(200);
     }
 
     /**
@@ -78,8 +79,10 @@ class ClientController extends Controller
      * @param  \App\Models\Client  $client
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Client $client)
+    public function destroy(int $id)
     {
-        //
+        $clientService = new ClientService();
+        $clientService->delete($id);
+        return response()->json([], 204);
     }
 }

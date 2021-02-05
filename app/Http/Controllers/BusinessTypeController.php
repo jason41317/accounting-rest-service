@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\BusinessType;
 use Illuminate\Http\Request;
+use App\Services\BusinessTypeService;
+use App\Http\Resources\BusinessTypeResource;
 
 class BusinessTypeController extends Controller
 {
@@ -12,9 +14,15 @@ class BusinessTypeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $businessTypeService = new BusinessTypeService();
+        $perPage = $request->per_page ?? 20;
+        $isPaginated = !$request->has('paginate') || $request->paginate === 'true';
+        $businessTypes = $businessTypeService->list($isPaginated, $perPage);
+        return BusinessTypeResource::collection(
+            $businessTypes
+        );
     }
 
     /**
