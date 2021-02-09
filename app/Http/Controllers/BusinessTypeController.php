@@ -8,6 +8,8 @@ use App\Http\Resources\BusinessTypeResource;
 use App\Models\BusinessType;
 use App\Services\BusinessTypeService;
 use Illuminate\Http\Request;
+use App\Services\BusinessTypeService;
+use App\Http\Resources\BusinessTypeResource;
 
 class BusinessTypeController extends Controller
 {

@@ -8,6 +8,9 @@ use App\Http\Resources\BusinessStyleResource;
 use App\Models\BusinessStyle;
 use App\Services\BusinessStyleService;
 use Illuminate\Http\Request;
+use App\Models\BusinessStyle;
+use App\Services\BusinessStyleService;
+use App\Http\Resources\BusinessStyleResource;
 
 class BusinessStyleController extends Controller
 {
