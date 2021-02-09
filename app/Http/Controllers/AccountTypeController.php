@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AccountTypeStoreRequest;
+use App\Http\Requests\AccountTypeUpdateRequest;
+use App\Http\Resources\AccountTypeResource;
 use App\Models\AccountType;
+use App\Services\AccountTypeService;
 use Illuminate\Http\Request;
 
 class AccountTypeController extends Controller
@@ -12,19 +16,15 @@ class AccountTypeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        $accountTypeService = new AccountTypeService();
+        $perPage = $request->per_page ?? 20;
+        $isPaginated = !$request->has('paginate') || $request->paginate === 'true';
+        $accountTypes = $accountTypeService->list($isPaginated, $perPage);
+        return AccountTypeResource::collection(
+            $accountTypes
+        );
     }
 
     /**
@@ -33,53 +33,55 @@ class AccountTypeController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(AccountTypeStoreRequest $request)
     {
-        //
+        $accountTypeService = new AccountTypeService();
+        $accountType = $accountTypeService->store($request->all());
+        return (new AccountTypeResource($accountType))
+            ->response()
+            ->setStatusCode(201);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\AccountType  $accountType
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(AccountType $accountType)
+    public function show(int $id)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\AccountType  $accountType
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(AccountType $accountType)
-    {
-        //
+        $accountTypeService = new AccountTypeService();
+        $accountType = $accountTypeService->get($id);
+        return new AccountTypeResource($accountType);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\AccountType  $accountType
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, AccountType $accountType)
+    public function update(AccountTypeUpdateRequest $request, int $id)
     {
-        //
+        $accountTypeService = new AccountTypeService();
+        $accountType = $accountTypeService->update($request->all(), $id);
+
+        return (new AccountTypeResource($accountType))
+            ->response()
+            ->setStatusCode(200);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\AccountType  $accountType
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(AccountType $accountType)
+    public function destroy(int $id)
     {
-        //
+        $accountTypeService = new AccountTypeService();
+        $accountTypeService->delete($id);
+        return response()->json([], 204);
     }
 }

@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ServiceStoreRequest;
+use App\Http\Requests\ServiceUpdateRequest;
+use App\Http\Resources\ServiceResource;
 use App\Models\Service;
+use App\Services\ServiceService;
 use Illuminate\Http\Request;
 
 class ServiceController extends Controller
@@ -12,19 +16,15 @@ class ServiceController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        $serviceService = new ServiceService();
+        $perPage = $request->per_page ?? 20;
+        $isPaginated = !$request->has('paginate') || $request->paginate === 'true';
+        $services = $serviceService->list($isPaginated, $perPage);
+        return ServiceResource::collection(
+            $services
+        );
     }
 
     /**
@@ -33,53 +33,55 @@ class ServiceController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ServiceStoreRequest $request)
     {
-        //
+        $serviceService = new ServiceService();
+        $service = $serviceService->store($request->all());
+        return (new ServiceResource($service))
+            ->response()
+            ->setStatusCode(201);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Service  $service
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Service $service)
+    public function show(int $id)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Service  $service
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Service $service)
-    {
-        //
+        $serviceService = new ServiceService();
+        $service = $serviceService->get($id);
+        return new ServiceResource($service);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Service  $service
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Service $service)
+    public function update(ServiceUpdateRequest $request, int $id)
     {
-        //
+        $serviceService = new ServiceService();
+        $service = $serviceService->update($request->all(), $id);
+
+        return (new ServiceResource($service))
+            ->response()
+            ->setStatusCode(200);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Service  $service
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Service $service)
+    public function destroy(int $id)
     {
-        //
+        $serviceService = new ServiceService();
+        $serviceService->delete($id);
+        return response()->json([], 204);
     }
 }

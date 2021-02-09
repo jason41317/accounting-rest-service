@@ -15,10 +15,19 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::group(['prefix' => 'v1'], function () {
-    // Route::post('/login', 'AuthController@login');
+    Route::post('/login', 'AuthController@login');
 
-    Route::resource('/service-categories', 'ServiceCategoryController');
     Route::group(['middleware' => ['auth:api']], function () {
+        Route::get('/me', 'AuthController@getAuthUser');
+        Route::post('/logout', 'AuthController@logout');
+        Route::resource('/service-categories', 'ServiceCategoryController');
+        Route::resource('/services', 'ServiceController');
+        Route::resource('/document-types', 'DocumentTypeController');
+        Route::resource('/business-styles', 'BusinessStyleController');
+        Route::resource('/business-types', 'BusinessStyleController');
+        Route::resource('/account-types', 'AccountTypeController');
+        Route::resource('/account-classes', 'AccountClassController');
+        Route::resource('/account-titles', 'AccountTitleController');
     });
 });
 Route::middleware('auth:api')->get('/user', function (Request $request) {

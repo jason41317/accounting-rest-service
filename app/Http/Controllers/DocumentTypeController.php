@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\DocumentTypeStoreRequest;
+use App\Http\Requests\DocumentTypeUpdateRequest;
+use App\Http\Resources\DocumentTypeResource;
 use App\Models\DocumentType;
+use App\Services\DocumentTypeService;
 use Illuminate\Http\Request;
 
 class DocumentTypeController extends Controller
@@ -12,19 +16,15 @@ class DocumentTypeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        $documentTypeService = new DocumentTypeService();
+        $perPage = $request->per_page ?? 20;
+        $isPaginated = !$request->has('paginate') || $request->paginate === 'true';
+        $documentTypes = $documentTypeService->list($isPaginated, $perPage);
+        return DocumentTypeResource::collection(
+            $documentTypes
+        );
     }
 
     /**
@@ -33,53 +33,55 @@ class DocumentTypeController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(DocumentTypeStoreRequest $request)
     {
-        //
+        $documentTypeService = new DocumentTypeService();
+        $documentType = $documentTypeService->store($request->all());
+        return (new DocumentTypeResource($documentType))
+            ->response()
+            ->setStatusCode(201);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\DocumentType  $documentType
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(DocumentType $documentType)
+    public function show(int $id)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\DocumentType  $documentType
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(DocumentType $documentType)
-    {
-        //
+        $documentTypeService = new DocumentTypeService();
+        $documentType = $documentTypeService->get($id);
+        return new DocumentTypeResource($documentType);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\DocumentType  $documentType
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, DocumentType $documentType)
+    public function update(DocumentTypeUpdateRequest $request, int $id)
     {
-        //
+        $documentTypeService = new DocumentTypeService();
+        $documentType = $documentTypeService->update($request->all(), $id);
+
+        return (new DocumentTypeResource($documentType))
+            ->response()
+            ->setStatusCode(200);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\DocumentType  $documentType
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(DocumentType $documentType)
+    public function destroy(int $id)
     {
-        //
+        $documentTypeService = new DocumentTypeService();
+        $documentTypeService->delete($id);
+        return response()->json([], 204);
     }
 }

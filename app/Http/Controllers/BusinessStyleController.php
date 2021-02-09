@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\BusinessStyleStoreRequest;
+use App\Http\Requests\BusinessStyleUpdateRequest;
+use App\Http\Resources\BusinessStyleResource;
 use App\Models\BusinessStyle;
+use App\Services\BusinessStyleService;
 use Illuminate\Http\Request;
 
 class BusinessStyleController extends Controller
@@ -12,19 +16,15 @@ class BusinessStyleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        $businessStyleService = new BusinessStyleService();
+        $perPage = $request->per_page ?? 20;
+        $isPaginated = !$request->has('paginate') || $request->paginate === 'true';
+        $businessStyles = $businessStyleService->list($isPaginated, $perPage);
+        return BusinessStyleResource::collection(
+            $businessStyles
+        );
     }
 
     /**
@@ -33,53 +33,55 @@ class BusinessStyleController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(BusinessStyleStoreRequest $request)
     {
-        //
+        $businessStyleService = new BusinessStyleService();
+        $businessStyle = $businessStyleService->store($request->all());
+        return (new BusinessStyleResource($businessStyle))
+            ->response()
+            ->setStatusCode(201);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\BusinessStyle  $businessStyle
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(BusinessStyle $businessStyle)
+    public function show(int $id)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\BusinessStyle  $businessStyle
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(BusinessStyle $businessStyle)
-    {
-        //
+        $businessStyleService = new BusinessStyleService();
+        $businessStyle = $businessStyleService->get($id);
+        return new BusinessStyleResource($businessStyle);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\BusinessStyle  $businessStyle
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, BusinessStyle $businessStyle)
+    public function update(BusinessStyleUpdateRequest $request, int $id)
     {
-        //
+        $businessStyleService = new BusinessStyleService();
+        $businessStyle = $businessStyleService->update($request->all(), $id);
+
+        return (new BusinessStyleResource($businessStyle))
+            ->response()
+            ->setStatusCode(200);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\BusinessStyle  $businessStyle
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(BusinessStyle $businessStyle)
+    public function destroy(int $id)
     {
-        //
+        $businessStyleService = new BusinessStyleService();
+        $businessStyleService->delete($id);
+        return response()->json([], 204);
     }
 }

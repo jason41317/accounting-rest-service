@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\BusinessTypeStoreRequest;
+use App\Http\Requests\BusinessTypeUpdateRequest;
+use App\Http\Resources\BusinessTypeResource;
 use App\Models\BusinessType;
+use App\Services\BusinessTypeService;
 use Illuminate\Http\Request;
 
 class BusinessTypeController extends Controller
@@ -12,19 +16,15 @@ class BusinessTypeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        $businessTypeService = new BusinessTypeService();
+        $perPage = $request->per_page ?? 20;
+        $isPaginated = !$request->has('paginate') || $request->paginate === 'true';
+        $businessTypes = $businessTypeService->list($isPaginated, $perPage);
+        return BusinessTypeResource::collection(
+            $businessTypes
+        );
     }
 
     /**
@@ -33,53 +33,55 @@ class BusinessTypeController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(BusinessTypeStoreRequest $request)
     {
-        //
+        $businessTypeService = new BusinessTypeService();
+        $businessType = $businessTypeService->store($request->all());
+        return (new BusinessTypeResource($businessType))
+            ->response()
+            ->setStatusCode(201);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\BusinessType  $businessType
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(BusinessType $businessType)
+    public function show(int $id)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\BusinessType  $businessType
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(BusinessType $businessType)
-    {
-        //
+        $businessTypeService = new BusinessTypeService();
+        $businessType = $businessTypeService->get($id);
+        return new BusinessTypeResource($businessType);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\BusinessType  $businessType
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, BusinessType $businessType)
+    public function update(BusinessTypeUpdateRequest $request, int $id)
     {
-        //
+        $businessTypeService = new BusinessTypeService();
+        $businessType = $businessTypeService->update($request->all(), $id);
+
+        return (new BusinessTypeResource($businessType))
+            ->response()
+            ->setStatusCode(200);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\BusinessType  $businessType
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(BusinessType $businessType)
+    public function destroy(int $id)
     {
-        //
+        $businessTypeService = new BusinessTypeService();
+        $businessTypeService->delete($id);
+        return response()->json([], 204);
     }
 }
