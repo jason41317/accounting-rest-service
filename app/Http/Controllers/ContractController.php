@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Contract;
 use Illuminate\Http\Request;
+use App\Services\ContractService;
+use App\Http\Resources\ContractResource;
 
 class ContractController extends Controller
 {
@@ -12,19 +14,15 @@ class ContractController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        $contractService = new ContractService();
+        $perPage = $request->per_page ?? 20;
+        $isPaginated = !$request->has('paginate') || $request->paginate === 'true';
+        $contracts = $contractService->list($isPaginated, $perPage);
+        return ContractResource::collection(
+            $contracts
+        );
     }
 
     /**
@@ -44,9 +42,11 @@ class ContractController extends Controller
      * @param  \App\Models\Contract  $contract
      * @return \Illuminate\Http\Response
      */
-    public function show(Contract $contract)
+    public function show(Int $id)
     {
-        //
+        $contractService = new ContractService();
+        $contract = $contractService->get($id);
+        return new ContractResource($contract);
     }
 
     /**

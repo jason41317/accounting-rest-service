@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Charge;
 use Illuminate\Http\Request;
+use App\Services\ChargeService;
+use App\Http\Resources\ChargeResource;
 
 class ChargeController extends Controller
 {
@@ -12,9 +14,15 @@ class ChargeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $chargeService = new ChargeService();
+        $perPage = $request->per_page ?? 20;
+        $isPaginated = !$request->has('paginate') || $request->paginate === 'true';
+        $charges = $chargeService->list($isPaginated, $perPage);
+        return ChargeResource::collection(
+            $charges
+        );
     }
 
     /**
