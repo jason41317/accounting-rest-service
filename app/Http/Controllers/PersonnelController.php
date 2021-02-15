@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PersonnelStoreRequest;
+use App\Http\Requests\PersonnelUpdateRequest;
+use App\Http\Resources\PersonnelResource;
 use App\Models\Personnel;
+use App\Services\PersonnelService;
 use Illuminate\Http\Request;
 
 class PersonnelController extends Controller
@@ -12,19 +16,15 @@ class PersonnelController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        $personnelService = new PersonnelService();
+        $perPage = $request->per_page ?? 20;
+        $isPaginated = !$request->has('paginate') || $request->paginate === 'true';
+        $personnels = $personnelService->list($isPaginated, $perPage);
+        return PersonnelResource::collection(
+            $personnels
+        );
     }
 
     /**
@@ -33,53 +33,59 @@ class PersonnelController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(PersonnelStoreRequest $request)
     {
-        //
+        $personnelService = new PersonnelService();
+        $data = $request->except('user');
+        $user = $request->user ?? [];
+        $personnel = $personnelService->store($data, $user);
+        return (new PersonnelResource($personnel))
+            ->response()
+            ->setStatusCode(201);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Personnel  $personnel
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Personnel $personnel)
+    public function show(int $id)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Personnel  $personnel
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Personnel $personnel)
-    {
-        //
+        $personnelService = new PersonnelService();
+        $personnel = $personnelService->get($id);
+        return new PersonnelResource($personnel);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Personnel  $personnel
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Personnel $personnel)
+    public function update(PersonnelUpdateRequest $request, int $id)
     {
-        //
+        $personnelService = new PersonnelService();
+        $data = $request->except('user');
+        $user = $request->user ?? [];
+        $personnel = $personnelService->update($data, $user, $id);
+
+        return (new PersonnelResource($personnel))
+            ->response()
+            ->setStatusCode(200);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Personnel  $personnel
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Personnel $personnel)
+    public function destroy(int $id)
     {
-        //
+        $personnelService = new PersonnelService();
+        $personnelService->delete($id);
+        return response()->json([], 204);
     }
 }
