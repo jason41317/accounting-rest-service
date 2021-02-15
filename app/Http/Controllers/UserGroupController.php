@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ChargeStoreRequest;
-use App\Http\Requests\ChargeUpdateRequest;
-use App\Models\Charge;
+use App\Http\Requests\UserGroupStoreRequest;
+use App\Http\Requests\UserGroupUpdateRequest;
+use App\Http\Resources\UserGroupResource;
+use App\Models\UserGroup;
+use App\Services\UserGroupService;
 use Illuminate\Http\Request;
-use App\Services\ChargeService;
-use App\Http\Resources\ChargeResource;
 
-class ChargeController extends Controller
+class UserGroupController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,12 +18,12 @@ class ChargeController extends Controller
      */
     public function index(Request $request)
     {
-        $chargeService = new ChargeService();
+        $userGroupService = new UserGroupService();
         $perPage = $request->per_page ?? 20;
         $isPaginated = !$request->has('paginate') || $request->paginate === 'true';
-        $charges = $chargeService->list($isPaginated, $perPage);
-        return ChargeResource::collection(
-            $charges
+        $userGroups = $userGroupService->list($isPaginated, $perPage);
+        return UserGroupResource::collection(
+            $userGroups
         );
     }
 
@@ -33,11 +33,11 @@ class ChargeController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(ChargeStoreRequest $request)
+    public function store(UserGroupStoreRequest $request)
     {
-        $chargeService = new ChargeService();
-        $charge = $chargeService->store($request->all());
-        return (new ChargeResource($charge))
+        $userGroupService = new UserGroupService();
+        $userGroup = $userGroupService->store($request->all());
+        return (new UserGroupResource($userGroup))
             ->response()
             ->setStatusCode(201);
     }
@@ -50,9 +50,9 @@ class ChargeController extends Controller
      */
     public function show(int $id)
     {
-        $chargeService = new ChargeService();
-        $charge = $chargeService->get($id);
-        return new ChargeResource($charge);
+        $userGroupService = new UserGroupService();
+        $userGroup = $userGroupService->get($id);
+        return new UserGroupResource($userGroup);
     }
 
     /**
@@ -62,12 +62,12 @@ class ChargeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(ChargeUpdateRequest $request, int $id)
+    public function update(UserGroupUpdateRequest $request, int $id)
     {
-        $chargeService = new ChargeService();
-        $charge = $chargeService->update($request->all(), $id);
+        $userGroupService = new UserGroupService();
+        $userGroup = $userGroupService->update($request->all(), $id);
 
-        return (new ChargeResource($charge))
+        return (new UserGroupResource($userGroup))
             ->response()
             ->setStatusCode(200);
     }
@@ -80,8 +80,8 @@ class ChargeController extends Controller
      */
     public function destroy(int $id)
     {
-        $chargeService = new ChargeService();
-        $chargeService->delete($id);
+        $userGroupService = new UserGroupService();
+        $userGroupService->delete($id);
         return response()->json([], 204);
     }
 }

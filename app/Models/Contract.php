@@ -8,9 +8,17 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Contract extends Model
 {
-    use HasFactory;
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
+    
     protected $guarded = ['id'];
+    protected $hidden = [
+        'created_at',
+        'deleted_at',
+        'updated_at',
+        'created_by',
+        'updated_by',
+        'deleted_by'
+    ];
 
     public function services() {
         return $this->belongsToMany(Service::class, 'contract_services', 'contract_id', 'service_id');
