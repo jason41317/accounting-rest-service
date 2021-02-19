@@ -33,7 +33,14 @@ class ContractController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $contractService = new ContractService();
+        $data = $request->except(['charges', 'services']);
+        $charges = $request->charges ?? [];
+        $services = $request->services ?? [];
+        $contract = $contractService->store($data, $services, $charges);
+        return (new ContractResource($contract))
+            ->response()
+            ->setStatusCode(201);
     }
 
     /**

@@ -4,9 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\BusinessStyleStoreRequest;
 use App\Http\Requests\BusinessStyleUpdateRequest;
-use App\Http\Resources\BusinessStyleResource;
-use App\Models\BusinessStyle;
-use App\Services\BusinessStyleService;
 use Illuminate\Http\Request;
 use App\Models\BusinessStyle;
 use App\Services\BusinessStyleService;

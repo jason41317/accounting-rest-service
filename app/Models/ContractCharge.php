@@ -20,7 +20,7 @@ class ContractCharge extends Model
     ];
 
     public function schedules() {
-        return $this->belongsToMany(Month::class, 'contract_charge_schedules', 'contract_charge_id', 'month_id');
+        return $this->belongsToMany(Month::class, 'contract_charge_schedules', 'charge_id', 'month_id');
     }
 
     public function charge() {
