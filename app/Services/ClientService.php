@@ -12,7 +12,7 @@ class ClientService
   public function list(bool $isPaginated, int $perPage)
   {
     try {
-      $query = Client::with(['businessStyle', 'businessType']);
+      $query = Client::with(['businessStyle', 'businessType', 'contracts']);
       $clients = $isPaginated
         ? $query->paginate($perPage)
         : $query->get();
