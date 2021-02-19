@@ -24,8 +24,14 @@ class Contract extends Model
         return $this->belongsToMany(Service::class, 'contract_services', 'contract_id', 'service_id');
     }
 
-    public function contractCharges() {
-        return $this->hasMany(ContractCharge::class)->with(['charge','schedules']);
+    public function charges() {
+        return $this->belongsToMany(Charge::class, 'contract_charges', 'contract_id', 'charge_id')->withPivot('amount')->with('schedules');
+        // return $this->hasMany(ContractCharge::class)->with(['charge','schedules']);
+    }
+
+    public function schedules()
+    {
+        return $this->belongsToMany(Month::class, 'contract_charge_schedules', 'contract_id', 'month_id');
     }
 
     public function files() {

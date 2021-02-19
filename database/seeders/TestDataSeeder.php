@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\AccountType;
+use App\Models\Month;
 use App\Models\Personnel;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -45,6 +46,25 @@ class TestDataSeeder extends Seeder
 
         foreach ($accountTypes as $accountType) {
             AccountType::create($accountType);
+        }
+
+        $months = [
+            ['name' => 'January'],
+            ['name' => 'February'],
+            ['name' => 'March'],
+            ['name' => 'April'],
+            ['name' => 'May'],
+            ['name' => 'June'],
+            ['name' => 'July'],
+            ['name' => 'August'],
+            ['name' => 'September'],
+            ['name' => 'October'],
+            ['name' => 'November'],
+            ['name' => 'December']
+        ];
+
+        foreach ($months as $month) {
+            Month::create($month);
         }
     }
 }

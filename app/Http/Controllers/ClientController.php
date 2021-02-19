@@ -21,7 +21,8 @@ class ClientController extends Controller
         $clientService = new ClientService();
         $perPage = $request->per_page ?? 20;
         $isPaginated = !$request->has('paginate') || $request->paginate === 'true';
-        $clients = $clientService->list($isPaginated, $perPage);
+        $filters = $request->except('per_page', 'paginate');
+        $clients = $clientService->list($isPaginated, $perPage, $filters);
         return ClientResource::collection(
             $clients
         );

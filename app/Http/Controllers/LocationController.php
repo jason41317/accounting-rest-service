@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\BusinessTypeStoreRequest;
-use App\Http\Requests\BusinessTypeUpdateRequest;
-use App\Http\Resources\BusinessTypeResource;
-use App\Models\BusinessType;
-use App\Services\BusinessTypeService;
+use App\Http\Requests\LocationStoreRequest;
+use App\Http\Requests\LocationUpdateRequest;
+use App\Http\Resources\LocationResource;
+use App\Models\Location;
+use App\Services\LocationService;
 use Illuminate\Http\Request;
 
-class BusinessTypeController extends Controller
+class LocationController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,12 +18,12 @@ class BusinessTypeController extends Controller
      */
     public function index(Request $request)
     {
-        $businessTypeService = new BusinessTypeService();
+        $locationService = new LocationService();
         $perPage = $request->per_page ?? 20;
         $isPaginated = !$request->has('paginate') || $request->paginate === 'true';
-        $businessTypes = $businessTypeService->list($isPaginated, $perPage);
-        return BusinessTypeResource::collection(
-            $businessTypes
+        $locations = $locationService->list($isPaginated, $perPage);
+        return LocationResource::collection(
+            $locations
         );
     }
 
@@ -33,11 +33,11 @@ class BusinessTypeController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(BusinessTypeStoreRequest $request)
+    public function store(LocationStoreRequest $request)
     {
-        $businessTypeService = new BusinessTypeService();
-        $businessType = $businessTypeService->store($request->all());
-        return (new BusinessTypeResource($businessType))
+        $locationService = new locationService();
+        $location = $locationService->store($request->all());
+        return (new LocationResource($location))
             ->response()
             ->setStatusCode(201);
     }
@@ -50,9 +50,9 @@ class BusinessTypeController extends Controller
      */
     public function show(int $id)
     {
-        $businessTypeService = new BusinessTypeService();
-        $businessType = $businessTypeService->get($id);
-        return new BusinessTypeResource($businessType);
+        $locationService = new locationService();
+        $location = $locationService->get($id);
+        return new LocationResource($location);
     }
 
     /**
@@ -62,12 +62,12 @@ class BusinessTypeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(BusinessTypeUpdateRequest $request, int $id)
+    public function update(LocationUpdateRequest $request, int $id)
     {
-        $businessTypeService = new BusinessTypeService();
-        $businessType = $businessTypeService->update($request->all(), $id);
+        $locationService = new locationService();
+        $location = $locationService->update($request->all(), $id);
 
-        return (new BusinessTypeResource($businessType))
+        return (new LocationResource($location))
             ->response()
             ->setStatusCode(200);
     }
@@ -80,8 +80,8 @@ class BusinessTypeController extends Controller
      */
     public function destroy(int $id)
     {
-        $businessTypeService = new BusinessTypeService();
-        $businessTypeService->delete($id);
+        $locationService = new locationService();
+        $locationService->delete($id);
         return response()->json([], 204);
     }
 }

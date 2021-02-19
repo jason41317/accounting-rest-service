@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class BusinessTypeUpdateRequest extends FormRequest
+class LocationUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,7 +24,22 @@ class BusinessTypeUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required'
+            'name' => 'required',
+            'rdo_id' => 'required|not_in:0',
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'rdo_id' => 'rdo'
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'not_in' => 'The :attribute field is required'
         ];
     }
 }

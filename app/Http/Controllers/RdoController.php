@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\BusinessTypeStoreRequest;
-use App\Http\Requests\BusinessTypeUpdateRequest;
-use App\Http\Resources\BusinessTypeResource;
-use App\Models\BusinessType;
-use App\Services\BusinessTypeService;
+use App\Http\Requests\RdoStoreRequest;
+use App\Http\Requests\RdoUpdateRequest;
+use App\Http\Resources\RdoResource;
+use App\Models\Rdo;
+use App\Services\RdoService;
 use Illuminate\Http\Request;
 
-class BusinessTypeController extends Controller
+class RdoController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,12 +18,12 @@ class BusinessTypeController extends Controller
      */
     public function index(Request $request)
     {
-        $businessTypeService = new BusinessTypeService();
+        $rdoService = new RdoService();
         $perPage = $request->per_page ?? 20;
         $isPaginated = !$request->has('paginate') || $request->paginate === 'true';
-        $businessTypes = $businessTypeService->list($isPaginated, $perPage);
-        return BusinessTypeResource::collection(
-            $businessTypes
+        $rdos = $rdoService->list($isPaginated, $perPage);
+        return RdoResource::collection(
+            $rdos
         );
     }
 
@@ -33,11 +33,11 @@ class BusinessTypeController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(BusinessTypeStoreRequest $request)
+    public function store(RdoStoreRequest $request)
     {
-        $businessTypeService = new BusinessTypeService();
-        $businessType = $businessTypeService->store($request->all());
-        return (new BusinessTypeResource($businessType))
+        $rdoService = new RdoService();
+        $rdo = $rdoService->store($request->all());
+        return (new RdoResource($rdo))
             ->response()
             ->setStatusCode(201);
     }
@@ -50,9 +50,9 @@ class BusinessTypeController extends Controller
      */
     public function show(int $id)
     {
-        $businessTypeService = new BusinessTypeService();
-        $businessType = $businessTypeService->get($id);
-        return new BusinessTypeResource($businessType);
+        $rdoService = new RdoService();
+        $rdo = $rdoService->get($id);
+        return new RdoResource($rdo);
     }
 
     /**
@@ -62,12 +62,12 @@ class BusinessTypeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(BusinessTypeUpdateRequest $request, int $id)
+    public function update(RdoUpdateRequest $request, int $id)
     {
-        $businessTypeService = new BusinessTypeService();
-        $businessType = $businessTypeService->update($request->all(), $id);
+        $rdoService = new RdoService();
+        $rdo = $rdoService->update($request->all(), $id);
 
-        return (new BusinessTypeResource($businessType))
+        return (new RdoResource($rdo))
             ->response()
             ->setStatusCode(200);
     }
@@ -80,8 +80,8 @@ class BusinessTypeController extends Controller
      */
     public function destroy(int $id)
     {
-        $businessTypeService = new BusinessTypeService();
-        $businessTypeService->delete($id);
+        $rdoService = new RdoService();
+        $rdoService->delete($id);
         return response()->json([], 204);
     }
 }

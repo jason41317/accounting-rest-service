@@ -24,7 +24,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::resource('/services', 'ServiceController');
         Route::resource('/document-types', 'DocumentTypeController');
         Route::resource('/business-styles', 'BusinessStyleController');
-        Route::resource('/business-types', 'BusinessStyleController');
+        Route::resource('/business-types', 'BusinessTypeController');
         Route::resource('/account-types', 'AccountTypeController');
         Route::resource('/account-classes', 'AccountClassController');
         Route::resource('/account-titles', 'AccountTitleController');
@@ -34,6 +34,8 @@ Route::group(['prefix' => 'v1'], function () {
         Route::resource('/billings', 'BillingController');
         Route::resource('/personnels', 'PersonnelController');
         Route::resource('/user-groups', 'UserGroupController');
+        Route::resource('/rdos', 'RdoController');
+        Route::resource('/locations', 'LocationController');
     });
 });
 Route::middleware('auth:api')->get('/user', function (Request $request) {
