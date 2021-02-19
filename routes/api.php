@@ -31,6 +31,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::resource('/clients', 'ClientController');
         Route::resource('/contracts', 'ContractController');
         Route::resource('/charges', 'ChargeController');
+        Route::resource('/billings', 'BillingController');
         Route::resource('/personnels', 'PersonnelController');
         Route::resource('/user-groups', 'UserGroupController');
     });

@@ -27,4 +27,8 @@ class Client extends Model
     public function businessType() {
         return $this->belongsTo(BusinessType::class);
     }
+
+    public function contracts() {
+        return $this->hasMany(Contract::class);
+    }
 }
