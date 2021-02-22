@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddForeignKeyStatusOnContractsTable extends Migration
+class AddLocationIdFieldInContractsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,8 +14,8 @@ class AddForeignKeyStatusOnContractsTable extends Migration
     public function up()
     {
         Schema::table('contracts', function (Blueprint $table) {
-            $table->unsignedBigInteger('contract_status_id')->after('contact_no')->nullable();
-            $table->foreign('contract_status_id')->references('id')->on('contract_statuses');
+            $table->unsignedBigInteger('location_id')->nullable()->after('contact_no');
+            $table->foreign('location_id')->references('id')->on('locations');
         });
     }
 
@@ -27,8 +27,8 @@ class AddForeignKeyStatusOnContractsTable extends Migration
     public function down()
     {
         Schema::table('contracts', function (Blueprint $table) {
-            $table->dropForeign(['contract_status_id']);
-            $table->dropColumn('contract_status_id');
+            $table->dropForeign(['location_id']);
+            $table->dropColumn('location_id');
         });
     }
 }

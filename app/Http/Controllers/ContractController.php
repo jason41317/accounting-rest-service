@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ContractStoreRequest;
+use App\Http\Requests\ContractUpdateRequest;
 use App\Models\Contract;
 use Illuminate\Http\Request;
 use App\Services\ContractService;
@@ -19,7 +21,8 @@ class ContractController extends Controller
         $contractService = new ContractService();
         $perPage = $request->per_page ?? 20;
         $isPaginated = !$request->has('paginate') || $request->paginate === 'true';
-        $contracts = $contractService->list($isPaginated, $perPage);
+        $filters = $request->except('paginate', 'per_page');
+        $contracts = $contractService->list($isPaginated, $perPage, $filters);
         return ContractResource::collection(
             $contracts
         );
@@ -31,7 +34,7 @@ class ContractController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ContractStoreRequest $request)
     {
         $contractService = new ContractService();
         $data = $request->except(['charges', 'services']);
@@ -71,22 +74,31 @@ class ContractController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Contract  $contract
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Contract $contract)
+    public function update(ContractUpdateRequest $request, int $id)
     {
-        //
+        $contractService = new ContractService();
+        $data = $request->except(['charges', 'services']);
+        $charges = $request->charges ?? [];
+        $services = $request->services ?? [];
+        $contract = $contractService->update($data, $services, $charges, $id);
+        return (new ContractResource($contract))
+            ->response()
+            ->setStatusCode(200);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Contract  $contract
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Contract $contract)
+    public function destroy(int $id)
     {
-        //
+        $contractService = new ContractService();
+        $contractService->delete($id);
+        return response()->json([], 204);
     }
 }
