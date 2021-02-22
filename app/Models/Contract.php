@@ -20,6 +20,10 @@ class Contract extends Model
         'deleted_by'
     ];
 
+    public function client() {
+        return $this->belongsTo(Client::class);
+    }
+
     public function services() {
         return $this->belongsToMany(Service::class, 'contract_services', 'contract_id', 'service_id');
     }
