@@ -14,7 +14,7 @@ class ContractService
     try {
       $query = Contract::with(['services' => function ($q) {
         return $q->with('serviceCategory');
-      }, 'contractCharges', 'files', 'contractStatus','client']);
+      }, 'contractCharges', 'files', 'contractStatus','client','taxType']);
 
       $contractStatusId = $filters['contract_status_id'] ?? false;
       $query->when($contractStatusId, function($q) use($contractStatusId) {
@@ -78,7 +78,7 @@ class ContractService
       return $contract;
     } catch (Exception $e) {
       DB::rollback();
-      Log::info('Error occured during BusinessStyleService store method call: ');
+      Log::info('Error occured during ContractService store method call: ');
       Log::info($e->getMessage());
       throw $e;
     }
@@ -95,7 +95,9 @@ class ContractService
         return $q->with('schedules', function($q) use ($id) {
           $q->wherePivot('contract_id', $id);
         });
-      }, 'files', 'client']);
+      }, 'files', 'client', 'taxType', 'location' => function($q) {
+        return $q->with('rdo');
+      }]);
 
       return $contract->append('grouped_files');
     } catch (Exception $e) {
@@ -138,7 +140,7 @@ class ContractService
       return $contract;
     } catch (Exception $e) {
       DB::rollback();
-      Log::info('Error occured during ContractService store method call: ');
+      Log::info('Error occured during ContractService update method call: ');
       Log::info($e->getMessage());
       throw $e;
     }

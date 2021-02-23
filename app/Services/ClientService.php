@@ -12,7 +12,7 @@ class ClientService
   public function list(bool $isPaginated, int $perPage, array $filters)
   {
     try {
-      $query = Client::with(['businessStyle', 'businessType']);
+      $query = Client::with(['businessStyle', 'businessType', 'contracts']);
 
       $criteria = $filters['criteria'] ?? false;
       $query->when($criteria, function ($q) use ($criteria) {
