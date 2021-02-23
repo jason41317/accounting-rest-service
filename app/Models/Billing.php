@@ -24,11 +24,13 @@ class Billing extends Model
     }
 
     public function charges() {
-        return $this->hasMany(BillingCharge::class)->with('charge');
+        return $this->belongsToMany(Charge::class,'billing_charges','billing_id','charge_id')
+        ->withPivot('amount','notes');
     }
     
     public function adjustmentCharges() {
-        return $this->hasMany(BillingAdjustmentCharge::class)->with('charge');
+        return $this->belongsToMany(Charge::class, 'billing_adjustment_charges', 'billing_id', 'charge_id')
+        ->withPivot('amount', 'notes');
     }
 
 }

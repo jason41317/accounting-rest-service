@@ -36,6 +36,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::resource('/user-groups', 'UserGroupController');
         Route::resource('/rdos', 'RdoController');
         Route::resource('/locations', 'LocationController');
+        Route::resource('/tax-types', 'TaxTypeController');
     });
 });
 Route::middleware('auth:api')->get('/user', function (Request $request) {

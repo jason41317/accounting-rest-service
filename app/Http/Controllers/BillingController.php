@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\BillingStoreRequest;
 use App\Models\Billing;
 use Illuminate\Http\Request;
 use App\Services\BillingService;
@@ -34,7 +35,14 @@ class BillingController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $billingService = new BillingService();
+        $data = $request->except('charges','adjustmentCharges');
+        $charges = $request->charges ?? [];
+        $adjustmentCharges = $request->adjustment_charges ?? [];
+        $billing = $billingService->store($data, $charges, $adjustmentCharges);
+        return (new BillingResource($billing))
+            ->response()
+            ->setStatusCode(201);
     }
 
     /**

@@ -37,9 +37,41 @@ class BillingService
     }
   }
 
-  public function store(array $data)
+  public function store(array $data, array $charges, array $adjustmentCharges)
   {
-    
+    DB::beginTransaction();
+    try {
+      $billing = Billing::create($data);
+      if ($charges) {
+        $items = [];
+        foreach ($charges as $charge) {
+          $items[$charge['charge_id']] = [
+            'amount' => $charge['amount'],
+            'notes' => $charge['notes']
+          ];
+        }
+        $billing->charges()->sync($items);
+      }
+
+      if ($adjustmentCharges) {
+        $items = [];
+        foreach ($adjustmentCharges as $charge) {
+          $items[$charge['charge_id']] = [
+            'amount' => $charge['amount'],
+            'notes' => $charge['notes']
+          ];
+        }
+        $billing->adjustmentCharges()->sync($items);
+      }
+
+      DB::commit();
+      return $billing;
+    } catch (Exception $e) {
+      DB::rollback();
+      Log::info('Error occured during BillingService store method call: ');
+      Log::info($e->getMessage());
+      throw $e;
+    }
   }
 
   public function get(int $id)

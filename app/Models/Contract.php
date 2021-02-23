@@ -42,6 +42,14 @@ class Contract extends Model
         return $this->hasMany(ContractFile::class)->with('documentType');
     }
 
+    public function taxType() {
+        return $this->belongsTo(TaxType::class);
+    }
+
+    public function location() {
+        return $this->belongsTo(Location::class);
+    }    
+        
     public function contractStatus() {
         return $this->belongsTo(ContractStatus::class);
     }
