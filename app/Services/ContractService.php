@@ -14,7 +14,13 @@ class ContractService
     try {
       $query = Contract::with(['services' => function ($q) {
         return $q->with('serviceCategory');
-      }, 'charges' , 'files', 'client']);
+      }, 'contractCharges', 'files', 'contractStatus','client']);
+
+      $contractStatusId = $filters['contract_status_id'] ?? false;
+      $query->when($contractStatusId, function($q) use($contractStatusId) {
+        return $q->where('contract_status_id', $contractStatusId);
+      });
+      
 
       $criteria = $filters['criteria'] ?? null;
       $query->when($criteria, function($q) use ($criteria) {
