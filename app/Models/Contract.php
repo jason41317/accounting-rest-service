@@ -42,6 +42,10 @@ class Contract extends Model
         return $this->hasMany(ContractFile::class)->with('documentType');
     }
 
+    public function contractStatus() {
+        return $this->belongsTo(ContractStatus::class);
+    }
+
     public function getGroupedFilesAttribute() {
         return $this->files->groupBy(['document_type_id' => function($item) {
             return $item['document_type_id'];
