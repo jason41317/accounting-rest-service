@@ -24,7 +24,7 @@ class ContractUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'contract_no' => 'required',
+            // 'contract_no' => 'required',
             'client_id' => 'required|not_in:0',
             'trade_name' => 'required',
             'billing_address' => 'required',

@@ -14,7 +14,7 @@ class ContractService
     try {
       $query = Contract::with(['services' => function ($q) {
         return $q->with('serviceCategory');
-      }, 'contractCharges', 'files', 'contractStatus','client','taxType']);
+      }, 'charges', 'files', 'contractStatus','client','taxType']);
 
       $contractStatusId = $filters['contract_status_id'] ?? false;
       $query->when($contractStatusId, function($q) use($contractStatusId) {
@@ -51,6 +51,10 @@ class ContractService
     DB::beginTransaction();
     try {
       $contract = Contract::create($data);
+      $count = Contract::count();
+      $contract->update([
+        'contract_no' => 'CN-' . date('Y') . '-' . str_pad($count, 6, '0', STR_PAD_LEFT)
+      ]);
       if ($services) {
         $contract->services()->sync($services);
       }
