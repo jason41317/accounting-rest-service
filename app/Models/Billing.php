@@ -10,6 +10,7 @@ class Billing extends Model
 {
     use HasFactory, SoftDeletes;
     protected $guarded = ['id'];
+    protected $appends = ['amount'];
 
     public function contract() {
         return $this->belongsTo(Contract::class);
@@ -31,6 +32,12 @@ class Billing extends Model
     public function adjustmentCharges() {
         return $this->belongsToMany(Charge::class, 'billing_adjustment_charges', 'billing_id', 'charge_id')
         ->withPivot('amount', 'notes');
+    }
+
+    public function getAmountAttribute() {
+        $totalCharges = $this->charges()->sum('amount');
+        $totalAdjustmentCharges = $this->adjustmentCharges()->sum('amount');
+        return $totalCharges + $totalAdjustmentCharges;
     }
 
 }

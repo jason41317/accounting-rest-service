@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ContractStoreRequest extends FormRequest
+class BillingUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,17 +24,10 @@ class ContractStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            // 'contract_no' => 'required',
             'client_id' => 'required|not_in:0',
-            'trade_name' => 'required',
-            'billing_address' => 'required',
-            'tin' => 'required',
-            'contact_person' => 'required',
-            'contact_no' => 'required',
-            'date_started' => 'required|date',
-            'location_id' => 'required|not_in:0',
-            'tax_type_id' => 'required|not_in:0',
-            // 'services' => 'sometimes|array|min:1',
+            'contract_id' => 'required|not_in:0',
+            'billing_date' => 'required|date',
+            'due_date' => 'required|date',
             'charges' => 'sometimes|array|min:1'
         ];
     }
@@ -43,8 +36,7 @@ class ContractStoreRequest extends FormRequest
     {
         return [
             'client_id' => 'client',
-            'location_id' => 'location',
-            'tax_type_id' => 'tax type'
+            'contract_id' => 'contract'
         ];
     }
 

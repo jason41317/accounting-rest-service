@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\BillingStoreRequest;
+use App\Http\Requests\BillingUpdateRequest;
 use App\Models\Billing;
 use Illuminate\Http\Request;
 use App\Services\BillingService;
@@ -59,36 +60,34 @@ class BillingController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Billing  $billing
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Billing $billing)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Billing  $billing
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Billing $billing)
+    public function update(BillingUpdateRequest $request, int $id)
     {
-        //
+        $billingService = new BillingService();
+        $data = $request->except('charges', 'adjustmentCharges');
+        $charges = $request->charges ?? [];
+        $adjustmentCharges = $request->adjustment_charges ?? [];
+        $billing = $billingService->update($data, $charges, $adjustmentCharges, $id);
+        return (new BillingResource($billing))
+            ->response()
+            ->setStatusCode(200);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Billing  $billing
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Billing $billing)
+    public function destroy(int $id)
     {
-        //
+        $billingService = new BillingService();
+        $billingService->delete($id);
+        return response()->json([], 204);
     }
 }
