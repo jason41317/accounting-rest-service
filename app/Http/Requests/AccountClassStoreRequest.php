@@ -24,7 +24,15 @@ class AccountClassStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required'
+            'name' => 'required',
+            'account_type_id' => 'required'
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'account_type_id' => 'account type'
         ];
     }
 }

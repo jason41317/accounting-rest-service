@@ -25,7 +25,6 @@ class ChargeUpdateRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'description' => 'required',
             'account_title_id' => 'required'
         ];
     }
