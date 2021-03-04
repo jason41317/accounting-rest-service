@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Bank;
 use Illuminate\Http\Request;
+use App\Services\BankService;
+use App\Http\Resources\BankResource;
+use App\Http\Requests\BankStoreRequest;
+use App\Http\Requests\BankUpdateRequest;
 
 class BankController extends Controller
 {
@@ -12,19 +16,15 @@ class BankController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        $bankService = new BankService();
+        $perPage = $request->per_page ?? 20;
+        $isPaginated = !$request->has('paginate') || $request->paginate === 'true';
+        $banks = $bankService->list($isPaginated, $perPage);
+        return BankResource::collection(
+            $banks
+        );
     }
 
     /**
@@ -33,53 +33,55 @@ class BankController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(BankStoreRequest $request)
     {
-        //
+        $bankService = new BankService();
+        $bank = $bankService->store($request->all());
+        return (new BankResource($bank))
+            ->response()
+            ->setStatusCode(201);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Bank  $bank
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Bank $bank)
+    public function show(int $id)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Bank  $bank
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Bank $bank)
-    {
-        //
+        $bankService = new BankService();
+        $bank = $bankService->get($id);
+        return new BankResource($bank);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Bank  $bank
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Bank $bank)
+    public function update(BankUpdateRequest $request, int $id)
     {
-        //
+        $bankService = new BankService();
+        $bank = $bankService->update($request->all(), $id);
+
+        return (new BankResource($bank))
+            ->response()
+            ->setStatusCode(200);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Bank  $bank
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Bank $bank)
+    public function destroy(int $id)
     {
-        //
+        $bankService = new BankService();
+        $bankService->delete($id);
+        return response()->json([], 204);
     }
 }
