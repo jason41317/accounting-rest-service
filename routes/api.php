@@ -39,6 +39,8 @@ Route::group(['prefix' => 'v1'], function () {
         Route::resource('/tax-types', 'TaxTypeController');
         Route::resource('/banks', 'BankController');
         Route::resource('/e-wallets', 'EWalletController');
+        Route::resource('/disbursements', 'DisbursementController');
+
     });
 });
 Route::middleware('auth:api')->get('/user', function (Request $request) {

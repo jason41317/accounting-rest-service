@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Disbursement;
 use Illuminate\Http\Request;
+use App\Services\DisbursementService;
+use App\Http\Resources\DisbursementResource;
+use App\Http\Requests\DisbursementStoreRequest;
+use App\Http\Requests\DisbursementUpdateRequest;
 
 class DisbursementController extends Controller
 {
@@ -12,19 +16,17 @@ class DisbursementController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        $disbursementService = new DisbursementService();
+        $perPage = $request->per_page ?? 20;
+        $isPaginated = !$request->has('paginate') || $request->paginate === 'true';
+        $filters = $request->except(['paginate', 'per_page']);
+        $disbursements = $disbursementService->list($isPaginated, $perPage, $filters);
+        
+        return DisbursementResource::collection(
+            $disbursements
+        );
     }
 
     /**
@@ -33,9 +35,16 @@ class DisbursementController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(DisbursementStoreRequest $request)
     {
-        //
+        $disbursementService = new DisbursementService();
+        $data = $request->except('disbursement_details');
+        $disbursementDetails = $request->disbursement_details ?? [];
+       
+        $disbursement = $disbursementService->store($data, $disbursementDetails);
+        return (new DisbursementResource($disbursement))
+            ->response()
+            ->setStatusCode(201);
     }
 
     /**
@@ -44,21 +53,13 @@ class DisbursementController extends Controller
      * @param  \App\Models\Disbursement  $disbursement
      * @return \Illuminate\Http\Response
      */
-    public function show(Disbursement $disbursement)
+    public function show(int $id)
     {
-        //
+        $disbursementService = new DisbursementService();
+        $disbursement = $disbursementService->get($id);
+        return new DisbursementResource($disbursement);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Disbursement  $disbursement
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Disbursement $disbursement)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
@@ -67,9 +68,15 @@ class DisbursementController extends Controller
      * @param  \App\Models\Disbursement  $disbursement
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Disbursement $disbursement)
+    public function update(DisbursementUpdateRequest $request, int $id)
     {
-        //
+        $disbursementService = new DisbursementService();
+        $data = $request->except('disbursement_details');
+        $disbursementDetails = $request->disbursement_details ?? [];
+        $disbursement = $disbursementService->update($data, $disbursementDetails, $id);
+        return (new DisbursementResource($disbursement))
+            ->response()
+            ->setStatusCode(201);
     }
 
     /**
@@ -78,8 +85,10 @@ class DisbursementController extends Controller
      * @param  \App\Models\Disbursement  $disbursement
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Disbursement $disbursement)
+    public function destroy(int $id)
     {
-        //
+        $disbursementService = new DisbursementService();
+        $disbursementService->delete($id);
+        return response()->json([], 204);
     }
 }
