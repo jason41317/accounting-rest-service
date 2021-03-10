@@ -105,7 +105,7 @@ class ContractService
         return $q->with('rdo');
       }]);
 
-      return $contract->append('grouped_files');
+      return $contract->append('grouped_files','charge_balances');
     } catch (Exception $e) {
       Log::info('Error occured during ContractService get method call: ');
       Log::info($e->getMessage());
@@ -153,6 +153,21 @@ class ContractService
   }
 
   public function delete(int $id)
+  {
+    DB::beginTransaction();
+    try {
+      $contract = Contract::find($id);
+      $contract->delete();
+      DB::commit();
+    } catch (Exception $e) {
+      DB::rollback();
+      Log::info('Error occured during ContractService delete method call: ');
+      Log::info($e->getMessage());
+      throw $e;
+    }
+  }
+
+  public function getChargesBalanceOfContracts(int $contractId)
   {
     DB::beginTransaction();
     try {
