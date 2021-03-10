@@ -21,6 +21,21 @@ class Payment extends Model
         'deleted_by'
     ];
 
+    public function client()
+    {
+        return $this->belongsTo(Client::class);
+    }
+
+    public function contract()
+    {
+        return $this->belongsTo(Contract::class);
+    }
+
+    public function paymentType()
+    {
+        return $this->belongsTo(PaymentType::class);
+    }
+
     public function charges()
     {
         return $this->belongsToMany(Charge::class, 'payment_charges', 'payment_id', 'charge_id');

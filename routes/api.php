@@ -40,7 +40,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::resource('/banks', 'BankController');
         Route::resource('/e-wallets', 'EWalletController');
         Route::resource('/disbursements', 'DisbursementController');
-
+        Route::resource('payments','PaymentController');
     });
 });
 Route::middleware('auth:api')->get('/user', function (Request $request) {
