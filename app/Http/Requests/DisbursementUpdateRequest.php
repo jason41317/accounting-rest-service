@@ -24,13 +24,15 @@ class DisbursementUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'voucher_no' => 'required|max:191|unique:disbursements,voucher_no,'.$this->id,
-            'payee' => 'required|max:191',
-            'address' => 'required',
-            'bank_id' => 'required|not_in:0',
-            'cheque_no' => 'required|max:191',
-            'cheque_date' => 'required',
-            'cheque_amount' => 'required|gt:0',
+            'voucher_no' => 'sometimes|required|max:191|unique:disbursements,voucher_no,'.$this->id,
+            'payee' => 'sometimes|required|max:191',
+            'address' => 'sometimes|required',
+            'bank_id' => 'sometimes|required|not_in:0',
+            'cheque_no' => 'sometimes|required|max:191',
+            'cheque_date' => 'sometimes|required',
+            'cheque_amount' => 'sometimes|required|gt:0',
+            'approved_notes' => 'sometimes|required',
+            'rejected_notes' => 'sometimes|required',
         ];
     }
 

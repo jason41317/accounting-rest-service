@@ -14,7 +14,9 @@ class ContractService
     try {
       $query = Contract::with(['services' => function ($q) {
         return $q->with('serviceCategory');
-      }, 'charges', 'files', 'contractStatus','client','taxType']);
+      }, 'charges', 'files', 'contractStatus','client','taxType', 'location' => function ($q) {
+        return $q->with('rdo');
+      }]);
 
       $contractStatusId = $filters['contract_status_id'] ?? false;
       $query->when($contractStatusId, function($q) use($contractStatusId) {
@@ -99,7 +101,7 @@ class ContractService
         return $q->with('schedules', function($q) use ($id) {
           $q->wherePivot('contract_id', $id);
         });
-      }, 'files', 'client', 'taxType', 'location' => function($q) {
+      }, 'files', 'client', 'taxType', 'contractStatus', 'location' => function($q) {
         return $q->with('rdo');
       }]);
 

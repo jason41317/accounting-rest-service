@@ -19,7 +19,7 @@ class DisbursementService
         //filter disbursement status id
         $disbursementStatusId = $filters['disbursement_status_id'] ?? false;
         $query->when($disbursementStatusId, function($q) use($disbursementStatusId) {
-            return $q->where('disbursement_statud_id', $disbursementStatusId);
+            return $q->where('disbursement_status_id', $disbursementStatusId);
         });
 
 
@@ -83,9 +83,10 @@ class DisbursementService
       $disbursement = Disbursement::find($id);
       $disbursement->update($data);
 
-      $disbursement->disbursementDetails()->delete();
+      
 
       if ($disbursementDetails) {
+        $disbursement->disbursementDetails()->delete();
         foreach ($disbursementDetails as $detail) {
           $disbursement->disbursementDetails()->create(
             [
