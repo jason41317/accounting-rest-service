@@ -41,6 +41,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::resource('/e-wallets', 'EWalletController');
         Route::resource('/disbursements', 'DisbursementController');
         Route::resource('payments','PaymentController');
+        Route::resource('permission-groups','PermissionGroupController');
     });
 });
 Route::middleware('auth:api')->get('/user', function (Request $request) {
