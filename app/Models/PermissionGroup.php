@@ -6,22 +6,18 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class UserGroup extends Model
+class PermissionGroup extends Model
 {
     use HasFactory, SoftDeletes;
-
     protected $guarded = ['id'];
     protected $hidden = [
         'created_at',
         'deleted_at',
-        'updated_at',
-        'created_by',
-        'updated_by',
-        'deleted_by'
+        'updated_at'
     ];
 
     public function permissions()
     {
-        return $this->belongsToMany(Permission::class, 'user_group_permissions', 'user_group_id', 'permission_id');
+        return $this->hasMany(Permission::class);
     }
 }

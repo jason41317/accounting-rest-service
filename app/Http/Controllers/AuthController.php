@@ -40,9 +40,9 @@ class AuthController extends Controller
         //   return $q->with('photo');
         // }]);
 
-        // $user->load(['userable', 'userGroup' => function ($query) {
-        //     $query->with(['permissions']);
-        // }]);
+        $user->load(['userable', 'userGroup' => function ($query) {
+            $query->with(['permissions']);
+        }]);
 
         return new UserResource($user);
     }

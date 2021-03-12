@@ -36,7 +36,9 @@ class UserGroupController extends Controller
     public function store(UserGroupStoreRequest $request)
     {
         $userGroupService = new UserGroupService();
-        $userGroup = $userGroupService->store($request->all());
+        $data = $request->except('permissions');
+        $permissions = $request->permissions ?? [];
+        $userGroup = $userGroupService->store($data, $permissions);
         return (new UserGroupResource($userGroup))
             ->response()
             ->setStatusCode(201);
@@ -65,7 +67,9 @@ class UserGroupController extends Controller
     public function update(UserGroupUpdateRequest $request, int $id)
     {
         $userGroupService = new UserGroupService();
-        $userGroup = $userGroupService->update($request->all(), $id);
+        $data = $request->except('permissions');
+        $permissions = $request->permissions ?? [];
+        $userGroup = $userGroupService->update($data, $permissions, $id);
 
         return (new UserGroupResource($userGroup))
             ->response()

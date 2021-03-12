@@ -24,11 +24,12 @@ class UserGroupService
     }
   }
 
-  public function store(array $data)
+  public function store(array $data, array $permissions)
   {
     DB::beginTransaction();
     try {
       $userGroup = UserGroup::create($data);
+      $userGroup->permissions()->sync($permissions);
       DB::commit();
       return $userGroup;
     } catch (Exception $e) {
@@ -43,6 +44,7 @@ class UserGroupService
   {
     try {
       $userGroup = UserGroup::find($id);
+      $userGroup->load('permissions');
       return $userGroup;
     } catch (Exception $e) {
       Log::info('Error occured during UserGroupService get method call: ');
@@ -51,12 +53,13 @@ class UserGroupService
     }
   }
 
-  public function update(array $data, int $id)
+  public function update(array $data, array $permissions, int $id)
   {
     DB::beginTransaction();
     try {
       $userGroup = UserGroup::find($id);
       $userGroup->update($data);
+      $userGroup->permissions()->sync($permissions);
       DB::commit();
       return $userGroup;
     } catch (Exception $e) {
