@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Artisan;
 
 class AccountingRestInstall extends Command
 {
@@ -11,7 +12,7 @@ class AccountingRestInstall extends Command
      *
      * @var string
      */
-    protected $signature = 'accounting-rest:install {--fresh}';
+    protected $signature = 'accounting-rest:install {--fresh} {--with-test-data}';
 
     /**
      * The console command description.
@@ -38,6 +39,9 @@ class AccountingRestInstall extends Command
     public function handle()
     {
         $this->call('migrate' . ($this->option('fresh') ? ':fresh' : ''), []);
+        if ($this->option('with-test-data')) {
+            Artisan::call('db:seed', array('--class' => 'TestDataSeeder'));
+        }
         $this->call('passport:install', []);
         $this->call('storage:link', []);
     }

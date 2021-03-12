@@ -14,6 +14,36 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::group(['prefix' => 'v1'], function () {
+    Route::post('/login', 'AuthController@login');
+
+    Route::group(['middleware' => ['auth:api']], function () {
+        Route::get('/me', 'AuthController@getAuthUser');
+        Route::post('/logout', 'AuthController@logout');
+        Route::resource('/service-categories', 'ServiceCategoryController');
+        Route::resource('/services', 'ServiceController');
+        Route::resource('/document-types', 'DocumentTypeController');
+        Route::resource('/business-styles', 'BusinessStyleController');
+        Route::resource('/business-types', 'BusinessTypeController');
+        Route::resource('/account-types', 'AccountTypeController');
+        Route::resource('/account-classes', 'AccountClassController');
+        Route::resource('/account-titles', 'AccountTitleController');
+        Route::resource('/clients', 'ClientController');
+        Route::resource('/contracts', 'ContractController');
+        Route::resource('/charges', 'ChargeController');
+        Route::resource('/billings', 'BillingController');
+        Route::resource('/personnels', 'PersonnelController');
+        Route::resource('/user-groups', 'UserGroupController');
+        Route::resource('/rdos', 'RdoController');
+        Route::resource('/locations', 'LocationController');
+        Route::resource('/tax-types', 'TaxTypeController');
+        Route::resource('/banks', 'BankController');
+        Route::resource('/e-wallets', 'EWalletController');
+        Route::resource('/disbursements', 'DisbursementController');
+        Route::resource('payments','PaymentController');
+        Route::resource('permission-groups','PermissionGroupController');
+    });
+});
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
