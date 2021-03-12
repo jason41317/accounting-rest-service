@@ -38,6 +38,25 @@ class Payment extends Model
 
     public function charges()
     {
-        return $this->belongsToMany(Charge::class, 'payment_charges', 'payment_id', 'charge_id');
+        return $this->belongsToMany(Charge::class, 'payment_charges', 'payment_id', 'charge_id')->withPivot('amount');
+    }
+
+    public function paymentStatus()
+    {
+        return $this->belongsTo(PaymentStatus::class);
+    }
+
+    public function bank()
+    {
+        return $this->belongsTo(Bank::class);
+    }
+
+    public function eWallet()
+    {
+        return $this->belongsTo(EWallet::class);
+    }
+
+    public function approvedByPersonnel() {
+        return $this->belongsTo(Personnel::class, 'approved_by', 'id');
     }
 }

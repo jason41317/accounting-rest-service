@@ -2,12 +2,18 @@
 
 namespace App\Providers;
 
-use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\Config;
+use App\Models\Payment;
+use App\Models\Contract;
+use App\Models\Disbursement;
+use App\Observers\PaymentObserver;
 use Illuminate\Support\Facades\DB;
+use App\Observers\ContractObserver;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Schema;
+use App\Observers\DisbursementObserver;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -40,5 +46,9 @@ class AppServiceProvider extends ServiceProvider
                 );
             });
         }
+
+        Disbursement::observe(DisbursementObserver::class);
+        Contract::observe(ContractObserver::class);
+        Payment::observe(PaymentObserver::class);
     }
 }

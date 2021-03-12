@@ -12,7 +12,12 @@ class PaymentService
   public function list(bool $isPaginated, int $perPage, array $filters)
   {
     try {
-      $query = Payment::with(['client', 'contract', 'paymentType']);
+      $query = Payment::with(['client', 'contract', 'paymentType', 'paymentStatus']);
+
+      $paymentStatusId = $filters['payment_status_id'] ?? false;
+      $query->when($paymentStatusId, function($q) use($paymentStatusId) {
+        return $q->where('payment_status_id', $paymentStatusId);
+      });
 
       $criteria = $filters['criteria'] ?? false;
       $query->when($criteria, function ($q) use ($criteria) {
@@ -47,7 +52,7 @@ class PaymentService
       $payment = Payment::create($data);
       $count = Payment::count();
       $payment->update([
-        'payment_no' => 'BN-' . date('Y') . '-' . str_pad($count, 6, '0', STR_PAD_LEFT)
+        'payment_no' => 'PAY-' . date('Y') . '-' . str_pad($count, 6, '0', STR_PAD_LEFT)
       ]);
       if ($charges) {
         $items = [];
@@ -77,7 +82,7 @@ class PaymentService
 
       $payment->load(['client' => function ($q) {
         return $q->with('contracts');
-      }, 'charges', 'contract']);
+      }, 'charges', 'contract', 'paymentType', 'paymentStatus', 'bank', 'eWallet', 'approvedByPersonnel']);
 
       return $payment;
     } catch (Exception $e) {

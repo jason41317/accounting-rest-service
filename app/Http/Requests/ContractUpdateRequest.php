@@ -25,16 +25,19 @@ class ContractUpdateRequest extends FormRequest
     {
         return [
             // 'contract_no' => 'required',
-            'client_id' => 'required|not_in:0',
-            'trade_name' => 'required',
-            'billing_address' => 'required',
-            'tin' => 'required',
-            'contact_person' => 'required',
-            'contact_no' => 'required',
-            'date_started' => 'required|date',
-            'location_id' => 'required|not_in:0',
+            'client_id' => 'sometimes|required|not_in:0',
+            'trade_name' => 'sometimes|required',
+            'billing_address' => 'sometimes|required',
+            'tin' => 'sometimes|required',
+            'contact_person' => 'sometimes|required',
+            'contact_no' => 'sometimes|required',
+            'date_started' => 'sometimes|required|date',
+            'location_id' => 'sometimes|required|not_in:0',
             // 'services' => 'sometimes|array|min:1',
-            'charges' => 'sometimes|array|min:1'
+            'charges' => 'sometimes|array|min:1',
+            'assigned_to' => 'sometimes|required',
+            'approved_notes' => 'sometimes|required',
+            'contract_status_id' => 'sometimes|required',
         ];
     }
 
@@ -42,7 +45,9 @@ class ContractUpdateRequest extends FormRequest
     {
         return [
             'client_id' => 'client',
-            'location_id' => 'location'
+            'location_id' => 'location',
+            'assigned_to' => 'assigned personnel',
+            'contract_status_id' => 'status',
         ];
     }
 

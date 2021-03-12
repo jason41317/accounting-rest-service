@@ -109,4 +109,12 @@ class Contract extends Model
             
         return $chargeBalances;
     }
+
+    public function assignedPersonnel() {
+        return $this->belongsTo(Personnel::class, 'assigned_to', 'id');
+    }
+
+    public function approvedByPersonnel() {
+        return $this->belongsTo(Personnel::class, 'approved_by', 'id');
+    }
 }

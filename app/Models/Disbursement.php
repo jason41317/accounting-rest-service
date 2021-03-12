@@ -32,5 +32,9 @@ class Disbursement extends Model
     public function disbursementDetails() {
         return $this->hasMany(DisbursementDetail::class)->with('accountTitle');
     }
+
+    public function approvedByPersonnel() {
+        return $this->belongsTo(Personnel::class, 'approved_by', 'id');
+    }
     
 }

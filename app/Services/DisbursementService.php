@@ -67,7 +67,7 @@ class DisbursementService
   {
     try {
       $disbursement = Disbursement::find($id);
-      $disbursement->load(['disbursementDetails', 'disbursementStatus', 'bank']);
+      $disbursement->load(['disbursementDetails', 'disbursementStatus', 'bank', 'approvedByPersonnel']);
       return $disbursement;
     } catch (Exception $e) {
       Log::info('Error occured during DisbursementService get method call: ');
