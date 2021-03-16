@@ -38,7 +38,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::resource('/locations', 'LocationController');
         Route::resource('/tax-types', 'TaxTypeController');
         Route::resource('/banks', 'BankController');
-        Route::resource('/e-wallets', 'EWalletController');
+        Route::resource('/e-wallets', 'EwalletController');
         Route::resource('/disbursements', 'DisbursementController');
         Route::resource('payments','PaymentController');
         Route::resource('permission-groups','PermissionGroupController');
