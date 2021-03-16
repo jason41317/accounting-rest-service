@@ -9,7 +9,6 @@ use Faker\Factory;
 use App\Models\User;
 use App\Models\Charge;
 use App\Models\Service;
-use App\Models\Personnel;
 use App\Models\AccountType;
 use App\Models\AccountTitle;
 use App\Models\BusinessType;
