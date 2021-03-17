@@ -57,69 +57,69 @@ class TestDataSeeder extends Seeder
             AccountType::create($accountType);
         }
 
-        $faker = Factory::create();
+        // $faker = Factory::create();
 
-        for($i = 0; $i < 5; $i++) {
-            AccountClass::create([
-                'name' => $faker->text(15),
-                'description' => $faker->text(30),
-                'account_type_id' => $faker->numberBetween(1,5)
-            ]);
-        }
+        // for($i = 0; $i < 5; $i++) {
+        //     AccountClass::create([
+        //         'name' => $faker->text(15),
+        //         'description' => $faker->text(30),
+        //         'account_type_id' => $faker->numberBetween(1,5)
+        //     ]);
+        // }
 
-        for($i = 0; $i < 20; $i++) {
-            AccountTitle::create([
-                'code' => $faker->word,
-                'name' => $faker->text(15),
-                'description' => $faker->text(30),
-                'account_class_id' => $faker->numberBetween(1,5)
-            ]);
-        }
+        // for($i = 0; $i < 20; $i++) {
+        //     AccountTitle::create([
+        //         'code' => $faker->word,
+        //         'name' => $faker->text(15),
+        //         'description' => $faker->text(30),
+        //         'account_class_id' => $faker->numberBetween(1,5)
+        //     ]);
+        // }
 
-        for($i = 0; $i < 20; $i++) {
-            Charge::create([
-                'name' => $faker->text(15),
-                'description' => $faker->text(25),
-                'account_title_id' => $faker->numberBetween(1,20)
-            ]);
-        }
+        // for($i = 0; $i < 20; $i++) {
+        //     Charge::create([
+        //         'name' => $faker->text(15),
+        //         'description' => $faker->text(25),
+        //         'account_title_id' => $faker->numberBetween(1,20)
+        //     ]);
+        // }
 
-        for($i = 0; $i < 10; $i++) {
-            BusinessType::create([
-                'name' => $faker->text(15),
-                'description' => $faker->text(25),
-            ]);
-        }
+        // for($i = 0; $i < 10; $i++) {
+        //     BusinessType::create([
+        //         'name' => $faker->text(15),
+        //         'description' => $faker->text(25),
+        //     ]);
+        // }
 
-        for($i = 0; $i < 10; $i++) {
-            BusinessStyle::create([
-                'name' => $faker->text(15),
-                'description' => $faker->text(25),
-            ]);
-        }
+        // for($i = 0; $i < 10; $i++) {
+        //     BusinessStyle::create([
+        //         'name' => $faker->text(15),
+        //         'description' => $faker->text(25),
+        //     ]);
+        // }
 
-        for($i = 0; $i < 10; $i++) {
-            DocumentType::create([
-                'name' => $faker->text(15),
-                'description' => $faker->text(25),
-            ]);
-        }
+        // for($i = 0; $i < 10; $i++) {
+        //     DocumentType::create([
+        //         'name' => $faker->text(15),
+        //         'description' => $faker->text(25),
+        //     ]);
+        // }
 
-        for($i = 0; $i < 10; $i++) {
-            ServiceCategory::create([
-                'name' => $faker->text(15),
-                'description' => $faker->text(25),
-            ]);
-        }
+        // for($i = 0; $i < 10; $i++) {
+        //     ServiceCategory::create([
+        //         'name' => $faker->text(15),
+        //         'description' => $faker->text(25),
+        //     ]);
+        // }
 
-        for($i = 0; $i < 20; $i++) {
-            Service::create([
-                'code' => $faker->word,
-                'name' => $faker->text(15),
-                'description' => $faker->text(25),
-                'service_category_id' => $faker->numberBetween(1,10)
-            ]);
-        }
+        // for($i = 0; $i < 20; $i++) {
+        //     Service::create([
+        //         'code' => $faker->word,
+        //         'name' => $faker->text(15),
+        //         'description' => $faker->text(25),
+        //         'service_category_id' => $faker->numberBetween(1,10)
+        //     ]);
+        // }
 
 
         $months = [
