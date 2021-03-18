@@ -94,7 +94,7 @@ class ClientService
     DB::beginTransaction();
     try {
       $client = Client::find($id);
-      $client->delete();
+      $client->secureDelete('contracts', 'billings', 'payments');
       DB::commit();
     } catch (Exception $e) {
       DB::rollback();

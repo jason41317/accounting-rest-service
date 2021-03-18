@@ -4,11 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Traits\SecureDelete;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Client extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, SecureDelete;
 
     protected $guarded = ['id'];
     protected $hidden = [
@@ -30,5 +31,15 @@ class Client extends Model
 
     public function contracts() {
         return $this->hasMany(Contract::class);
+    }
+
+    public function billings()
+    {
+        return $this->hasMany(Billing::class);
+    }
+
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
     }
 }

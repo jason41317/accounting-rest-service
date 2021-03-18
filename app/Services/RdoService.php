@@ -71,7 +71,7 @@ class RdoService
     DB::beginTransaction();
     try {
       $rdo = Rdo::find($id);
-      $rdo->delete();
+      $rdo->secureDelete('locations');
       DB::commit();
     } catch (Exception $e) {
       DB::rollback();

@@ -71,7 +71,7 @@ class AccountTypeService
     DB::beginTransaction();
     try {
       $accountType = AccountType::find($id);
-      $accountType->delete();
+      $accountType->secureDelete('accountClasses');
       DB::commit();
     } catch (Exception $e) {
       DB::rollback();

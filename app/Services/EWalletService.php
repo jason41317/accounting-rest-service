@@ -71,7 +71,7 @@ class EWalletService
     DB::beginTransaction();
     try {
       $eWallet = EWallet::find($id);
-      $eWallet->delete();
+      $eWallet->secureDelete('payments');
       DB::commit();
     } catch (Exception $e) {
       DB::rollback();

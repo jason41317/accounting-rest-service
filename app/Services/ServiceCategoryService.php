@@ -71,7 +71,7 @@ class ServiceCategoryService
     DB::beginTransaction();
     try {
       $serviceCategory = ServiceCategory::find($id);
-      $serviceCategory->delete();
+      $serviceCategory->secureDelete('services');
       DB::commit();
     } catch (Exception $e) {
       DB::rollback();
