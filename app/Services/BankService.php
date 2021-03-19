@@ -71,7 +71,7 @@ class BankService
     DB::beginTransaction();
     try {
       $bank = Bank::find($id);
-      $bank->delete();
+      $bank->secureDelete('disbursements','payments');
       DB::commit();
     } catch (Exception $e) {
       DB::rollback();

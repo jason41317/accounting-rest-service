@@ -75,7 +75,7 @@ class LocationService
     DB::beginTransaction();
     try {
       $location = Location::find($id);
-      $location->delete();
+      $location->secureDelete('contracts');
       DB::commit();
     } catch (Exception $e) {
       DB::rollback();
