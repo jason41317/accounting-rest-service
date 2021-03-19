@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\SecureDelete;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class AccountTitle extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, SecureDelete;
 
     protected $guarded = ['id'];
     protected $hidden = [
@@ -28,5 +29,10 @@ class AccountTitle extends Model
     public function parentAccountTitle()
     {
         return $this->belongsTo(AccountTitle::class, 'parent_account_id');
+    }
+
+    public function charges()
+    {
+        return $this->hasMany(Charge::class);
     }
 }

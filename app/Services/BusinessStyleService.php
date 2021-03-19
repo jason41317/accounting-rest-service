@@ -71,7 +71,7 @@ class BusinessStyleService
     DB::beginTransaction();
     try {
       $businessStyle = BusinessStyle::find($id);
-      $businessStyle->delete();
+      $businessStyle->secureDelete('clients');
       DB::commit();
     } catch (Exception $e) {
       DB::rollback();

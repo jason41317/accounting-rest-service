@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\SecureDelete;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class AccountType extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, SecureDelete;
 
     protected $guarded = ['id'];
     protected $hidden = [
@@ -19,4 +20,9 @@ class AccountType extends Model
         'updated_by',
         'deleted_by'
     ];
+
+    public function accountClasses()
+    {
+        return $this->hasMany(AccountClass::class);
+    }
 }

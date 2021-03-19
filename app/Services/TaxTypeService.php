@@ -71,7 +71,7 @@ class TaxTypeService
     DB::beginTransaction();
     try {
       $taxType = TaxType::find($id);
-      $taxType->delete();
+      $taxType->secureDelete('contracts');
       DB::commit();
     } catch (Exception $e) {
       DB::rollback();

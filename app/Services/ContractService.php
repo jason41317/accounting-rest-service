@@ -157,7 +157,7 @@ class ContractService
     DB::beginTransaction();
     try {
       $contract = Contract::find($id);
-      $contract->delete();
+      $contract->secureDelete('billing', 'payment');
       DB::commit();
     } catch (Exception $e) {
       DB::rollback();
