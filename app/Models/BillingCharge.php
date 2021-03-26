@@ -2,15 +2,10 @@
 
 namespace App\Models;
 
-use App\Traits\SecureDelete;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\BaseModel;
 
-class BillingCharge extends Model
+class BillingCharge extends BaseModel
 {
-    use HasFactory, SoftDeletes, SecureDelete;
-
     public function charge() {
         return $this->belongsTo(Charge::class);
     }

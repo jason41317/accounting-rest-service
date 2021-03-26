@@ -2,11 +2,9 @@
 
 namespace App\Models;
 
-use App\Traits\SecureDelete;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\BaseModel;
 
-class BillingStatus extends Model
+class BillingStatus extends BaseModel
 {
-    use HasFactory;
+
 }
