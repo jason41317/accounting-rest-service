@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Contracts\Auditable;
 
 
-class BaseModel extends Model implements Auditable
+class BaseModel extends Model
 {
-    use HasFactory, SoftDeletes, SecureDelete, \OwenIt\Auditing\Auditable;
+    use HasFactory, SoftDeletes, SecureDelete;
 }
