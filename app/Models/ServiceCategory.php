@@ -2,14 +2,11 @@
 
 namespace App\Models;
 
-use App\Traits\SecureDelete;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\BaseModel;
 
-class ServiceCategory extends Model
+
+class ServiceCategory extends BaseModel
 {
-    use HasFactory, SoftDeletes, SecureDelete;
     protected $hidden = [
         'created_at',
         'deleted_at',
@@ -20,9 +17,4 @@ class ServiceCategory extends Model
     ];
     
     protected $guarded = ['id'];
-
-    public function services()
-    {
-        return $this->hasMany(Service::class);
-    }
 }

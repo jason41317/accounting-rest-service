@@ -2,19 +2,11 @@
 
 namespace App\Models;
 
-use App\Traits\SecureDelete;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\BaseModel;
 
-class Rdo extends Model
+
+class Rdo extends BaseModel
 {
-    use HasFactory, SoftDeletes, SecureDelete;
-    
-    protected $guarded = ['id'];
 
-    public function locations()
-    {
-        return $this->hasMany(Location::class);
-    }
+    protected $guarded = ['id'];
 }

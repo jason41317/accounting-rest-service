@@ -2,14 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Traits\SecureDelete;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\BaseModel;
 
-class Service extends Model
+
+class Service extends BaseModel 
 {
-    use HasFactory, SoftDeletes, SecureDelete;
+
     protected $hidden = [
         'created_at',
         'deleted_at',
@@ -28,5 +26,9 @@ class Service extends Model
     public function serviceCategory()
     {
         return $this->belongsTo(ServiceCategory::class);
+    }
+
+    public function createdBy() {
+        return $this->belongsTo(User::class, 'created_by', 'id');
     }
 }

@@ -2,14 +2,10 @@
 
 namespace App\Models;
 
-use App\Traits\SecureDelete;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Disbursement extends Model
+
+class Disbursement extends BaseModel
 {
-    use HasFactory, SoftDeletes, SecureDelete;
 
     protected $guarded = ['id'];
 
@@ -32,6 +28,12 @@ class Disbursement extends Model
 
     public function disbursementDetails() {
         return $this->hasMany(DisbursementDetail::class)->with('accountTitle');
+    }
+
+    public function summedAccountTitles() {
+        return $this->hasMany(DisbursementDetail::class)
+            ->groupBy('account_title_id')
+            ->selectRaw('*, sum(amount) as debit, null as credit');
     }
 
     public function approvedByPersonnel() {

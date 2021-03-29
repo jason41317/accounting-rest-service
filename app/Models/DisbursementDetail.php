@@ -2,15 +2,9 @@
 
 namespace App\Models;
 
-use App\Traits\SecureDelete;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
-class DisbursementDetail extends Model
+class DisbursementDetail extends BaseModel
 {
-    use HasFactory, SoftDeletes, SecureDelete;
-
     protected $hidden = [
         'created_at',
         'deleted_at',
