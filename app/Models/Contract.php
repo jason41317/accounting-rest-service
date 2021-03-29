@@ -2,15 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Traits\SecureDelete;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+
+use App\Models\BaseModel;
 use Illuminate\Support\Facades\DB;
 
-class Contract extends Model
+class Contract extends BaseModel
 {
-    use HasFactory, SoftDeletes, SecureDelete;
+
     protected $guarded = ['id'];
     protected $hidden = [
         'created_at',

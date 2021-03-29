@@ -2,14 +2,12 @@
 
 namespace App\Models;
 
-use App\Traits\SecureDelete;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\BaseModel;
 
-class PermissionGroup extends Model
+
+class PermissionGroup extends BaseModel
 {
-    use HasFactory, SoftDeletes, SecureDelete;
+
     protected $guarded = ['id'];
     protected $hidden = [
         'created_at',

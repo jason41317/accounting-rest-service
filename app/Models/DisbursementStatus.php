@@ -2,11 +2,7 @@
 
 namespace App\Models;
 
-use App\Traits\SecureDelete;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-
-class DisbursementStatus extends Model
+class DisbursementStatus extends BaseModel
 {
-    use HasFactory;
+
 }

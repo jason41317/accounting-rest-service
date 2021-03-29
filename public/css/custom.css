@@ -1,0 +1,123 @@
+.text-right {
+    text-align: right;
+}
+
+.text-left {
+    text-align: left;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.bordered {
+    border: solid 1px black;
+  }
+
+  .font-bold  {
+    font-weight: bold;
+  }
+
+  .w-100 {
+    width: 100%;
+  }
+
+  .w-25 {
+    width: 25%;
+  }
+
+  .w-50 {
+    width: 50%;
+  }
+
+  .w-75 {
+    width: 75%;
+  }
+
+  .w-20 {
+    width: 20%;
+  }
+
+  .w-80 {
+    width: 80%;
+  }
+
+  .w-15 {
+    width: 15%;
+  }
+
+  .b-top {
+    border-top: solid 1px black;
+  }
+
+  .b-bottom {
+    border-bottom: solid 1px black;
+  }
+
+  .b-left {
+    border-left: solid 1px black;
+  }
+
+  .b-right {
+    border-right: solid 1px black;
+  }
+
+  .logo {
+    height: 80px;
+    width: 80px;
+  }
+
+  .company__title {
+    font-size: 12pt;
+    font-weight: bold;
+  }
+
+  .company__sub-title {
+    font-size: 9pt;
+  }
+
+  .report__header {
+    margin-bottom: 20px;
+  }
+
+  .table-border-collapse {
+    border-collapse: collapse;
+  }
+
+  .p-5 {
+    padding: 5px;
+  }
+
+  .p-4 {
+    padding: 4px;
+  }
+
+  .p-3 {
+    padding: 3px;
+  }
+
+  .p-2 {
+    padding: 2px;
+  }
+
+  .p-1 {
+    padding: 1px;
+  }
+
+  .pl-3 {
+    padding-left: 3px;
+  }
+
+
+  .pr-3 {
+    padding-right: 3px;
+  }
+
+  .pr-5 {
+    padding-right: 5px;
+  }
+  
+
+  .mw-25 { 
+    min-width: 25%;
+  }

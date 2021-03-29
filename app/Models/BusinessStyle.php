@@ -2,15 +2,10 @@
 
 namespace App\Models;
 
-use App\Traits\SecureDelete;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\BaseModel;
 
-class BusinessStyle extends Model
+class BusinessStyle extends BaseModel
 {
-    use HasFactory, SoftDeletes, SecureDelete;
-
     protected $guarded = ['id'];
     protected $hidden = [
         'created_at',
@@ -20,9 +15,4 @@ class BusinessStyle extends Model
         'updated_by',
         'deleted_by'
     ];
-
-    public function clients()
-    {
-        return $this->hasMany(Client::class);
-    }
 }

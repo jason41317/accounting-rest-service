@@ -2,15 +2,10 @@
 
 namespace App\Models;
 
-use App\Traits\SecureDelete;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\BaseModel;
 
-class TaxType extends Model
+class TaxType extends BaseModel
 {
-    use HasFactory, SoftDeletes, SecureDelete;
-
     protected $guarded = ['id'];
 
     protected $hidden = [
@@ -21,9 +16,4 @@ class TaxType extends Model
         'updated_by',
         'deleted_by'
     ];
-
-    public function contracts()
-    {
-        return $this->hasMany(Contract::class);
-    }
 }

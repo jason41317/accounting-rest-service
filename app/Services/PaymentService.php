@@ -59,7 +59,7 @@ class PaymentService
         foreach ($charges as $charge) {
           $items[$charge['charge_id']] = [
             'amount' => $charge['amount'],
-            // 'notes' => $charge['notes']
+            'for_deposit' => $charge['for_deposit'] ? $charge['for_deposit']  : 0
           ];
         }
         $payment->charges()->sync($items);
@@ -103,7 +103,8 @@ class PaymentService
         $items = [];
         foreach ($charges as $charge) {
           $items[$charge['charge_id']] = [
-            'amount_paid' => $charge['amountPaid']
+            'amount' => $charge['amount'],
+            'for_deposit' => $charge['for_deposit']
           ];
         }
         $payment->charges()->sync($items);

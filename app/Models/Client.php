@@ -2,14 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Traits\SecureDelete;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\BaseModel;
 
-class Client extends Model
+class Client extends BaseModel
 {
-    use HasFactory, SoftDeletes, SecureDelete;
 
     protected $guarded = ['id'];
     protected $hidden = [
@@ -31,15 +27,5 @@ class Client extends Model
 
     public function contracts() {
         return $this->hasMany(Contract::class);
-    }
-
-    public function billings()
-    {
-        return $this->hasMany(Billing::class);
-    }
-
-    public function payments()
-    {
-        return $this->hasMany(Payment::class);
     }
 }

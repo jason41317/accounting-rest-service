@@ -2,14 +2,12 @@
 
 namespace App\Models;
 
-use App\Traits\SecureDelete;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\BaseModel;
 
-class Payment extends Model
+
+
+class Payment extends BaseModel
 {
-    use HasFactory, SoftDeletes, SecureDelete;
 
     protected $guarded = ['id'];
 
@@ -39,7 +37,7 @@ class Payment extends Model
 
     public function charges()
     {
-        return $this->belongsToMany(Charge::class, 'payment_charges', 'payment_id', 'charge_id')->withPivot('amount');
+        return $this->belongsToMany(Charge::class, 'payment_charges', 'payment_id', 'charge_id')->withPivot('amount', 'for_deposit');
     }
 
     public function paymentStatus()
