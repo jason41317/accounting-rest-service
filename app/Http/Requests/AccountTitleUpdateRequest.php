@@ -24,7 +24,7 @@ class AccountTitleUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'code' => 'required',
+            'code' => 'required|unique:account_titles,code,' . $this->id,
             'name' => 'required',
             'account_class_id' => 'required'
         ];

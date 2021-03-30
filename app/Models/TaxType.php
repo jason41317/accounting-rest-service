@@ -16,4 +16,9 @@ class TaxType extends BaseModel
         'updated_by',
         'deleted_by'
     ];
+
+    public function contracts()
+    {
+        return $this->hasMany(Contract::class);
+    }
 }

@@ -17,4 +17,9 @@ class ServiceCategory extends BaseModel
     ];
     
     protected $guarded = ['id'];
+
+    public function services()
+    {
+        return $this->hasMany(Service::class);
+    }
 }
