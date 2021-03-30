@@ -25,4 +25,9 @@ class AccountTitle extends BaseModel
     {
         return $this->belongsTo(AccountTitle::class, 'parent_account_id');
     }
+
+    public function charges()
+    {
+        return $this->hasMany(Charge::class);
+    }
 }

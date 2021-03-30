@@ -20,4 +20,9 @@ class AccountClass extends BaseModel
     {
         return $this->belongsTo(AccountType::class);
     }
+
+    public function accountTitles()
+    {
+        return $this->hasMany(AccountTitle::class);
+    }
 }
