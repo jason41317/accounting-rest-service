@@ -74,11 +74,21 @@ class PersonnelService
       $personnel = Personnel::find($id);
       $personnel->update($data);
       if ($userData) {
-        $personnel->user()->update([
-          'username' => $userData['username'],
-          'password' => Hash::make($userData['password']),
-          'user_group_id' => $userData['user_group_id']
-        ]);
+        
+        if(array_key_exists('password', $userData)) { 
+          //if changing password
+          $personnel->user()->update([
+            'username' => $userData['username'],
+            'password' => Hash::make($userData['password'])
+          ]);
+        }
+        else {
+          //if changing username only
+          $personnel->user()->update([
+            'username' => $userData['username'],
+          ]);
+        }
+        
       }
       $personnel->load(['user' => function ($q) {
         return $q->with('userGroup');
