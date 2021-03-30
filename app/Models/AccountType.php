@@ -16,4 +16,9 @@ class AccountType extends BaseModel
         'updated_by',
         'deleted_by'
     ];
+
+    public function accountClasses()
+    {
+        return $this->hasMany(AccountClass::class);
+    }
 }

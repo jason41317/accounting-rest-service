@@ -14,4 +14,9 @@ class Location extends BaseModel
     {
         return $this->belongsTo(Rdo::class);
     }
+
+    public function contracts()
+    {
+        return $this->hasMany(Location::class);
+    }
 }
