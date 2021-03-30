@@ -52,7 +52,7 @@
   </style>
 </head>
 <body>
-   @include('includes.header')
+   @include('includes.header', $company_setting)
   <div class="report__title">STATEMENT OF ACCOUNT</div>
 
   <table style="border-collapse: collapse;" class="w-100" >
@@ -93,10 +93,10 @@
       </td>
     </tr>
     <tr>
-      <td class="w-75 bordered text-left" colspan="3" style="padding: 5px;">
-        AS OF BALANCE
+      <td class="w-75 bordered text-left font-bold" colspan="3" style="padding: 5px;">
+        AS OF BALANCE ({{ date('M Y', strtotime($period)) }})
       </td>
-      <td class="w-25 bordered text-right" style="padding: 5px;">
+      <td class="w-25 bordered text-right font-bold" style="padding: 5px;">
          {{ number_format($previous_balance, 2) }}
       </td>
     </tr>
@@ -156,8 +156,8 @@
     @endif
 
     <tr>
-      <td class="w-75 text-right bordered" colspan="3"  style="padding: 5px"> AMOUNT DUE : </td>
-      <td class="w-25 text-right bordered"  style="padding: 5px"> {{ number_format($billing->amount + $previous_balance, 2) }} </td>
+      <td class="w-75 text-right bordered font-bold" colspan="3"  style="padding: 5px"> AMOUNT DUE : </td>
+      <td class="w-25 text-right bordered font-bold"  style="padding: 5px"> {{ number_format($billing->amount + $previous_balance, 2) }} </td>
     </tr>
 
     <tr>

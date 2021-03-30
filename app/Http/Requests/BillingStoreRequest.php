@@ -28,7 +28,7 @@ class BillingStoreRequest extends FormRequest
             'contract_id' => 'required|not_in:0',
             'billing_date' => 'required|date',
             'due_date' => 'required|date',
-            'charges' => 'sometimes|array|min:1'
+            'charges' => 'sometimes|array|min:1',
         ];
     }
 
