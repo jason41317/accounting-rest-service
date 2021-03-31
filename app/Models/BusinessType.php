@@ -16,8 +16,7 @@ class BusinessType extends BaseModel
         'deleted_by'
     ];
 
-    public function clients()
-    {
-        return $this->hasMany(Client::class);
+    public function contracts() {
+        return $this->hasMany(Contract::class);
     }
 }

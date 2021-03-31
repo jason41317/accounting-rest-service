@@ -32,12 +32,16 @@ class ContractUpdateRequest extends FormRequest
             'contact_person' => 'sometimes|required',
             'contact_no' => 'sometimes|required',
             'date_started' => 'sometimes|required|date',
+            'nature_of_business' => 'required',
             'location_id' => 'sometimes|required|not_in:0',
             // 'services' => 'sometimes|array|min:1',
             'charges' => 'sometimes|array|min:1',
             'assigned_to' => 'sometimes|required',
             'approved_notes' => 'sometimes|required',
             'contract_status_id' => 'sometimes|required',
+            'business_style_id' => 'sometimes|required|not_in:0',
+            'business_type_id' => 'sometimes|required|not_in:0',
+            'industry' => 'max:191',
         ];
     }
 
@@ -48,6 +52,8 @@ class ContractUpdateRequest extends FormRequest
             'location_id' => 'location',
             'assigned_to' => 'assigned personnel',
             'contract_status_id' => 'status',
+            'business_style_id' => 'business style',
+            'business_type_id' => 'business type'
         ];
     }
 
