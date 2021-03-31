@@ -17,14 +17,6 @@ class Client extends BaseModel
         'deleted_by'
     ];
 
-    public function businessStyle() {
-        return $this->belongsTo(BusinessStyle::class);
-    }
-
-    public function businessType() {
-        return $this->belongsTo(BusinessType::class);
-    }
-
     public function contracts() {
         return $this->hasMany(Contract::class);
     }

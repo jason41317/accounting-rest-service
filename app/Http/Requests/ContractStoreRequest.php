@@ -32,10 +32,14 @@ class ContractStoreRequest extends FormRequest
             'contact_person' => 'required',
             'contact_no' => 'required',
             'date_started' => 'required|date',
+            'nature_of_business' => 'required',
             'location_id' => 'required|not_in:0',
             'tax_type_id' => 'required|not_in:0',
             // 'services' => 'sometimes|array|min:1',
-            'charges' => 'sometimes|array|min:1'
+            'charges' => 'sometimes|array|min:1',
+            'business_style_id' => 'required|not_in:0',
+            'business_type_id' => 'required|not_in:0',
+            'industry' => 'max:191',
         ];
     }
 
@@ -44,7 +48,9 @@ class ContractStoreRequest extends FormRequest
         return [
             'client_id' => 'client',
             'location_id' => 'location',
-            'tax_type_id' => 'tax type'
+            'tax_type_id' => 'tax type',
+            'business_style_id' => 'business style',
+            'business_type_id' => 'business type'
         ];
     }
 
