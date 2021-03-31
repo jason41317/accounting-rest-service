@@ -28,4 +28,15 @@ class Client extends BaseModel
     public function contracts() {
         return $this->hasMany(Contract::class);
     }
+
+
+    public function billings()
+    {
+        return $this->hasMany(Billing::class);
+    }
+
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
+    }
 }

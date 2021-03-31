@@ -15,4 +15,9 @@ class BusinessType extends BaseModel
         'updated_by',
         'deleted_by'
     ];
+
+    public function clients()
+    {
+        return $this->hasMany(Client::class);
+    }
 }
