@@ -2,22 +2,22 @@
 
 namespace App\Services;
 
-use App\Models\EWallet;
+use App\Models\Ewallet;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-class EWalletService
+class EwalletService
 {
   public function list(bool $isPaginated, int $perPage)
   {
     try {
       $eWallets = $isPaginated
-        ? EWallet::paginate($perPage)
-        : EWallet::all();
+        ? Ewallet::paginate($perPage)
+        : Ewallet::all();
       return $eWallets;
     } catch (Exception $e) {
-      Log::info('Error occured during EWalletService list method call: ');
+      Log::info('Error occured during EwalletService list method call: ');
       Log::info($e->getMessage());
       throw $e;
     }
@@ -27,12 +27,12 @@ class EWalletService
   {
     DB::beginTransaction();
     try {
-      $eWallet = EWallet::create($data);
+      $eWallet = Ewallet::create($data);
       DB::commit();
       return $eWallet;
     } catch (Exception $e) {
       DB::rollback();
-      Log::info('Error occured during EWalletService store method call: ');
+      Log::info('Error occured during EwalletService store method call: ');
       Log::info($e->getMessage());
       throw $e;
     }
@@ -41,10 +41,10 @@ class EWalletService
   public function get(int $id)
   {
     try {
-      $eWallet = EWallet::find($id);
+      $eWallet = Ewallet::find($id);
       return $eWallet;
     } catch (Exception $e) {
-      Log::info('Error occured during EWalletService get method call: ');
+      Log::info('Error occured during EwalletService get method call: ');
       Log::info($e->getMessage());
       throw $e;
     }
@@ -54,13 +54,13 @@ class EWalletService
   {
     DB::beginTransaction();
     try {
-      $eWallet = EWallet::find($id);
+      $eWallet = Ewallet::find($id);
       $eWallet->update($data);
       DB::commit();
       return $eWallet;
     } catch (Exception $e) {
       DB::rollback();
-      Log::info('Error occured during EWalletService update method call: ');
+      Log::info('Error occured during EwalletService update method call: ');
       Log::info($e->getMessage());
       throw $e;
     }
@@ -70,12 +70,12 @@ class EWalletService
   {
     DB::beginTransaction();
     try {
-      $eWallet = EWallet::find($id);
+      $eWallet = Ewallet::find($id);
       $eWallet->secureDelete('payments');
       DB::commit();
     } catch (Exception $e) {
       DB::rollback();
-      Log::info('Error occured during EWalletService delete method call: ');
+      Log::info('Error occured during EwalletService delete method call: ');
       Log::info($e->getMessage());
       throw $e;
     }
