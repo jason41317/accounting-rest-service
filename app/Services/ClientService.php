@@ -12,7 +12,7 @@ class ClientService
   public function list(bool $isPaginated, int $perPage, array $filters)
   {
     try {
-      $query = Client::with(['businessStyle', 'businessType', 'contracts']);
+      $query = Client::with(['contracts']);
 
       $criteria = $filters['criteria'] ?? false;
       $query->when($criteria, function ($q) use ($criteria) {
@@ -48,7 +48,7 @@ class ClientService
     DB::beginTransaction();
     try {
       $client = Client::create($data);
-      $client->load(['businessStyle', 'businessType']);
+      // $client->load(['businessStyle', 'businessType']);
       DB::commit();
       return $client;
     } catch (Exception $e) {
@@ -63,7 +63,7 @@ class ClientService
   {
     try {
       $client = Client::find($id);
-      $client->load(['businessStyle', 'businessType']);
+      // $client->load(['businessStyle', 'businessType']);
       return $client;
     } catch (Exception $e) {
       Log::info('Error occured during ClientService get method call: ');
@@ -78,7 +78,7 @@ class ClientService
     try {
       $client = Client::find($id);
       $client->update($data);
-      $client->load(['businessStyle', 'businessType']);
+      // $client->load(['businessStyle', 'businessType']);
       DB::commit();
       return $client;
     } catch (Exception $e) {
