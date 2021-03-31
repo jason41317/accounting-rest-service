@@ -3,8 +3,9 @@
 namespace App\Models;
 
 use App\Models\BaseModel;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class BusinessType extends BaseModel
+class CompanySetting extends BaseModel
 {
     protected $guarded = ['id'];
     protected $hidden = [
@@ -15,9 +16,4 @@ class BusinessType extends BaseModel
         'updated_by',
         'deleted_by'
     ];
-
-    public function clients()
-    {
-        return $this->hasMany(Client::class);
-    }
 }

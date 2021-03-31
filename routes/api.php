@@ -42,14 +42,14 @@ Route::group(['prefix' => 'v1'], function () {
         Route::resource('/disbursements', 'DisbursementController');
         Route::resource('payments','PaymentController');
         Route::resource('permission-groups','PermissionGroupController');
-        
+        Route::resource('company-settings','CompanySettingController');
 
         //reports
         Route::get('billing-statement/{billingId}','ReportController@billingStatement');
+        Route::get('disbursement/{disbursementId}','ReportController@chequeVoucher');
     });
 
-    Route::get('billing-statement/{billingId}','ReportController@billingStatement');
-    Route::get('disbursement/{disbursementId}','ReportController@chequeVoucher');
+    
 });
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();

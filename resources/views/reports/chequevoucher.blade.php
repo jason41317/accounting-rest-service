@@ -72,7 +72,6 @@
     
     .cheque-labels {
       position: absolute;
-      color: green;
       font-weight: bold;
     }
 
@@ -109,9 +108,9 @@
   </style>
 </head>
 <body>
-  @include('includes.header')
+  @include('includes.header', $company_setting)
   
-  @if (boolval($disbursement->is_print_cheque) == 1)
+  @if (boolval($is_print_cheque) == 1)
     <div class="cheque-labels cheque-payee">{{ $disbursement->payee}} {{ $disbursement->is_print_cheque }}  </div>
     <div class="cheque-labels cheque-amount-words">** {{ $disbursement->amount_in_words }} Pesos Only ** </div>
     <div class="cheque-labels cheque-amount">{{ number_format($disbursement->cheque_amount, 2) }}</div>
