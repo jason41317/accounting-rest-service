@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Contract;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -27,14 +28,10 @@ class ContractService
       $criteria = $filters['criteria'] ?? null;
       $query->when($criteria, function($q) use ($criteria) {
         return $q->where(function ($q) use ($criteria) {
-          return $q->where('trade_name', 'LIKE', '%'.$criteria.'%')
-            ->orWhere('contract_no', 'LIKE', '%' . $criteria . '%')
-            ->orWhere('billing_address', 'LIKE', '%' . $criteria . '%')
-            ->orWhere('contact_person', 'LIKE', '%' . $criteria . '%')
-            ->orWhere('contact_no', 'LIKE', '%' . $criteria . '%')
-            ->orWhere('tin', 'LIKE', '%' . $criteria . '%');
+          return $q->filterByCriteria($criteria);
         });
       });
+      $query->filterByUser();
       
       $contracts = $isPaginated
         ? $query->paginate($perPage)
@@ -113,7 +110,7 @@ class ContractService
     }
   }
 
-  public function update(array $data, array $services, array $charges, int $id)
+  public function update(array $data, array $services, array $charges, array $assignee, int $id)
   {
     DB::beginTransaction();
     try {
@@ -141,6 +138,13 @@ class ContractService
         }
         $contract->charges()->sync($items);
       }
+      if ($assignee) {
+        $contract->assignees()->create([
+          'personnel_id' => $assignee['personnel_id'],
+          'is_active' => 1,
+          'date_assigned' => Carbon::now()
+        ]);
+      }
 
       DB::commit();
       return $contract;
@@ -158,21 +162,6 @@ class ContractService
     try {
       $contract = Contract::find($id);
       $contract->secureDelete('billing', 'payment');
-      DB::commit();
-    } catch (Exception $e) {
-      DB::rollback();
-      Log::info('Error occured during ContractService delete method call: ');
-      Log::info($e->getMessage());
-      throw $e;
-    }
-  }
-
-  public function getChargesBalanceOfContracts(int $contractId)
-  {
-    DB::beginTransaction();
-    try {
-      $contract = Contract::find($id);
-      $contract->delete();
       DB::commit();
     } catch (Exception $e) {
       DB::rollback();

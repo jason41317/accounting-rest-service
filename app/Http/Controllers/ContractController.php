@@ -80,10 +80,11 @@ class ContractController extends Controller
     public function update(ContractUpdateRequest $request, int $id)
     {
         $contractService = new ContractService();
-        $data = $request->except(['charges', 'services']);
+        $data = $request->except(['charges', 'services', 'assignee']);
         $charges = $request->charges ?? [];
         $services = $request->services ?? [];
-        $contract = $contractService->update($data, $services, $charges, $id);
+        $assignee = $request->assignee ?? null;
+        $contract = $contractService->update($data, $services, $charges, $assignee, $id);
         return (new ContractResource($contract))
             ->response()
             ->setStatusCode(200);

@@ -6,7 +6,7 @@ use App\Models\BaseModel;
 
 class ContractAssignee extends BaseModel
 {
-
+    protected $guarded = ['id'];
     protected $hidden = [
         'created_at',
         'deleted_at',

@@ -88,6 +88,12 @@ class PersonnelService
             'username' => $userData['username'],
           ]);
         }
+
+        if (array_key_exists('user_group_id', $userData)) { 
+          $personnel->user()->update([
+            'user_group_id' => $userData['user_group_id'],
+          ]);
+        }
         
       }
       $personnel->load(['user' => function ($q) {
