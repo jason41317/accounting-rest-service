@@ -32,7 +32,7 @@ class ContractUpdateRequest extends FormRequest
             'contact_person' => 'sometimes|required',
             'contact_no' => 'sometimes|required',
             'date_started' => 'sometimes|required|date',
-            'nature_of_business' => 'required',
+            'nature_of_business' => 'sometimes|required',
             'location_id' => 'sometimes|required|not_in:0',
             // 'services' => 'sometimes|array|min:1',
             'charges' => 'sometimes|array|min:1',
