@@ -31,7 +31,10 @@ class ContractService
           return $q->filterByCriteria($criteria);
         });
       });
-      $query->filterByUser();
+      $filterByUser = $filters['filter_by_user'] ?? null;
+      $query->when($filterByUser, function ($q) {
+        return $q->filterByUser();
+      });
       
       $contracts = $isPaginated
         ? $query->paginate($perPage)
