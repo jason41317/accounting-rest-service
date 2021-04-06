@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Billing;
 use App\Models\Contract;
 use Carbon\Carbon;
 use Exception;
@@ -31,6 +32,7 @@ class ContractService
           return $q->filterByCriteria($criteria);
         });
       });
+
       $filterByUser = $filters['filter_by_user'] ?? null;
       $query->when($filterByUser, function ($q) {
         return $q->filterByUser();
@@ -39,6 +41,20 @@ class ContractService
       $contracts = $isPaginated
         ? $query->paginate($perPage)
         : $query->get();
+
+      $year = $filters['year'] ?? null;
+      $monthId = $filters['month_id'] ?? null;
+      if ($year && $monthId)
+      {
+        foreach ($contracts as $contract) {
+          $contract->is_billed = $this->isBilled(
+            $contract->id,
+            $year,
+            $monthId
+          );
+        }
+        $contracts->append(['is_billed']);
+      }
       
       return $contracts;
     } catch (Exception $e) {
@@ -113,7 +129,7 @@ class ContractService
     }
   }
 
-  public function update(array $data, array $services, array $charges, array $assignee, int $id)
+  public function update(array $data, array $services, array $charges, ?array $assignee, int $id)
   {
     DB::beginTransaction();
     try {
@@ -172,5 +188,19 @@ class ContractService
       Log::info($e->getMessage());
       throw $e;
     }
+  }
+
+  public function isBilled($contractId, $year, $monthId)
+  {
+    $billings = Billing::where('contract_id', $contractId)
+      ->where('year', $year)
+      ->where('month_id', $monthId)
+      ->get();
+
+    if(count($billings) > 0) {
+      return true;
+    }
+
+    return false;
   }
 }

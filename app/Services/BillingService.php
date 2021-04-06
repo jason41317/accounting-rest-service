@@ -35,11 +35,18 @@ class BillingService
               ->orWhere('name', 'LIKE', '%' . $criteria . '%');
             })
             ->orWhereHas('contract', function($q) use($criteria) {
-              return $q->where('trade_name', 'LIKE', '%' . $criteria . '%')
-              ->orWhere('contract_no', 'LIKE', '%' . $criteria . '%');
+              return $q->filterByCriteria($criteria);
             });
         });
       });
+
+      $filterByUser = $filters['filter_by_user'] ?? false;
+      $query->when($filterByUser, function ($q) {
+        return $q->whereHas('contract', function ($query) {
+          return $query->filterByUser();
+        });
+      });
+
 
       $billings = $isPaginated
         ? $query->paginate($perPage)

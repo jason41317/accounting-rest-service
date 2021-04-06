@@ -153,4 +153,15 @@ class Contract extends BaseModel
             ->orWhere('contact_no', 'LIKE', '%' . $criteria . '%')
             ->orWhere('tin', 'LIKE', '%' . $criteria . '%');
     }
+
+    public function getIsBilledAttribute()
+    {
+        return $this->attributes['is_billed'];
+    }
+
+    public function setIsBilledAttribute($value)
+    {
+        $this->attributes['is_billed'] = $value;
+    }
+
 }
