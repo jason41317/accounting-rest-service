@@ -143,7 +143,6 @@ class Contract extends BaseModel
                     ->where('is_active', 1);
             });
         }
-        return true;
     }
 
     public function scopeFilterByCriteria($query, $criteria) {
