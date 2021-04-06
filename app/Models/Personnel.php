@@ -26,4 +26,8 @@ class Personnel extends BaseModel
     {
         return ucFirst($this->first_name) . ' ' . ucFirst($this->middle_name) . ' ' . ucFirst($this->last_name);
     }
+
+    public function photo() {
+        return $this->hasOne(PersonnelPhoto::class);
+    }
 }

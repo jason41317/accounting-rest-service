@@ -4,6 +4,7 @@ namespace App\Models;
 
 
 use App\Models\BaseModel;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class Contract extends BaseModel
@@ -19,6 +20,13 @@ class Contract extends BaseModel
         'deleted_by'
     ];
 
+    public function assignees() {
+        return $this->hasMany(ContractAssignee::class);
+    }
+
+    public function currentAssignee() {
+        return $this->assignees->latest()->first();
+    }
 
     public function businessStyle() {
         return $this->belongsTo(BusinessStyle::class);
@@ -124,5 +132,25 @@ class Contract extends BaseModel
 
     public function approvedByPersonnel() {
         return $this->belongsTo(Personnel::class, 'approved_by', 'id');
+    }
+
+    public function scopeFilterByUser($query) {
+        $user = Auth::user();
+        if ($user->userGroup->id !== 1) //check if user is not super user
+        {
+            return $query->whereHas('assignees', function ($q) use ($user){
+                return $q->where('personnel_id', $user->userable->id)
+                    ->where('is_active', 1);
+            });
+        }
+    }
+
+    public function scopeFilterByCriteria($query, $criteria) {
+        return $query->where('trade_name', 'LIKE', '%' . $criteria . '%')
+            ->orWhere('contract_no', 'LIKE', '%' . $criteria . '%')
+            ->orWhere('billing_address', 'LIKE', '%' . $criteria . '%')
+            ->orWhere('contact_person', 'LIKE', '%' . $criteria . '%')
+            ->orWhere('contact_no', 'LIKE', '%' . $criteria . '%')
+            ->orWhere('tin', 'LIKE', '%' . $criteria . '%');
     }
 }

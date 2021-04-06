@@ -4,7 +4,9 @@ namespace App\Providers;
 
 use App\Models\Payment;
 use App\Models\Contract;
+use App\Models\ContractAssignee;
 use App\Models\Disbursement;
+use App\Observers\ContractAssigneeObserver;
 use App\Observers\PaymentObserver;
 use Illuminate\Support\Facades\DB;
 use App\Observers\ContractObserver;
@@ -50,5 +52,6 @@ class AppServiceProvider extends ServiceProvider
         Disbursement::observe(DisbursementObserver::class);
         Contract::observe(ContractObserver::class);
         Payment::observe(PaymentObserver::class);
+        ContractAssignee::observe(ContractAssigneeObserver::class);
     }
 }
