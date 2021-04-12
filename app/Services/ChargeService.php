@@ -28,10 +28,10 @@ class ChargeService
   {
     DB::beginTransaction();
     try {
-      $accountClass = Charge::create($data);
-      $accountClass->load('accountTitle');
+      $charge = Charge::create($data);
+      $charge->load('accountTitle');
       DB::commit();
-      return $accountClass;
+      return $charge;
     } catch (Exception $e) {
       DB::rollback();
       Log::info('Error occured during ChargeService store method call: ');
@@ -43,9 +43,9 @@ class ChargeService
   public function get(int $id)
   {
     try {
-      $accountClass = Charge::find($id);
-      $accountClass->load('accountTitle');
-      return $accountClass;
+      $charge = Charge::find($id);
+      $charge->load('accountTitle');
+      return $charge;
     } catch (Exception $e) {
       Log::info('Error occured during ChargeService get method call: ');
       Log::info($e->getMessage());
@@ -57,11 +57,11 @@ class ChargeService
   {
     DB::beginTransaction();
     try {
-      $accountClass = Charge::find($id);
-      $accountClass->update($data);
-      $accountClass->load('accountTitle');
+      $charge = Charge::find($id);
+      $charge->update($data);
+      $charge->load('accountTitle');
       DB::commit();
-      return $accountClass;
+      return $charge;
     } catch (Exception $e) {
       DB::rollback();
       Log::info('Error occured during ChargeService update method call: ');
@@ -74,8 +74,8 @@ class ChargeService
   {
     DB::beginTransaction();
     try {
-      $accountClass = Charge::find($id);
-      $accountClass->delete();
+      $charge = Charge::find($id);
+      $charge->delete();
       DB::commit();
     } catch (Exception $e) {
       DB::rollback();

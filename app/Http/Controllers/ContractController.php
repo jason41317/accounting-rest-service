@@ -102,4 +102,15 @@ class ContractController extends Controller
         $contractService->delete($id);
         return response()->json([], 204);
     }
+
+    public function getContractHistory(int $id, Request $request)
+    {
+        $contractService = new ContractService();
+        $year = $request->year ?? null;
+        $monthId = $request->month_id ?? null;
+        $contractHistory = $contractService->getContractHistory($id, $year, $monthId);
+        return ContractResource::collection(
+            $contractHistory
+        );
+    }
 }
