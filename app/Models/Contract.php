@@ -164,4 +164,13 @@ class Contract extends BaseModel
         $this->attributes['is_billed'] = $value;
     }
 
+    public function getPreviousBalanceAttribute()
+    {
+        return $this->attributes['previous_balance'];
+    }
+
+    public function setPreviousBalanceAttribute($value)
+    {
+        $this->attributes['previous_balance'] = $value;
+    }
 }

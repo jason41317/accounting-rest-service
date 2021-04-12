@@ -3,7 +3,9 @@
 namespace App\Services;
 
 use App\Models\Billing;
+use App\Models\CompanySetting;
 use App\Models\Contract;
+use App\Models\Payment;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\DB;
@@ -44,16 +46,34 @@ class ContractService
 
       $year = $filters['year'] ?? null;
       $monthId = $filters['month_id'] ?? null;
+      // $previousBalance = $filters['previous_balance'] ?? null;
       if ($year && $monthId)
       {
+        // if (!$previousBalance) {
         foreach ($contracts as $contract) {
           $contract->is_billed = $this->isBilled(
             $contract->id,
             $year,
             $monthId
           );
+          $contract->previous_balance = $this->previousBalance(
+            $contract->id,
+            $year,
+            $monthId
+          );
         }
         $contracts->append(['is_billed']);
+        $contracts->append(['previous_balance']);
+        // } else {
+        //   foreach ($contracts as $contract) {
+        //     $contract->previous_balance = $this->previousBalance(
+        //       $contract->id,
+        //       null,
+        //       null
+        //     );
+        //   }
+        //   $contracts->append(['previous_balance']);
+        // }
       }
       
       return $contracts;
@@ -190,6 +210,37 @@ class ContractService
     }
   }
 
+  public function getContractHistory(int $id, $year, $monthId) 
+  {
+    $company = CompanySetting::find(1);
+    $filterDate = Carbon::now();
+    if ($year && $monthId) {
+      $filterDate = new Carbon($year . '-' . $monthId . '-' . $company->billing_cutoff_day);
+    }
+
+    $billings = Billing::where('contract_id', $id)
+      ->select(
+        'id',
+        'billing_no as reference_no',
+        'billing_date as reference_date',
+        DB::raw('0 as payment_amount')
+      )
+      ->whereRaw('DATE(CONCAT(year,"-",month_id,"-",1)) < DATE("' . $filterDate . '")')
+      ->get();
+    
+    $payments = Payment::where('contract_id', $id)
+      ->select(
+        'id',
+        DB::raw('CONCAT(payment_no,"/",transaction_no) as reference_no'),
+        'transaction_date as reference_date',
+        'amount as payment_amount',
+        DB::raw('0 as amount')
+      )
+      ->whereRaw('DATE(transaction_date) < DATE("' . $filterDate . '")')
+      ->get();
+    return $billings->mergeRecursive($payments)->sortBy('reference_date')->all();
+  }
+
   public function isBilled($contractId, $year, $monthId)
   {
     $billings = Billing::where('contract_id', $contractId)
@@ -202,5 +253,23 @@ class ContractService
     }
 
     return false;
+  }
+
+  public function previousBalance($contractId, $year, $monthId)
+  {
+    $company = CompanySetting::find(1);
+    $filterDate = Carbon::now();
+    if ($year && $monthId) {
+      $filterDate = new Carbon($year.'-'.$monthId.'-'.$company->billing_cutoff_day);
+    }
+    $billings = Billing::where('contract_id', $contractId)
+      ->whereRaw('DATE(CONCAT(year,"-",month_id,"-",1)) < DATE("' . $filterDate . '")')
+      ->get()
+      ->sum('amount');
+    $payments = Payment::where('contract_id', $contractId)
+      ->whereRaw( 'DATE(transaction_date) < DATE("' . $filterDate . '")')
+      ->get()
+      ->sum('amount');
+    return $billings - $payments;
   }
 }
