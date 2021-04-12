@@ -30,6 +30,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::resource('/account-titles', 'AccountTitleController');
         Route::resource('/clients', 'ClientController');
         Route::resource('/contracts', 'ContractController');
+        Route::get('contracts/{contractId}/history', 'ContractController@getContractHistory');
         Route::resource('/charges', 'ChargeController');
         Route::resource('/billings', 'BillingController');
         Route::resource('/personnels', 'PersonnelController');
