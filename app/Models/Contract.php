@@ -51,7 +51,7 @@ class Contract extends BaseModel
 
     public function schedules()
     {
-        return $this->belongsToMany(Month::class, 'contract_charge_schedules', 'contract_id', 'month_id');
+        return $this->belongsToMany(Month::class, 'contract_charge_schedules', 'contract_id', 'month_id')->withPivot('charge_id','amount');
     }
 
     public function files() {

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Billing;
+use App\Models\Contract;
 use App\Models\Month;
 use Exception;
 use Illuminate\Support\Facades\Auth;
@@ -170,5 +171,42 @@ class BillingService
       Log::info($e->getMessage());
       throw $e;
     }
+  }
+
+  public function batchStore(array $data)
+  {
+    $query = Contract::whereHas('billings', function ($q) use ($data) {
+      return $q->whereRaw('CONCAT(year,"-",month_id,"-",1) != CONCAT('.$data['year'].',"-",'.$data['month_id'].',"-",1)');
+    })
+      ->orWhereDoesntHave('billings')
+      ->whereHas('charges', function ($q) use ($data) {
+        return $q->whereHas('schedules', function ($q) use ($data) {
+          return $q->where('month_id', $data['month_id']);
+        });
+      });
+
+    $taxTypeId = $data['tax_type_id'] ?? null;
+    $query->when($taxTypeId, function ($q) use ($taxTypeId) {
+      return $q->where('tax_type_id', $taxTypeId);
+    });
+
+    $businessTypeId = $data['business_type_id'] ?? null;
+    $query->when($businessTypeId, function ($q) use ($businessTypeId) {
+      return $q->where('business_type_id', $businessTypeId);
+    });
+
+    $businessStyleId = $data['business_style_id'] ?? null;
+    $query->when($businessStyleId, function ($q) use ($businessStyleId) {
+      return $q->where('business_style_id', $businessStyleId);
+    });
+
+    $filterByUser = $data['filter_by_user'] ?? null;
+    $query->when($filterByUser, function ($q) {
+      return $q->filterByUser();
+    });
+
+    $contracts = $query->get();
+
+    return $contracts;
   }
 }

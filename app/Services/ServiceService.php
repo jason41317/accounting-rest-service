@@ -75,7 +75,7 @@ class ServiceService
     DB::beginTransaction();
     try {
       $service = Service::find($id);
-      $service->delete();
+      $service->secureDelete('contracts');
       DB::commit();
     } catch (Exception $e) {
       DB::rollback();

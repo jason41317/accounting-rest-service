@@ -33,6 +33,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('contracts/{contractId}/history', 'ContractController@getContractHistory');
         Route::resource('/charges', 'ChargeController');
         Route::resource('/billings', 'BillingController');
+        Route::post('/billings/batch', 'BillingController@batchStore');
         Route::resource('/personnels', 'PersonnelController');
         Route::resource('/user-groups', 'UserGroupController');
         Route::resource('/rdos', 'RdoController');

@@ -90,4 +90,12 @@ class BillingController extends Controller
         $billingService->delete($id);
         return response()->json([], 204);
     }
+
+    public function batchStore(Request $request) 
+    {
+        $billingService = new BillingService();
+        $data = $request->all();
+        $billings = $billingService->batchStore($data);
+        return $billings;
+    }
 }
