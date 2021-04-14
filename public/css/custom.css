@@ -116,6 +116,30 @@
   .pr-5 {
     padding-right: 5px;
   }
+
+  .pt-5 {
+    padding-top: 5px;
+  }
+
+  .pt-4 {
+    padding-top: 4px;
+  }
+
+  .pt-3 {
+    padding-top: 3px;
+  }
+
+  .pb-5 {
+    padding-bottom: 5px;
+  }
+
+  .pb-4 {
+    padding-bottom: 4px;
+  }
+
+  .pb-3 {
+    padding-bottom: 3px;
+  }
   
 
   .mw-25 { 
