@@ -25,7 +25,7 @@ class Billing extends BaseModel
         return $this->belongsToMany(Charge::class,'billing_charges','billing_id','charge_id')
         ->withPivot('amount','notes');
     }
-    
+
     public function adjustmentCharges() {
         return $this->belongsToMany(Charge::class, 'billing_adjustment_charges', 'billing_id', 'charge_id')
         ->withPivot('amount', 'notes');

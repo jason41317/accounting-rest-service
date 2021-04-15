@@ -24,14 +24,14 @@ class ReportController extends Controller
 
         $billing = Billing::find($billingId);
         $period = $billing->year . '-' . $billing->month_id . '-' . $billing->cutoff_day;
-        
+
         $billing->append('amount');
         $billing->load(['contract', 'charges', 'adjustmentCharges'])->get();
 
         $totalPreviousBalance = Billing::whereRaw("DATE(CONCAT(year," . "'-'" . ",month_id," . "'-01')) < DATE('" . $period . "')")
                             ->where('contract_id', $billing->contract_id)->get()
                             ->sum('amount');
-        
+
         $totalPayment = Payment::where('transaction_date', '<=', $period)
                     ->where('contract_id',$billing->contract_id)->get()
                     ->sum('amount');
@@ -82,13 +82,13 @@ class ReportController extends Controller
         $companySetting = CompanySetting::find(1);
 
         $formatter = new NumberFormatter('en', NumberFormatter::SPELLOUT);
-        
+
         $disbursement = Disbursement::find($disbursementId);
-        
+
         $disbursement->load(['disbursementDetails', 'summedAccountTitles' => function($q) {
             return $q->with('accountTitle');
         }])->get();
-        
+
         $data['disbursement'] = $disbursement;
         $data['amount_in_words'] = $formatter->format($disbursement->cheque_amount);
         $data['is_print_cheque'] = $request->is_print_cheque == 'true' ? 1 : 0;
@@ -126,18 +126,28 @@ class ReportController extends Controller
     {
         //get company setting data
         $companySetting = CompanySetting::find(1);
-        $paymentApproveStatusId = 2;
-        $collections = Payment::where('payment_status_id', $paymentApproveStatusId)
-        ->groupBy('transaction_date')->get();
-        
-        $collections->append(['for_payment_amount', 'for_deposit_amount']);
+        $dateFrom = $request->date_from ? date("Y-m-d", strtotime($request->date_from)) : false;
+        $dateTo = $request->date_to ? date("Y-m-d", strtotime($request->date_to)) : false;
 
-       
-        
+        $collections = DB::select("
+                    SELECT
+                        p.transaction_date,
+                        SUM(if(for_deposit = 0, pc.amount, 0)) as for_payment_amount,
+                        SUM(if(for_deposit = 1, pc.amount, 0)) as for_deposit_amount,
+                        SUM(pc.amount) as amount
+                    FROM payment_charges as pc
+                    RIGHT JOIN payments as p ON p.id = pc.payment_id
+                    WHERE p.payment_status_id = 2
+                    AND pc.deleted_at IS NULL
+                    AND p.deleted_at IS NULL
+                    AND p.transaction_date BETWEEN '" . $dateFrom . "' AND '" . $dateTo . "'
+                    GROUP BY p.transaction_date");
+
+
         $data['company_setting'] = $companySetting;
-        // $data['collections'] = $collections
-
-        return $collections;
+        $data['collections'] = $collections;
+        $data['date_from'] = $dateFrom;
+        $data['date_to'] = $dateTo;
 
         $mpdf = new Mpdf([
             'default_font_size' => 12,
@@ -145,8 +155,7 @@ class ReportController extends Controller
         ]);
 
         $mpdf->defaultfooterline = 0;
-        //$mpdf->setFooter('{PAGENO} of {nbpg}');
-        //$mpdf->AddPage('','','','','off','','','','','','','','','','','','','','','','A5');
+        $mpdf->setFooter('{PAGENO} of {nbpg}');
         $mpdf->AddPageByArray(
             array(
                 'orientation' => 'P',
@@ -161,7 +170,7 @@ class ReportController extends Controller
 
         //$data['organization'] = OrganizationSetting::find(1)->load('organizationLogo');
 
-        $content = view('reports.chequevoucher')->with($data);
+        $content = view('reports.collectionsummary')->with($data);
         // $mpdf->SetJS('this.print();');
         $mpdf->WriteHTML($content);
         return $mpdf->Output('', 'S');
@@ -181,7 +190,6 @@ class ReportController extends Controller
                     return $q->whereBetween('transaction_date', [$dateFrom, $dateTo]);
                 })->get();
 
-        
         $collections->append(['for_payment_amount', 'for_deposit_amount']);
 
         $data['company_setting'] = $companySetting;
@@ -195,7 +203,7 @@ class ReportController extends Controller
         ]);
 
         $mpdf->defaultfooterline = 0;
-        //$mpdf->setFooter('{PAGENO} of {nbpg}');
+        $mpdf->setFooter('{PAGENO} of {nbpg}');
         //$mpdf->AddPage('','','','','off','','','','','','','','','','','','','','','','A5');
         $mpdf->AddPageByArray(
             array(

@@ -17,7 +17,7 @@ class BillingService
   {
     try {
       $query = Billing::with(['client', 'contract', 'month']);
-     
+
       $monthId = $filters['month_id'] ?? false;
       $query->when($monthId, function($q) use($monthId) {
         return $q->where('month_id', $monthId);
@@ -107,11 +107,11 @@ class BillingService
   {
     try {
       $billing = Billing::find($id);
-      
+
       $billing->load(['client' => function($q) {
         return $q->with('contracts');
       }, 'charges', 'adjustmentCharges', 'contract']);
-      
+
       return $billing;
     } catch (Exception $e) {
       Log::info('Error occured during BillingService get method call: ');
@@ -126,7 +126,7 @@ class BillingService
     try {
       $billing = Billing::find($id);
       $billing->update($data);
-        
+
       if ($charges) {
         $items = [];
         foreach ($charges as $charge) {
