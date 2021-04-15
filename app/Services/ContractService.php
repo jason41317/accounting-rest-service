@@ -210,10 +210,12 @@ class ContractService
     }
   }
 
-  public function getContractHistory(int $id, $year, $monthId) 
+  public function getContractHistory(int $id, array $filters) 
   {
     $company = CompanySetting::find(1);
-    $filterDate = Carbon::now();
+    $filterDate = $filters['as_of_date'] ?? Carbon::now();
+    $year = $filters['year'] ?? null; 
+    $monthId = $filters['month_id'] ?? null;
     if ($year && $monthId) {
       $filterDate = new Carbon($year . '-' . $monthId . '-' . $company->billing_cutoff_day);
     }

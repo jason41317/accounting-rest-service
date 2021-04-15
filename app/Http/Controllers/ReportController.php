@@ -5,12 +5,16 @@ namespace App\Http\Controllers;
 use Mpdf\Mpdf;
 use NumberFormatter;
 use App\Models\Billing;
+use App\Models\Client;
 use App\Models\Payment;
 use App\Models\Disbursement;
 use Illuminate\Http\Request;
 use App\Models\PaymentCharge;
 use App\Models\CompanySetting;
+use App\Models\Contract;
 use App\Models\DisbursementDetail;
+use App\Services\ClientService;
+use App\Services\ContractService;
 use Illuminate\Support\Facades\DB;
 use PHPUnit\TextUI\XmlConfiguration\TestSuite;
 
@@ -221,6 +225,82 @@ class ReportController extends Controller
 
         $content = view('reports.collectiondetailed')->with($data);
         // $mpdf->SetJS('this.print();');
+        $mpdf->WriteHTML($content);
+        return $mpdf->Output('', 'S');
+    }
+
+    public function clientSubsidiaryLedger(Request $request)
+    {
+        $data['company_setting'] = CompanySetting::find(1);
+        $contractId = $request->contract_id;
+        $filters = $request->except('contract_id');
+        $data['as_of_date'] = $filters['as_of_date'];
+
+        $contractService = new ContractService();
+        $data['contract'] = Contract::with('client')
+            ->find($contractId);
+        $data['data'] = $contractService->getContractHistory($contractId, $filters);
+
+        $mpdf = new Mpdf([
+            'default_font_size' => 12,
+            'default_font' => 'DejaVuSans'
+        ]);
+
+        $mpdf->defaultfooterline = 0;
+        //$mpdf->setFooter('{PAGENO} of {nbpg}');
+        //$mpdf->AddPage('','','','','off','','','','','','','','','','','','','','','','A5');
+        $mpdf->AddPageByArray(
+            array(
+                'orientation' => 'P',
+                'suppress' => 'off',
+                'sheet-size' => 'A4',
+                'margin-left' => '7.62',
+                'margin-top' => '7.62',
+                'margin-bottom' => '7.62',
+                'margin-right' => '7.62'
+            )
+        );
+
+        $content = view('reports.clientsubsidiaryledger')->with($data);
+        $mpdf->WriteHTML($content);
+        return $mpdf->Output('', 'S');
+    }
+
+    public function accountsReceivableReport(Request $request)
+    {
+        $data['company_setting'] = CompanySetting::find(1);
+        $filters = $request->all();
+        $data['as_of_date'] = $filters['as_of_date'];
+
+        $clients = Client::get();
+        $clientService = new ClientService();
+        foreach ($clients as $client) {
+            $client->as_of_balance = $clientService->asOfBalance($client['id'], $filters);
+        }
+        $clients->append('as_of_balance');
+        $data['clients'] = $clients;
+
+        $mpdf = new Mpdf([
+            'default_font_size' => 12,
+            'default_font' => 'DejaVuSans'
+        ]);
+
+        $mpdf->defaultfooterline = 0;
+        //$mpdf->setFooter('{PAGENO} of {nbpg}');
+        //$mpdf->AddPage('','','','','off','','','','','','','','','','','','','','','','A5');
+        $mpdf->AddPageByArray(
+            array(
+                'orientation' => 'P',
+                'suppress' => 'off',
+                'sheet-size' => 'A4',
+                'margin-left' => '7.62',
+                'margin-top' => '7.62',
+                'margin-bottom' => '7.62',
+                'margin-right' => '7.62'
+            )
+        );
+
+        $content = view('reports.accountsreceivablereport')->with($data);
         $mpdf->WriteHTML($content);
         return $mpdf->Output('', 'S');
     }
