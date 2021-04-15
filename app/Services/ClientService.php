@@ -2,7 +2,11 @@
 
 namespace App\Services;
 
+use App\Models\Billing;
 use App\Models\Client;
+use App\Models\CompanySetting;
+use App\Models\Payment;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -102,5 +106,26 @@ class ClientService
       Log::info($e->getMessage());
       throw $e;
     }
+  }
+
+  public function asOfBalance($clientId, $filters)
+  {
+    $company = CompanySetting::find(1);
+    $filterDate = $filters['as_of_date'] ?? Carbon::now();
+    $year = $filters['year'] ?? null;
+    $monthId = $filters['month_id'] ?? null;
+    if ($year && $monthId) {
+      $filterDate = new Carbon($year . '-' . $monthId . '-' . $company->billing_cutoff_day);
+    }
+
+    $billings = Billing::where('client_id', $clientId)
+      ->whereRaw('DATE(CONCAT(year,"-",month_id,"-",1)) < DATE("' . $filterDate . '")')
+      ->get()
+      ->sum('amount');
+    $payments = Payment::where('client_id', $clientId)
+      ->whereRaw('DATE(transaction_date) < DATE("' . $filterDate . '")')
+      ->get()
+      ->sum('amount');
+    return $billings - $payments;
   }
 }

@@ -58,6 +58,8 @@ Route::group(['prefix' => 'v1'], function () {
 
     Route::get('collection-summary','ReportController@collectionSummary');
     Route::get('collection-detailed','ReportController@collectionDetailed');
+    Route::get('client-subsidiary-ledger', 'ReportController@clientSubsidiaryLedger');
+    Route::get('accounts-receivable-report', 'ReportController@accountsReceivableReport');
     
 });
 Route::middleware('auth:api')->get('/user', function (Request $request) {

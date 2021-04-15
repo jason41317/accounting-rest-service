@@ -106,9 +106,8 @@ class ContractController extends Controller
     public function getContractHistory(int $id, Request $request)
     {
         $contractService = new ContractService();
-        $year = $request->year ?? null;
-        $monthId = $request->month_id ?? null;
-        $contractHistory = $contractService->getContractHistory($id, $year, $monthId);
+        $filters = $request->all();
+        $contractHistory = $contractService->getContractHistory($id, $filters);
         return ContractResource::collection(
             $contractHistory
         );
