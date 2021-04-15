@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Billing;
+use App\Models\CompanySetting;
 use App\Models\Contract;
 use App\Models\Month;
 use Exception;
@@ -175,9 +176,10 @@ class BillingService
 
   public function batchStore(array $data)
   {
+    $company = CompanySetting::find(1);
     $query = Contract::whereHas('billings', function ($q) use ($data) {
-      return $q->whereRaw('CONCAT(year,"-",month_id,"-",1) != CONCAT('.$data['year'].',"-",'.$data['month_id'].',"-",1)');
-    })
+        return $q->whereRaw('CONCAT(year,"-",month_id,"-",1) != CONCAT('.$data['year'].',"-",'.$data['month_id'].',"-",1)');
+      })
       ->orWhereDoesntHave('billings')
       ->whereHas('charges', function ($q) use ($data) {
         return $q->whereHas('schedules', function ($q) use ($data) {
@@ -207,6 +209,30 @@ class BillingService
 
     $contracts = $query->get();
 
-    return $contracts;
+    $billings = [];
+    foreach ($contracts as $contract) {
+      $data = array(
+        'contract_id' => $contract['id'],
+        'client_id' => $contract['client_id'],
+        'billing_date' => $data['billing_date'],
+        'due_date' => $data['due_date'],
+        'year' => $data['year'],
+        'month_id' => $data['month_id'],
+        'cutoff_day' => $company->billing_cutoff_day
+      );
+
+      $charges = array_map(function($charge) {
+        return array(
+          'charge_id' => $charge['id'],
+          'amount' => $charge['pivot']['amount'],
+          'notes' => ''
+        );
+      },
+      $contract['charges']->all());
+
+      $billings[] = $this->store($data, $charges, []);
+    }
+
+    return $billings;
   }
 }
