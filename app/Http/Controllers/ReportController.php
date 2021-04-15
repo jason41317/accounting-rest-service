@@ -8,8 +8,10 @@ use App\Models\Billing;
 use App\Models\Payment;
 use App\Models\Disbursement;
 use Illuminate\Http\Request;
+use App\Models\PaymentCharge;
 use App\Models\CompanySetting;
 use App\Models\DisbursementDetail;
+use Illuminate\Support\Facades\DB;
 use PHPUnit\TextUI\XmlConfiguration\TestSuite;
 
 class ReportController extends Controller
@@ -115,6 +117,101 @@ class ReportController extends Controller
         //$data['organization'] = OrganizationSetting::find(1)->load('organizationLogo');
 
         $content = view('reports.chequevoucher')->with($data);
+        // $mpdf->SetJS('this.print();');
+        $mpdf->WriteHTML($content);
+        return $mpdf->Output('', 'S');
+    }
+
+    public function collectionSummary(Request $request)
+    {
+        //get company setting data
+        $companySetting = CompanySetting::find(1);
+        $paymentApproveStatusId = 2;
+        $collections = Payment::where('payment_status_id', $paymentApproveStatusId)
+        ->groupBy('transaction_date')->get();
+        
+        $collections->append(['for_payment_amount', 'for_deposit_amount']);
+
+       
+        
+        $data['company_setting'] = $companySetting;
+        // $data['collections'] = $collections
+
+        return $collections;
+
+        $mpdf = new Mpdf([
+            'default_font_size' => 12,
+            'default_font' => 'DejaVuSans'
+        ]);
+
+        $mpdf->defaultfooterline = 0;
+        //$mpdf->setFooter('{PAGENO} of {nbpg}');
+        //$mpdf->AddPage('','','','','off','','','','','','','','','','','','','','','','A5');
+        $mpdf->AddPageByArray(
+            array(
+                'orientation' => 'P',
+                'suppress' => 'off',
+                'sheet-size' => 'A4',
+                'margin-left' => '7.62',
+                'margin-top' => '7.62',
+                'margin-bottom' => '7.62',
+                'margin-right' => '7.62'
+            )
+        );
+
+        //$data['organization'] = OrganizationSetting::find(1)->load('organizationLogo');
+
+        $content = view('reports.chequevoucher')->with($data);
+        // $mpdf->SetJS('this.print();');
+        $mpdf->WriteHTML($content);
+        return $mpdf->Output('', 'S');
+    }
+
+    public function collectionDetailed(Request $request)
+    {
+        //get company setting data
+
+        $dateFrom = $request->date_from ? date("Y-m-d", strtotime($request->date_from)) : false;
+        $dateTo = $request->date_to ? date("Y-m-d", strtotime($request->date_to)) : false;
+
+        $companySetting = CompanySetting::find(1);
+        $paymentApproveStatusId = 2;
+        $collections = Payment::where('payment_status_id', $paymentApproveStatusId)
+                ->when($dateFrom, function($q) use($dateFrom, $dateTo) {
+                    return $q->whereBetween('transaction_date', [$dateFrom, $dateTo]);
+                })->get();
+
+        
+        $collections->append(['for_payment_amount', 'for_deposit_amount']);
+
+        $data['company_setting'] = $companySetting;
+        $data['collections'] = $collections;
+        $data['date_from'] = $dateFrom;
+        $data['date_to'] = $dateTo;
+
+        $mpdf = new Mpdf([
+            'default_font_size' => 12,
+            'default_font' => 'DejaVuSans'
+        ]);
+
+        $mpdf->defaultfooterline = 0;
+        //$mpdf->setFooter('{PAGENO} of {nbpg}');
+        //$mpdf->AddPage('','','','','off','','','','','','','','','','','','','','','','A5');
+        $mpdf->AddPageByArray(
+            array(
+                'orientation' => 'P',
+                'suppress' => 'off',
+                'sheet-size' => 'A4',
+                'margin-left' => '7.62',
+                'margin-top' => '7.62',
+                'margin-bottom' => '7.62',
+                'margin-right' => '7.62'
+            )
+        );
+
+        //$data['organization'] = OrganizationSetting::find(1)->load('organizationLogo');
+
+        $content = view('reports.collectiondetailed')->with($data);
         // $mpdf->SetJS('this.print();');
         $mpdf->WriteHTML($content);
         return $mpdf->Output('', 'S');

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\BillingBatchStoreRequest;
 use App\Http\Requests\BillingStoreRequest;
 use App\Http\Requests\BillingUpdateRequest;
 use App\Models\Billing;
@@ -89,5 +90,13 @@ class BillingController extends Controller
         $billingService = new BillingService();
         $billingService->delete($id);
         return response()->json([], 204);
+    }
+
+    public function batchStore(BillingBatchStoreRequest $request) 
+    {
+        $billingService = new BillingService();
+        $data = $request->all();
+        $billings = $billingService->batchStore($data);
+        return $billings;
     }
 }

@@ -100,7 +100,7 @@ class ContractController extends Controller
     {
         $contractService = new ContractService();
         $contractService->delete($id);
-        return response()->json([], 204);
+        return response()->json([], 204); 
     }
 
     public function getContractHistory(int $id, Request $request)

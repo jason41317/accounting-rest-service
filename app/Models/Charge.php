@@ -30,6 +30,16 @@ class Charge extends BaseModel
         return $this->belongsToMany(Contract::class, 'contract_charges', 'charge_id', 'contract_id');
     }
 
+    public function billings()
+    {
+        return $this->belongsToMany(Billing::class, 'billing_charges', 'charge_id', 'billing_id');
+    }
+
+    public function payments()
+    {
+        return $this->belongsToMany(Payment::class, 'payment_charges', 'charge_id', 'payment_id');
+    }
+
     public function accountTitle() {
         return $this->belongsTo(AccountTitle::class);
     }

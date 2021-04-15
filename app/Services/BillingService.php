@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Models\Billing;
+use App\Models\CompanySetting;
+use App\Models\Contract;
 use App\Models\Month;
 use Exception;
 use Illuminate\Support\Facades\Auth;
@@ -170,5 +172,67 @@ class BillingService
       Log::info($e->getMessage());
       throw $e;
     }
+  }
+
+  public function batchStore(array $data)
+  {
+    $company = CompanySetting::find(1);
+    $query = Contract::whereHas('billings', function ($q) use ($data) {
+        return $q->whereRaw('CONCAT(year,"-",month_id,"-",1) != CONCAT('.$data['year'].',"-",'.$data['month_id'].',"-",1)');
+      })
+      ->orWhereDoesntHave('billings')
+      ->whereHas('charges', function ($q) use ($data) {
+        return $q->whereHas('schedules', function ($q) use ($data) {
+          return $q->where('month_id', $data['month_id']);
+        });
+      });
+
+    $taxTypeId = $data['tax_type_id'] ?? null;
+    $query->when($taxTypeId, function ($q) use ($taxTypeId) {
+      return $q->where('tax_type_id', $taxTypeId);
+    });
+
+    $businessTypeId = $data['business_type_id'] ?? null;
+    $query->when($businessTypeId, function ($q) use ($businessTypeId) {
+      return $q->where('business_type_id', $businessTypeId);
+    });
+
+    $businessStyleId = $data['business_style_id'] ?? null;
+    $query->when($businessStyleId, function ($q) use ($businessStyleId) {
+      return $q->where('business_style_id', $businessStyleId);
+    });
+
+    $filterByUser = $data['filter_by_user'] ?? null;
+    $query->when($filterByUser, function ($q) {
+      return $q->filterByUser();
+    });
+
+    $contracts = $query->get();
+
+    $billings = [];
+    foreach ($contracts as $contract) {
+      $data = array(
+        'contract_id' => $contract['id'],
+        'client_id' => $contract['client_id'],
+        'billing_date' => $data['billing_date'],
+        'due_date' => $data['due_date'],
+        'year' => $data['year'],
+        'month_id' => $data['month_id'],
+        'cutoff_day' => $company->billing_cutoff_day
+      );
+
+      $charges = array_map(function($charge) {
+        return array(
+          'charge_id' => $charge['id'],
+          'amount' => $charge['pivot']['amount'],
+          'notes' => ''
+        );
+      },
+      $contract['charges']->all());
+
+      $billings[] = $this->store($data, $charges, []);
+    }
+
+    return $billings;
   }
 }

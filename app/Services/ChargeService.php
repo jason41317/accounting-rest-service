@@ -75,7 +75,7 @@ class ChargeService
     DB::beginTransaction();
     try {
       $charge = Charge::find($id);
-      $charge->delete();
+      $charge->secureDelete('contracts','billings','payments');
       DB::commit();
     } catch (Exception $e) {
       DB::rollback();

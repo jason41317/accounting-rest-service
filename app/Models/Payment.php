@@ -58,4 +58,12 @@ class Payment extends BaseModel
     public function approvedByPersonnel() {
         return $this->belongsTo(Personnel::class, 'approved_by', 'id');
     }
+
+    public function getForPaymentAmountAttribute() {
+        return $this->charges()->wherePivot('for_deposit', 0)->get()->sum('pivot.amount');
+    }
+
+    public function getForDepositAmountAttribute() {
+        return $this->charges()->wherePivot('for_deposit', 1)->get()->sum('pivot.amount');
+    }
 }
