@@ -137,7 +137,7 @@ class ContractService
         return $q->with('schedules', function($q) use ($id) {
           $q->wherePivot('contract_id', $id);
         });
-      }, 'businessType', 'businessStyle', 'assignedPersonnel','approvedByPersonnel','files', 'client', 'taxType', 'contractStatus', 'location' => function($q) {
+      }, 'businessType', 'businessStyle', 'currentAssignee','approvedByPersonnel','files', 'client', 'taxType', 'contractStatus', 'location' => function($q) {
         return $q->with('rdo');
       }]);
 
