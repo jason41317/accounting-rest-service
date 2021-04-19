@@ -227,7 +227,7 @@ class ContractService
         'billing_date as reference_date',
         DB::raw('0 as payment_amount')
       )
-      ->whereRaw('DATE(CONCAT(year,"-",month_id,"-",1)) < DATE("' . $filterDate . '")')
+      ->whereRaw('DATE(CONCAT(year,"-",month_id,"-",1)) <= DATE("' . $filterDate . '")')
       ->get();
     
     $payments = Payment::where('contract_id', $id)
@@ -238,7 +238,8 @@ class ContractService
         'amount as payment_amount',
         DB::raw('0 as amount')
       )
-      ->whereRaw('DATE(transaction_date) < DATE("' . $filterDate . '")')
+      ->where('payment_status_id', 2)
+      ->whereRaw('DATE(transaction_date) <= DATE("' . $filterDate . '")')
       ->get();
     return $billings->mergeRecursive($payments)->sortBy('reference_date')->all();
   }
@@ -265,11 +266,12 @@ class ContractService
       $filterDate = new Carbon($year.'-'.$monthId.'-'.$company->billing_cutoff_day);
     }
     $billings = Billing::where('contract_id', $contractId)
-      ->whereRaw('DATE(CONCAT(year,"-",month_id,"-",1)) < DATE("' . $filterDate . '")')
+      ->whereRaw('DATE(CONCAT(year,"-",month_id,"-",1)) <= DATE("' . $filterDate . '")')
       ->get()
       ->sum('amount');
     $payments = Payment::where('contract_id', $contractId)
-      ->whereRaw( 'DATE(transaction_date) < DATE("' . $filterDate . '")')
+      ->whereRaw( 'DATE(transaction_date) <= DATE("' . $filterDate . '")')
+      ->where('payment_status_id', 2)
       ->get()
       ->sum('amount');
     return $billings - $payments;

@@ -43,4 +43,9 @@ class Charge extends BaseModel
     public function accountTitle() {
         return $this->belongsTo(AccountTitle::class);
     }
+
+    public function chargeCategory()
+    {
+        return $this->belongsTo(ChargeCategory::class);
+    }
 }

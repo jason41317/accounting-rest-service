@@ -132,21 +132,14 @@ class ReportController extends Controller
         $companySetting = CompanySetting::find(1);
         $dateFrom = $request->date_from ? date("Y-m-d", strtotime($request->date_from)) : false;
         $dateTo = $request->date_to ? date("Y-m-d", strtotime($request->date_to)) : false;
+        $paymentApproveStatusId = 2;
 
-        $collections = DB::select("
-                    SELECT
-                        p.transaction_date,
-                        SUM(if(for_deposit = 0, pc.amount, 0)) as for_payment_amount,
-                        SUM(if(for_deposit = 1, pc.amount, 0)) as for_deposit_amount,
-                        SUM(pc.amount) as amount
-                    FROM payment_charges as pc
-                    RIGHT JOIN payments as p ON p.id = pc.payment_id
-                    WHERE p.payment_status_id = 2
-                    AND pc.deleted_at IS NULL
-                    AND p.deleted_at IS NULL
-                    AND p.transaction_date BETWEEN '" . $dateFrom . "' AND '" . $dateTo . "'
-                    GROUP BY p.transaction_date");
+        $collections = Payment::where('payment_status_id', $paymentApproveStatusId)
+        ->when($dateFrom, function ($q) use ($dateFrom, $dateTo) {
+            return $q->whereBetween('transaction_date', [$dateFrom, $dateTo]);
+        })->get();
 
+        $collections->append(['retainers_fee_total', 'filing_total', 'remittance_total', 'others_total']);
 
         $data['company_setting'] = $companySetting;
         $data['collections'] = $collections;
@@ -162,7 +155,7 @@ class ReportController extends Controller
         $mpdf->setFooter('{PAGENO} of {nbpg}');
         $mpdf->AddPageByArray(
             array(
-                'orientation' => 'P',
+                'orientation' => 'L',
                 'suppress' => 'off',
                 'sheet-size' => 'A4',
                 'margin-left' => '7.62',
@@ -177,6 +170,7 @@ class ReportController extends Controller
         $content = view('reports.collectionsummary')->with($data);
         // $mpdf->SetJS('this.print();');
         $mpdf->WriteHTML($content);
+        // return $mpdf->Output();
         return $mpdf->Output('', 'S');
     }
 
@@ -194,7 +188,7 @@ class ReportController extends Controller
                     return $q->whereBetween('transaction_date', [$dateFrom, $dateTo]);
                 })->get();
 
-        $collections->append(['for_payment_amount', 'for_deposit_amount']);
+        $collections->append(['retainers_fee_total', 'filing_total', 'remittance_total', 'others_total']);
 
         $data['company_setting'] = $companySetting;
         $data['collections'] = $collections;
@@ -211,7 +205,7 @@ class ReportController extends Controller
         //$mpdf->AddPage('','','','','off','','','','','','','','','','','','','','','','A5');
         $mpdf->AddPageByArray(
             array(
-                'orientation' => 'P',
+                'orientation' => 'L',
                 'suppress' => 'off',
                 'sheet-size' => 'A4',
                 'margin-left' => '7.62',

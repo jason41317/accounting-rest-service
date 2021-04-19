@@ -66,4 +66,24 @@ class Payment extends BaseModel
     public function getForDepositAmountAttribute() {
         return $this->charges()->wherePivot('for_deposit', 1)->get()->sum('pivot.amount');
     }
+
+    public function getRetainersFeeTotalAttribute() 
+    {
+        return $this->charges()->where('charge_category_id', 1)->get()->sum('pivot.amount');
+    }
+
+    public function getFilingTotalAttribute()
+    {
+        return $this->charges()->where('charge_category_id', 2)->get()->sum('pivot.amount');
+    }
+
+    public function getRemittanceTotalAttribute()
+    {
+        return $this->charges()->where('charge_category_id', 3)->get()->sum('pivot.amount');
+    }
+
+    public function getOthersTotalAttribute()
+    {
+        return $this->charges()->where('charge_category_id', 4)->get()->sum('pivot.amount');
+    }
 }

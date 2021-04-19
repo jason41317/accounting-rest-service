@@ -119,11 +119,12 @@ class ClientService
     }
 
     $billings = Billing::where('client_id', $clientId)
-      ->whereRaw('DATE(CONCAT(year,"-",month_id,"-",1)) < DATE("' . $filterDate . '")')
+      ->whereRaw('DATE(CONCAT(year,"-",month_id,"-",1)) <= DATE("' . $filterDate . '")')
       ->get()
       ->sum('amount');
     $payments = Payment::where('client_id', $clientId)
-      ->whereRaw('DATE(transaction_date) < DATE("' . $filterDate . '")')
+      ->where('payment_status_id', 2)
+      ->whereRaw('DATE(transaction_date) <= DATE("' . $filterDate . '")')
       ->get()
       ->sum('amount');
     return $billings - $payments;
