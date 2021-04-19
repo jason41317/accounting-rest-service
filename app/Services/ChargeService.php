@@ -15,7 +15,7 @@ class ChargeService
       $charges = $isPaginated
         ? Charge::paginate($perPage)
         : Charge::all();
-      $charges->load('accountTitle');
+      $charges->load('accountTitle','chargeCategory');
       return $charges;
     } catch (Exception $e) {
       Log::info('Error occured during ChargeService list method call: ');
@@ -29,7 +29,7 @@ class ChargeService
     DB::beginTransaction();
     try {
       $charge = Charge::create($data);
-      $charge->load('accountTitle');
+      $charge->load('accountTitle', 'chargeCategory');
       DB::commit();
       return $charge;
     } catch (Exception $e) {
@@ -44,7 +44,7 @@ class ChargeService
   {
     try {
       $charge = Charge::find($id);
-      $charge->load('accountTitle');
+      $charge->load('accountTitle', 'chargeCategory');
       return $charge;
     } catch (Exception $e) {
       Log::info('Error occured during ChargeService get method call: ');
@@ -59,7 +59,7 @@ class ChargeService
     try {
       $charge = Charge::find($id);
       $charge->update($data);
-      $charge->load('accountTitle');
+      $charge->load('accountTitle', 'chargeCategory');
       DB::commit();
       return $charge;
     } catch (Exception $e) {

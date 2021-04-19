@@ -24,7 +24,7 @@ class AccountTitleStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'code' => 'required|unique:account_titles,code',
+            'code' => 'required|unique:account_titles,code,NULL,id,deleted_at,NULL',
             'name' => 'required',
             'account_class_id' => 'required'
         ];

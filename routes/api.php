@@ -49,7 +49,7 @@ Route::group(['prefix' => 'v1'], function () {
         //reports
         Route::get('billing-statement/{billingId}','ReportController@billingStatement');
         Route::get('disbursement/{disbursementId}','ReportController@chequeVoucher');
-        
+
 
         //personnel photo
         Route::post('personnels/{personnelId}/photos','PersonnelPhotoController@store');
@@ -58,7 +58,8 @@ Route::group(['prefix' => 'v1'], function () {
 
     Route::get('collection-summary','ReportController@collectionSummary');
     Route::get('collection-detailed','ReportController@collectionDetailed');
-    
+    Route::get('client-subsidiary-ledger', 'ReportController@clientSubsidiaryLedger');
+    Route::get('accounts-receivable-report', 'ReportController@accountsReceivableReport');
 });
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();

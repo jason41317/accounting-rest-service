@@ -25,14 +25,16 @@ class ChargeUpdateRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'account_title_id' => 'required'
+            'account_title_id' => 'required',
+            'charge_category_id' => 'required'
         ];
     }
 
     public function attributes()
     {
         return [
-            'account_title_id' => 'account title'
+            'account_title_id' => 'account title',
+            'charge_category_id' => 'charge category'
         ];
     }
 }
