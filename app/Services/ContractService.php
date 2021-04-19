@@ -137,11 +137,11 @@ class ContractService
         return $q->with('schedules', function($q) use ($id) {
           $q->wherePivot('contract_id', $id);
         });
-      }, 'businessType', 'businessStyle', 'currentAssignee','approvedByPersonnel','files', 'client', 'taxType', 'contractStatus', 'location' => function($q) {
+      },'businessType', 'businessStyle','approvedByPersonnel','files', 'client', 'taxType', 'contractStatus', 'location' => function($q) {
         return $q->with('rdo');
       }]);
 
-      return $contract->append('grouped_files','charge_balances');
+      return $contract->append('grouped_files','charge_balances','current_assignee');
     } catch (Exception $e) {
       Log::info('Error occured during ContractService get method call: ');
       Log::info($e->getMessage());

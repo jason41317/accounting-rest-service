@@ -56,7 +56,7 @@
           PAYMENT NO
         </th>
         <th class="w-20 text-left bordered">
-          TRANSACTION NO
+          ACKNOWLEDGEMENT RECEIPT
         </th>
         <th class="w-15 text-right  bordered">
           RETAINER'S FEE
