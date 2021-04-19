@@ -24,8 +24,8 @@ class Contract extends BaseModel
         return $this->hasMany(ContractAssignee::class);
     }
 
-    public function currentAssignee() {
-        return $this->assignees->latest()->first();
+    public function getCurrentAssigneeAttribute() {
+        return $this->assignees()->latest()->first();
     }
 
     public function businessStyle() {
