@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CompanySettingUpdateRequest;
 use Illuminate\Http\Request;
 use App\Models\CompanySetting;
 use App\Services\CompanySettingService;
@@ -71,9 +72,14 @@ class CompanySettingController extends Controller
      * @param  \App\Models\CompanySetting  $companySetting
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, CompanySetting $companySetting)
+    public function update(CompanySettingUpdateRequest $request, int $id)
     {
-        //
+        $data = $request->all();
+        $companySettingService = new CompanySettingService();
+        $companySetting = $companySettingService->update($data, $id);
+        return (new CompanySettingResource($companySetting))
+            ->response()
+            ->setStatusCode(200); 
     }
 
     /**
