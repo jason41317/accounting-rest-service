@@ -25,7 +25,11 @@ class Contract extends BaseModel
     }
 
     public function getCurrentAssigneeAttribute() {
-        return $this->assignees()->latest()->first();
+        $assignee = $this->assignees()->latest()->first();
+        if ($assignee) {
+           return $assignee->personnel()->first();
+        }
+        return null;
     }
 
     public function businessStyle() {

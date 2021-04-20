@@ -16,4 +16,11 @@ class CompanySetting extends BaseModel
         'updated_by',
         'deleted_by'
     ];
+
+    protected $with = ['logo'];
+
+    public function logo()
+    {
+        return $this->hasOne(CompanySettingLogo::class);
+    }
 }

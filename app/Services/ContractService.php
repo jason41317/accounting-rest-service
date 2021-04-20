@@ -18,7 +18,7 @@ class ContractService
     try {
       $query = Contract::with(['services' => function ($q) {
         return $q->with('serviceCategory');
-      }, 'businessType', 'businessStyle', 'charges', 'files', 'contractStatus','client','taxType', 'location' => function ($q) {
+      }, 'businessType', 'businessStyle', 'files', 'contractStatus','client','taxType', 'location' => function ($q) {
         return $q->with('rdo');
       }]);
 

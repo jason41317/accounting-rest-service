@@ -54,6 +54,10 @@ Route::group(['prefix' => 'v1'], function () {
         //personnel photo
         Route::post('personnels/{personnelId}/photos','PersonnelPhotoController@store');
         Route::delete('personnels/{personnelId}/photos','PersonnelPhotoController@destroy');
+
+        //company setting logo photo
+        Route::post('company-settings/{companySettingId}/logos', 'CompanySettingLogoController@store');
+        Route::delete('company-settings/{companySettingId}/logos', 'CompanySettingLogoController@destroy');
     });
 
     Route::get('collection-summary','ReportController@collectionSummary');
