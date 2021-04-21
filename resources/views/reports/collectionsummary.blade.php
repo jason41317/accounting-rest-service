@@ -27,10 +27,14 @@
       margin-bottom: 10px;
     }
 
-    .collections__table-header th {
+    .collections__table th {
       background-color: lightgray;
       /* height: 20px; */
       padding: 5px 10px;
+    }
+
+    .collections__table tbody tr:nth-child(even) {
+      background-color: #e8e8e8;
     }
   </style>
 </head>
@@ -41,27 +45,29 @@
   <div class="report__title">COLLECTION REPORT (SUMMARY)</div>
   <div class="report__sub-title">PERIOD COVERED: {{ date("m/d/Y", strtotime($date_from)) }} - {{ date("m/d/Y", strtotime($date_to)) }}</div>
 
-  <table class="collections__table-header w-100  table-border-collapse ">
-    <tr>
-      <th class="w-20 text-left bordered">
-        DATE
-      </th>
-      <th class="w-15 text-right  bordered">
-        RETAINER'S FEE
-      </th>
-      <th class="w-15 text-right  bordered">
-        FILING
-      </th>
-      <th class="w-15 text-right  bordered">
-        REMITTANCE
-      </th>
-      <th class="w-15 text-right  bordered">
-        OTHERS
-      </th>
-      <th class="w-20 text-right  bordered">
-        TOTAL
-      </th>
-    </tr>
+  <table class="collections__table w-100  table-border-collapse ">
+    <thead>
+      <tr>
+        <th class="w-20 text-left bordered">
+          DATE
+        </th>
+        <th class="w-15 text-right  bordered">
+          RETAINER'S FEE
+        </th>
+        <th class="w-15 text-right  bordered">
+          FILING
+        </th>
+        <th class="w-15 text-right  bordered">
+          REMITTANCE
+        </th>
+        <th class="w-15 text-right  bordered">
+          OTHERS
+        </th>
+        <th class="w-20 text-right  bordered">
+          TOTAL
+        </th>
+      </tr>
+    </thead>
     <tbody>
       @if (!count($collections))
       <tr>

@@ -28,14 +28,14 @@
     }
 
     .collections__table th {
-      background-color: #118E14;
+      background-color: lightgray;
       /* height: 20px; */
       padding: 5px 10px;
-      color: white;
+      /* color: white; */
     }
 
-    tbody tr:nth-child(even) {
-      background-color: #ACFAAF;
+    .collections__table tbody tr:nth-child(even) {
+      background-color: #e8e8e8;
     }
   </style>
 </head>
@@ -49,28 +49,28 @@
   <table class="collections__table w-100 table-border-collapse ">
     <thead>
       <tr>
-        <th class="w-15 text-left bordered">
+        <th class="w-10 text-left bordered">
           DATE
         </th>
-        <th class="w-20 text-left bordered">
+        <th class="w-15 text-left bordered">
           PAYMENT NO
         </th>
-        <th class="w-20 text-left bordered">
-          ACKNOWLEDGEMENT RECEIPT
+        <th class="w-15 text-left bordered">
+          ACK RECEIPT
         </th>
-        <th class="w-15 text-right  bordered">
+        <th class="w-15 text-right bordered">
           RETAINER'S FEE
         </th>
-        <th class="w-15 text-right  bordered">
+        <th class="w-10 text-right bordered">
           FILING
         </th>
-        <th class="w-15 text-right  bordered">
+        <th class="w-10 text-right bordered">
           REMITTANCE
         </th>
-        <th class="w-15 text-right  bordered">
+        <th class="w-10 text-right bordered">
           OTHERS
         </th>
-        <th class="w-15 text-right  bordered">
+        <th class="w-15 text-right bordered">
           TOTAL
         </th>
       </tr>
@@ -85,28 +85,28 @@
       @endif
       @foreach ($collections as $collection)
       <tr>
-        <td class="text-left p-5 b-right bordered">
+        <td class="text-left p-5 border-y">
           {{ $collection->transaction_date }}
         </td>
-        <td class="text-left p-5 b-right bordered">
+        <td class="text-left p-5 border-y">
           {{ $collection->payment_no }}
         </td>
-        <td class="text-left p-5 b-right bordered">
+        <td class="text-left p-5 border-y">
           {{ $collection->transaction_no }}
         </td>
-        <td class="text-right p-5 b-right bordered">
+        <td class="text-right p-5 border-y">
           {{ number_format($collection->retainers_fee_total, 2) }}
         </td>
-        <td class="text-right p-5 b-right bordered">
+        <td class="text-right p-5 border-y">
           {{ number_format($collection->filing_total, 2) }}
         </td>
-        <td class="text-right p-5 bordered">
+        <td class="text-right p-5 border-y">
           {{ number_format($collection->remittance_total, 2) }}
         </td>
-        <td class="text-right p-5 bordered">
+        <td class="text-right p-5 border-y">
           {{ number_format($collection->others_total, 2) }}
         </td>
-        <td class="text-right p-5 bordered">
+        <td class="text-right p-5 border-y">
           {{ number_format($collection->amount, 2) }}
         </td>
       </tr>
@@ -114,12 +114,12 @@
     </tbody>
     @if (count($collections))
     <tr>
-      <td colspan="3" class=" p-5 b-right  font-bold"></td>
-      <td class="text-right p-5 b-right bordered font-bold">{{ number_format($collections->sum('retainers_fee_total'), 2) }}</td>
-      <td class="text-right p-5 b-right bordered font-bold">{{ number_format($collections->sum('filing_total'), 2) }}</td>
-      <td class="text-right p-5 b-right bordered font-bold">{{ number_format($collections->sum('remittance_total'), 2) }}</td>
-      <td class="text-right p-5 b-right bordered font-bold">{{ number_format($collections->sum('others_total'), 2) }}</td>
-      <td class="text-right p-5 b-right bordered font-bold">{{ number_format($collections->sum('amount'), 2) }}</td>
+      <td colspan="3" class="b-top p-5 font-bold"></td>
+      <td class="text-right p-5 bordered font-bold">{{ number_format($collections->sum('retainers_fee_total'), 2) }}</td>
+      <td class="text-right p-5 bordered font-bold">{{ number_format($collections->sum('filing_total'), 2) }}</td>
+      <td class="text-right p-5 bordered font-bold">{{ number_format($collections->sum('remittance_total'), 2) }}</td>
+      <td class="text-right p-5 bordered font-bold">{{ number_format($collections->sum('others_total'), 2) }}</td>
+      <td class="text-right p-5 bordered font-bold">{{ number_format($collections->sum('amount'), 2) }}</td>
     </tr>
     @endif
   </table>

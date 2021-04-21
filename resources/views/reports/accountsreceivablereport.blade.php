@@ -32,6 +32,10 @@
       /* height: 20px; */
       padding: 5px 10px;
     }
+
+    .clients-header tbody tr:nth-child(even) {
+      background-color: #e8e8e8;
+    }
   </style>
 </head>
 
@@ -42,37 +46,41 @@
   <div class="report__sub-title">AS OF : {{ date("m/d/Y", strtotime($as_of_date)) }}</div>
 
   <table class="clients-header w-100 table-border-collapse ">
-    <tr>
-      <th class="w-75 text-left bordered">
-        CLIENT
-      </th>
-      <th class="w-25 text-right bordered">
-        AMOUNT
-      </th>
-    </tr>
-    @if (!count($clients))
-    <tr>
-      <td colspan="2" class="text-center p-5 b-right">
-        There are no records to show.
-      </td>
-    </tr>
-    @endif
-    @foreach ($clients as $client)
-    <tr>
-      <td class="text-left p-5 bordered">
-        {{ $client->name }}
-      </td>
-      <td class="text-right p-5 bordered">
-        {{ number_format($client->as_of_balance, 2) }}
-      </td>
-    </tr>
-    @endforeach
+    <thead>
+      <tr>
+        <th class="w-75 text-left bordered">
+          CLIENT
+        </th>
+        <th class="w-25 text-right bordered">
+          AMOUNT
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      @if (!count($clients))
+      <tr>
+        <td colspan="2" class="text-center p-5 b-right">
+          There are no records to show.
+        </td>
+      </tr>
+      @endif
+      @foreach ($clients as $client)
+      <tr>
+        <td class="text-left p-5 border-y">
+          {{ $client->name }}
+        </td>
+        <td class="text-right p-5 border-y">
+          {{ number_format($client->as_of_balance, 2) }}
+        </td>
+      </tr>
+      @endforeach
+    </tbody>
     @if(count($clients))
     <tr>
-      <td class="font-bold text-right p-5">
+      <td class="font-bold text-right b-top p-5">
         TOTAL RECEIVABLES
       </td>
-      <td class="font-bold text-right p-5">
+      <td class="font-bold text-right b-top p-5">
         {{ number_format($clients->sum('as_of_balance'),2) }}
       </td>
     </tr>

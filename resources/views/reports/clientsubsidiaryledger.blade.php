@@ -27,10 +27,14 @@
       margin-bottom: 10px;
     }
 
-    .ledger__table-header th {
+    .ledger__table th {
       background-color: lightgray;
       /* height: 20px; */
       padding: 5px 10px;
+    }
+
+    .ledger__table tbody tr:nth-child(even) {
+      background-color: #e8e8e8;
     }
   </style>
 </head>
@@ -55,54 +59,57 @@
     </tr>
   </table>
 
-  <table class="ledger__table-header w-100 bordered table-border-collapse ">
-    <tr>
-      <th class="w-15 text-left bordered">
-        DATE
-      </th>
-      <th class="w-20 text-left bordered">
-        REFERENCE
-      </th>
-      <th class="w-20 text-right bordered">
-        BILLING
-      </th>
-      <th class="w-15 text-right  bordered">
-        COLLECTION
-      </th>
-      <th class="w-15 text-right  bordered">
-        BALANCE
-      </th>
-    </tr>
-    @if (!count($data))
-    <tr>
-      <td colspan="5" class="text-center p-5 b-right">
-        There are no records to show.
-      </td>
-    </tr>
-    @endif
-    <?php $balance = 0; ?>
+  <table class="ledger__table w-100 bordered table-border-collapse ">
+    <thead>
+      <tr>
+        <th class="w-15 text-left bordered">
+          DATE
+        </th>
+        <th class="w-20 text-left bordered">
+          REFERENCE
+        </th>
+        <th class="w-20 text-right bordered">
+          BILLING
+        </th>
+        <th class="w-15 text-right  bordered">
+          COLLECTION
+        </th>
+        <th class="w-15 text-right  bordered">
+          BALANCE
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      @if (!count($data))
+      <tr>
+        <td colspan="5" class="text-center p-5 b-right">
+          There are no records to show.
+        </td>
+      </tr>
+      @endif
+      <?php $balance = 0; ?>
 
-    @foreach ($data as $ledger)
-    <tr>
-      <td class="text-left p-5 b-right">
-        {{ $ledger->reference_date }}
-      </td>
-      <td class="text-left p-5 b-right">
-        {{ $ledger->reference_no }}
-      </td>
-      <td class="text-right p-5 b-right">
-        {{ number_format($ledger->amount, 2) }}
-      </td>
-      <td class="text-right p-5 b-right">
-        {{ number_format($ledger->payment_amount, 2) }}
-      </td>
-      <td class="text-right p-5 b-right">
-        {{ number_format($balance + ($ledger->amount - $ledger->payment_amount), 2) }}
-      </td>
-    </tr>
-
-    <?php $balance += $ledger->amount - $ledger->payment_amount; ?>
-    @endforeach
+      @foreach ($data as $ledger)
+      <tr>
+        <td class="text-left p-5 b-right">
+          {{ $ledger->reference_date }}
+        </td>
+        <td class="text-left p-5 b-right">
+          {{ $ledger->reference_no }}
+        </td>
+        <td class="text-right p-5 b-right">
+          {{ number_format($ledger->amount, 2) }}
+        </td>
+        <td class="text-right p-5 b-right">
+          {{ number_format($ledger->payment_amount, 2) }}
+        </td>
+        <td class="text-right p-5 b-right">
+          {{ number_format($balance + ($ledger->amount - $ledger->payment_amount), 2) }}
+        </td>
+      </tr>
+      <?php $balance += $ledger->amount - $ledger->payment_amount; ?>
+      @endforeach
+    </tbody>
   </table>
 </body>
 
