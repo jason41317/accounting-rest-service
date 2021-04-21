@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateJournalEntryDetailsTable extends Migration
+class CreateJournalEntryAccountTitlesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateJournalEntryDetailsTable extends Migration
      */
     public function up()
     {
-        Schema::create('journal_entry_details', function (Blueprint $table) {
+        Schema::create('journal_entry_account_titles', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('journal_entry_id')->nullable();
             $table->foreign('journal_entry_id')->references('id')->on('journal_entries');

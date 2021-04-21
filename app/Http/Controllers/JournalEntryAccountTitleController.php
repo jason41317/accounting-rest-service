@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\JournalEntryDetail;
 use Illuminate\Http\Request;
 
-class JournalEntryDetailController extends Controller
+class JournalEntryAccountTitleController extends Controller
 {
     /**
      * Display a listing of the resource.

@@ -4,7 +4,7 @@ namespace App\Models;
 
 use App\Models\BaseModel;
 
-class JournalEntry extends BaseModel
+class JournalEntryAccountTitle extends BaseModel
 {
     protected $guarded = ['id'];
     protected $hidden = [
