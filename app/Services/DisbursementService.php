@@ -13,8 +13,8 @@ class DisbursementService
   public function list(bool $isPaginated, int $perPage, array $filters)
   {
     try {
-        
-        $query = Disbursement::with(['bank', 'disbursementStatus', 'disbursementDetails']);
+
+        $query = Disbursement::with(['bank', 'disbursementStatus', 'disbursementDetails', 'summedAccountTitles']);
 
         //filter disbursement status id
         $disbursementStatusId = $filters['disbursement_status_id'] ?? false;
