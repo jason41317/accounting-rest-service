@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ClosedBillingPeriodResource;
 use App\Models\ClosedBillingPeriod;
+use App\Services\ClosedBillingPeriodService;
 use Illuminate\Http\Request;
 
 class ClosedBillingPeriodController extends Controller
@@ -12,9 +14,16 @@ class ClosedBillingPeriodController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $closedBillingPeriodService = new ClosedBillingPeriodService();
+        $perPage = $request->per_page ?? 20;
+        $isPaginated = !$request->has('paginate') || $request->paginate === 'true';
+        $filters = $request->except('per_page', 'paginate');
+        $closedBillingPeriods = $closedBillingPeriodService->list($isPaginated, $perPage, $filters);
+        return ClosedBillingPeriodResource::collection(
+            $closedBillingPeriods
+        );
     }
 
     /**
@@ -35,7 +44,11 @@ class ClosedBillingPeriodController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $closedBillingPeriodService = new ClosedBillingPeriodService();
+        $closedBillingPeriod = $closedBillingPeriodService->store($request->all());
+        return (new ClosedBillingPeriodResource($closedBillingPeriod))
+            ->response()
+            ->setStatusCode(201);
     }
 
     /**

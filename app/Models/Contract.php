@@ -94,7 +94,7 @@ class Contract extends BaseModel
                 A.charge_id,
                 A.name,
                 SUM(IFNULL(A.debit,0)) - SUM(IFNULL(A.credit,0)) AS remaining_balance,
-                0 as amount_paid
+                0 as amount
             FROM
             (
             SELECT 

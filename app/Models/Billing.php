@@ -36,5 +36,4 @@ class Billing extends BaseModel
         $totalAdjustmentCharges = $this->adjustmentCharges()->sum('amount');
         return $totalCharges + $totalAdjustmentCharges;
     }
-
 }

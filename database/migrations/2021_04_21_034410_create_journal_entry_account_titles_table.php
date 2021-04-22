@@ -39,6 +39,6 @@ class CreateJournalEntryAccountTitlesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('journal_entry_details');
+        Schema::dropIfExists('journal_entry_account_titles');
     }
 }

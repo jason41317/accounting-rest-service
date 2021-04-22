@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\JournalEntryResource;
 use App\Models\JournalEntry;
+use App\Services\JournalEntryService;
 use Illuminate\Http\Request;
 
 class JournalEntryController extends Controller
@@ -12,9 +14,15 @@ class JournalEntryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $journalEntryService = new JournalEntryService();
+        $perPage = $request->per_page ?? 20;
+        $isPaginated = !$request->has('paginate') || $request->paginate === 'true';
+        $journalEntries = $journalEntryService->list($isPaginated, $perPage);
+        return JournalEntryResource::collection(
+            $journalEntries
+        );
     }
 
     /**
@@ -35,7 +43,13 @@ class JournalEntryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $journalEntryService = new JournalEntryService();
+        $data = $request->except('account_titles');
+        $accountTitles = $request->accountTitles;
+        $journalEntry = $journalEntryService->store($data, $accountTitles);
+        return (new JournalEntryResource($journalEntry))
+            ->response()
+            ->setStatusCode(201);
     }
 
     /**
@@ -44,9 +58,11 @@ class JournalEntryController extends Controller
      * @param  \App\Models\JournalEntry  $journalEntry
      * @return \Illuminate\Http\Response
      */
-    public function show(JournalEntry $journalEntry)
+    public function show(int $id)
     {
-        //
+        $journalEntryService = new JournalEntryService();
+        $journalEntry = $journalEntryService->get($id);
+        return new JournalEntryResource($journalEntry);
     }
 
     /**
@@ -67,9 +83,14 @@ class JournalEntryController extends Controller
      * @param  \App\Models\JournalEntry  $journalEntry
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, JournalEntry $journalEntry)
+    public function update(Request $request, int $id)
     {
-        //
+        $journalEntryService = new JournalEntryService();
+        $journalEntry = $journalEntryService->update($request->all(), $id);
+
+        return (new JournalEntryResource($journalEntry))
+            ->response()
+            ->setStatusCode(200);
     }
 
     /**
@@ -78,8 +99,10 @@ class JournalEntryController extends Controller
      * @param  \App\Models\JournalEntry  $journalEntry
      * @return \Illuminate\Http\Response
      */
-    public function destroy(JournalEntry $journalEntry)
+    public function destroy(int $id)
     {
-        //
+        $journalEntryService = new JournalEntryService();
+        $journalEntryService->delete($id);
+        return response()->json([], 204);
     }
 }

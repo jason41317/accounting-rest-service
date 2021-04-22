@@ -45,6 +45,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::resource('payments','PaymentController');
         Route::resource('permission-groups','PermissionGroupController');
         Route::resource('company-settings','CompanySettingController');
+        Route::resource('closed-billing-periods', 'ClosedBillingPeriodController');
 
         //reports
         Route::get('billing-statement/{billingId}','ReportController@billingStatement');

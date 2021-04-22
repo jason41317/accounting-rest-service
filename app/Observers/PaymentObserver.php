@@ -6,6 +6,7 @@ use App\Models\CompanySetting;
 use Carbon\Carbon;
 use App\Models\Payment;
 use App\Models\JournalEntry;
+use App\Services\JournalEntryService;
 use Illuminate\Support\Facades\Auth;
 
 class PaymentObserver
@@ -26,7 +27,7 @@ class PaymentObserver
             $payment->approved_at = Carbon::now();
 
             //insert on journal entry
-            $journalEntryData = [
+            $data = [
                 'reference_no' => $payment->payment_no,
                 'transaction_date' => $payment->transaction_date,
                 'contract_id' => $payment->contract_id,
@@ -39,24 +40,28 @@ class PaymentObserver
                 'payment_reference_date' => $payment->reference_date,
             ];
 
-            $journalEntry = JournalEntry::create($journalEntryData);
-
-            $journalEntriesData = [];
+            $items = [];
             $accountTitles = $payment->charges()
                 ->selectRaw('*')
                 ->selectRaw('SUM(amount) as total_debit')->groupBy('account_title_id')->get();
 
+            $items[] = [
+                'account_title_id' => $companySettings->ar_account_id,
+                'debit' => 0, 
+                'credit' => $payment->amount
+            ];
+
             foreach($accountTitles as $accountTitle) {
-                $journalEntriesData[$accountTitle['account_title_id']] =
+                $journalEntriesData[] =
                 [
+                    'account_title_id' => $accountTitle['account_title_id'],
                     'debit' => $accountTitle['total_debit'],
                     'credit' => 0
                 ];
             }
 
-            $journalEntriesData[$companySettings->ar_account_id] = [ 'debit' => 0, 'credit' => $payment->amount];
-
-            $journalEntry->accountTitles()->sync($journalEntriesData);
+            $journalEntryService = new JournalEntryService();
+            $journalEntryService->store($data, $items);
         }
 
         $payment->updated_by = Auth::id();

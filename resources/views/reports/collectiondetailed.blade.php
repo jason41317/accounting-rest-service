@@ -78,7 +78,7 @@
     <tbody>
       @if (!count($collections))
       <tr>
-        <td colspan="6" class="text-center p-5 b-right bordered">
+        <td colspan="8" class="text-center p-5 b-right bordered">
           There are no records to show.
         </td>
       </tr>
