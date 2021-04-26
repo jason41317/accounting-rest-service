@@ -32,7 +32,7 @@ class ReportController extends Controller
         $billing->append('amount');
         $billing->load(['contract', 'charges', 'adjustmentCharges'])->get();
 
-        $totalPreviousBalance = Billing::whereRaw("DATE(CONCAT(year," . "'-'" . ",month_id," . "'-01')) < DATE('" . $period . "')")
+        $totalPreviousBalance = Billing::whereRaw("DATE(CONCAT(year,'-',month_id,'-'," . "cutoff_day)) < DATE('" . $period . "')")
                             ->where('contract_id', $billing->contract_id)->get()
                             ->sum('amount');
 
