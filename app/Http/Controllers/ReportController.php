@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AccountTitle;
+use App\Models\AccountType;
 use Mpdf\Mpdf;
 use NumberFormatter;
 use App\Models\Billing;
@@ -13,6 +15,7 @@ use App\Models\PaymentCharge;
 use App\Models\CompanySetting;
 use App\Models\Contract;
 use App\Models\DisbursementDetail;
+use App\Models\JournalEntry;
 use App\Services\ClientService;
 use App\Services\ContractService;
 use Illuminate\Support\Facades\DB;
@@ -296,6 +299,114 @@ class ReportController extends Controller
 
         $content = view('reports.accountsreceivablereport')->with($data);
         $mpdf->WriteHTML($content);
+        return $mpdf->Output('', 'S');
+    }
+
+    public function financialPosition(Request $request)
+    {
+        $data['company_setting'] = CompanySetting::find(1);
+        $filters = $request->all();
+        $data['as_of_date'] = $filters['as_of_date'];
+
+        $data['accountTypes'] = AccountType::whereHas('accountClasses', function ($q) use ($data) {
+            return $q->whereHas('accountTitles', function ($q) use ($data) {
+                return $q->whereHas('journalEntries', function ($q) use ($data) {
+                    return $q->where('transaction_date', '<=', $data['as_of_date'])
+                    ->whereRaw('debit - credit != 0');
+                });
+            });
+        })
+        ->with(['accountClasses' => function ($q) use ($data) {
+            return $q->with(['accountTitles' => function ($q) {
+                return $q->with(['journalEntries'])
+                ->whereHas('journalEntries');
+            }])
+                ->whereHas('accountTitles', function ($q) use ($data) {
+                    return $q->whereHas('journalEntries', function ($q) use ($data) {
+                        return $q->where('transaction_date', '<=', $data['as_of_date'])
+                        ->whereRaw('debit - credit != 0');
+                    });
+                });
+        }])
+        ->find([1, 2, 3]);
+
+        $mpdf = new Mpdf([
+            'default_font_size' => 12,
+            'default_font' => 'DejaVuSans'
+        ]);
+
+        $mpdf->defaultfooterline = 0;
+        //$mpdf->setFooter('{PAGENO} of {nbpg}');
+        //$mpdf->AddPage('','','','','off','','','','','','','','','','','','','','','','A5');
+        $mpdf->AddPageByArray(
+            array(
+                'orientation' => 'P',
+                'suppress' => 'off',
+                'sheet-size' => 'A4',
+                'margin-left' => '7.62',
+                'margin-top' => '7.62',
+                'margin-bottom' => '7.62',
+                'margin-right' => '7.62'
+            )
+        );
+        // return $data;
+        $content = view('reports.financialposition')->with($data);
+        $mpdf->WriteHTML($content);
+        // return $mpdf->Output('');
+        return $mpdf->Output('', 'S');
+    }
+
+    public function incomeStatement(Request $request)
+    {
+        $data['company_setting'] = CompanySetting::find(1);
+        $filters = $request->all();
+        $data['as_of_date'] = $filters['as_of_date'];
+
+        $data['accountTypes'] = AccountType::whereHas('accountClasses', function ($q) use ($data) {
+            return $q->whereHas('accountTitles', function ($q) use ($data) {
+                return $q->whereHas('journalEntries', function ($q) use ($data) {
+                    return $q->where('transaction_date', '<=', $data['as_of_date'])
+                    ->whereRaw('debit - credit != 0');
+                });
+            });
+        })
+        ->with(['accountClasses' => function ($q) use ($data) {
+            return $q->with(['accountTitles' => function ($q) {
+                return $q->with(['journalEntries'])
+                ->whereHas('journalEntries');
+            }])
+                ->whereHas('accountTitles', function ($q) use ($data) {
+                    return $q->whereHas('journalEntries', function ($q) use ($data) {
+                        return $q->where('transaction_date', '<=', $data['as_of_date'])
+                        ->whereRaw('debit - credit != 0');
+                    });
+                });
+        }])
+        ->find([4,5]);
+        return $data['accountTypes'];
+        $mpdf = new Mpdf([
+            'default_font_size' => 12,
+            'default_font' => 'DejaVuSans'
+        ]);
+
+        $mpdf->defaultfooterline = 0;
+        //$mpdf->setFooter('{PAGENO} of {nbpg}');
+        //$mpdf->AddPage('','','','','off','','','','','','','','','','','','','','','','A5');
+        $mpdf->AddPageByArray(
+            array(
+                'orientation' => 'P',
+                'suppress' => 'off',
+                'sheet-size' => 'A4',
+                'margin-left' => '7.62',
+                'margin-top' => '7.62',
+                'margin-bottom' => '7.62',
+                'margin-right' => '7.62'
+            )
+        );
+        // return $data;
+        $content = view('reports.financialposition')->with($data);
+        $mpdf->WriteHTML($content);
+        // return $mpdf->Output('');
         return $mpdf->Output('', 'S');
     }
 }

@@ -20,4 +20,9 @@ class Ewallet extends BaseModel
   {
     return $this->hasMany(Payment::class);
   }
+
+  public function accountTitle()
+  {
+  return $this->belongsTo(AccountTitle::class);
+  }
 }

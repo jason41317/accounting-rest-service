@@ -15,6 +15,7 @@ class EwalletService
       $eWallets = $isPaginated
         ? Ewallet::paginate($perPage)
         : Ewallet::all();
+      $eWallets->load('accountTitle');
       return $eWallets;
     } catch (Exception $e) {
       Log::info('Error occured during EwalletService list method call: ');
@@ -29,6 +30,7 @@ class EwalletService
     try {
       $eWallet = Ewallet::create($data);
       DB::commit();
+      $eWallet->load('accountTitle');
       return $eWallet;
     } catch (Exception $e) {
       DB::rollback();
@@ -42,6 +44,7 @@ class EwalletService
   {
     try {
       $eWallet = Ewallet::find($id);
+      $eWallet->load('accountTitle');
       return $eWallet;
     } catch (Exception $e) {
       Log::info('Error occured during EwalletService get method call: ');
@@ -57,6 +60,7 @@ class EwalletService
       $eWallet = Ewallet::find($id);
       $eWallet->update($data);
       DB::commit();
+      $eWallet->load('accountTitle');
       return $eWallet;
     } catch (Exception $e) {
       DB::rollback();

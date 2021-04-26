@@ -15,6 +15,7 @@ class JournalEntryService
       $journalEntries = $isPaginated
         ? JournalEntry::paginate($perPage)
         : JournalEntry::all();
+      $journalEntries->load('accountTitles');
       return $journalEntries;
     } catch (Exception $e) {
       Log::info('Error occured during JournalEntryService list method call: ');
@@ -38,6 +39,7 @@ class JournalEntryService
         }
         $journalEntry->accountTitles()->sync($items);
       }
+      $journalEntry->load('accountTitles');
       DB::commit();
       return $journalEntry;
     } catch (Exception $e) {
@@ -52,6 +54,7 @@ class JournalEntryService
   {
     try {
       $journalEntry = JournalEntry::find($id);
+      $journalEntry->load('accountTitles');
       return $journalEntry;
     } catch (Exception $e) {
       Log::info('Error occured during JournalEntryService get method call: ');

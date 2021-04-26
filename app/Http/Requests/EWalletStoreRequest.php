@@ -24,7 +24,15 @@ class EWalletStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required'
+            'name' => 'required',
+            'account_title_id' => 'required'
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'account_title_id' => 'account_title'
         ];
     }
 }
