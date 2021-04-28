@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\SystemSetting;
+use App\Http\Requests\SystemSettingUpdateRequest;
 use Illuminate\Http\Request;
+use App\Models\SystemSetting;
+use App\Services\SystemSettingService;
+use App\Http\Resources\SystemSettingResource;
 
 class SystemSettingController extends Controller
 {
@@ -44,9 +47,11 @@ class SystemSettingController extends Controller
      * @param  \App\Models\SystemSetting  $systemSetting
      * @return \Illuminate\Http\Response
      */
-    public function show(SystemSetting $systemSetting)
+    public function show(int $id)
     {
-        //
+        $systemSettingService = new SystemSettingService();
+        $systemSetting = $systemSettingService->get($id);
+        return new SystemSettingResource($systemSetting);
     }
 
     /**
@@ -67,9 +72,14 @@ class SystemSettingController extends Controller
      * @param  \App\Models\SystemSetting  $systemSetting
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, SystemSetting $systemSetting)
+    public function update(SystemSettingUpdateRequest $request, int $id)
     {
-        //
+        $data = $request->all();
+        $systemSettingService = new SystemSettingService();
+        $systemSetting = $systemSettingService->update($data, $id);
+        return (new SystemSettingResource($systemSetting))
+            ->response()
+            ->setStatusCode(200);
     }
 
     /**

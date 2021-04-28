@@ -46,9 +46,9 @@ class DisbursementObserver
                 ];
             }
 
-            $items[] = [ 
+            $items[] = [
                 'account_title_id' => $bank->account_title_id,
-                'debit' => 0, 
+                'debit' => 0,
                 'credit' => $disbursement->cheque_amount];
 
             // $journalEntry->accountTitles()->sync($journalEntriesData);

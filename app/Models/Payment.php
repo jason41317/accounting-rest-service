@@ -50,7 +50,7 @@ class Payment extends BaseModel
         return $this->belongsTo(Bank::class);
     }
 
-    public function eWallet()
+    public function ewallet()
     {
         return $this->belongsTo(Ewallet::class);
     }

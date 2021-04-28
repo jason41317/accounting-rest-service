@@ -60,6 +60,9 @@ Route::group(['prefix' => 'v1'], function () {
         //company setting logo photo
         Route::post('company-settings/{companySettingId}/logos', 'CompanySettingLogoController@store');
         Route::delete('company-settings/{companySettingId}/logos', 'CompanySettingLogoController@destroy');
+
+        //system setting
+        Route::resource('system-settings','SystemSettingController');
     });
 
     Route::get('collection-summary','ReportController@collectionSummary');
