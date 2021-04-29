@@ -16,6 +16,7 @@ use App\Models\CompanySetting;
 use App\Models\Contract;
 use App\Models\DisbursementDetail;
 use App\Models\JournalEntry;
+use App\Models\SystemSetting;
 use App\Services\ClientService;
 use App\Services\ContractService;
 use Illuminate\Support\Facades\DB;
@@ -359,13 +360,15 @@ class ReportController extends Controller
     public function incomeStatement(Request $request)
     {
         $data['company_setting'] = CompanySetting::find(1);
+        $data['system_setting'] = SystemSetting::find(1);
         $filters = $request->all();
-        $data['as_of_date'] = $filters['as_of_date'];
+        $data['date_from'] = $filters['date_from'];
+        $data['date_to'] = $filters['date_to'];
 
         $data['accountTypes'] = AccountType::whereHas('accountClasses', function ($q) use ($data) {
             return $q->whereHas('accountTitles', function ($q) use ($data) {
                 return $q->whereHas('journalEntries', function ($q) use ($data) {
-                    return $q->where('transaction_date', '<=', $data['as_of_date'])
+                    return $q->whereBetween('transaction_date', [$data['date_from'], $data['date_to']])
                     ->whereRaw('debit - credit != 0');
                 });
             });
@@ -377,13 +380,13 @@ class ReportController extends Controller
             }])
                 ->whereHas('accountTitles', function ($q) use ($data) {
                     return $q->whereHas('journalEntries', function ($q) use ($data) {
-                        return $q->where('transaction_date', '<=', $data['as_of_date'])
+                        return $q->whereBetween('transaction_date', [$data['date_from'], $data['date_to']])
                         ->whereRaw('debit - credit != 0');
                     });
                 });
         }])
         ->find([4,5]);
-        return $data['accountTypes'];
+        // return $data['accountTypes'];
         $mpdf = new Mpdf([
             'default_font_size' => 12,
             'default_font' => 'DejaVuSans'
@@ -404,7 +407,7 @@ class ReportController extends Controller
             )
         );
         // return $data;
-        $content = view('reports.financialposition')->with($data);
+        $content = view('reports.incomestatement')->with($data);
         $mpdf->WriteHTML($content);
         // return $mpdf->Output('');
         return $mpdf->Output('', 'S');

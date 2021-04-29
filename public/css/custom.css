@@ -18,6 +18,10 @@
     font-weight: bold;
   }
 
+  .font-italic {
+    font-style: italic;
+  }
+
   .w-100 {
     width: 100%;
   }

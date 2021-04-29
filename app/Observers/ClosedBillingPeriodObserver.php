@@ -5,6 +5,7 @@ namespace App\Observers;
 use App\Models\Billing;
 use App\Models\ClosedBillingPeriod;
 use App\Models\CompanySetting;
+use App\Models\SystemSetting;
 use App\Services\JournalEntryService;
 use Illuminate\Support\Facades\Auth;
 
@@ -16,7 +17,7 @@ class ClosedBillingPeriodObserver
      * @param  \App\Models\ClosedBillingPeriod  $closedBillingPeriod
      * @return void
      */
-    public function creating(ClosedBillingPeriod $closedBillingPeriod) 
+    public function created(ClosedBillingPeriod $closedBillingPeriod) 
     {
         $monthId = $closedBillingPeriod->month_id;
         $year = $closedBillingPeriod->year;
@@ -25,6 +26,7 @@ class ClosedBillingPeriodObserver
             ->get();
 
         $companySettings = CompanySetting::find(1);
+        $systemSettings = SystemSetting::find(1);
 
         foreach ($billings as $billing) {
             $accountTitleData = $billing->charges()->get()->groupBy('account_title_id');
@@ -38,7 +40,7 @@ class ClosedBillingPeriodObserver
             $accountTitles = [];
 
             $accountTitles[] = [
-                'account_title_id' => $companySettings->ar_account_id,
+                'account_title_id' => $systemSettings->accounts_receivable_account_title_id,
                 'debit' => $billing->amount,
                 'credit' => 0
             ];
