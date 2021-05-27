@@ -54,9 +54,9 @@
     $totalOperatingExpense = 0;
     $incomeAccountType = $accountTypes->find(4);
     $expenseAccountType = $accountTypes->find(5);
-    $serviceIncomeAccountClassId = $system_settings->service_income_account_class_id;
-    $otherIncomeAccountClassId = $system_settings->other_income_account_class_id;
-    $operatingExpenseAccountClassId = $system_settings->operating_expense_account_class_id;
+    $serviceIncomeAccountClassId = $system_setting->service_income_account_class_id;
+    $otherIncomeAccountClassId = $system_setting->other_income_account_class_id;
+    $operatingExpenseAccountClassId = $system_setting->operating_expense_account_class_id;
     @endphp
     <tr>
       <td colspan="3" class="p-5 font-bold">
