@@ -45,6 +45,8 @@ Route::group(['prefix' => 'v1'], function () {
         Route::resource('payments','PaymentController');
         Route::resource('permission-groups','PermissionGroupController');
         Route::resource('company-settings','CompanySettingController');
+        Route::resource('closed-billing-periods', 'ClosedBillingPeriodController');
+        Route::resource('journal-entries', 'JournalEntryController');
 
         //reports
         Route::get('billing-statement/{billingId}','ReportController@billingStatement');
@@ -58,12 +60,17 @@ Route::group(['prefix' => 'v1'], function () {
         //company setting logo photo
         Route::post('company-settings/{companySettingId}/logos', 'CompanySettingLogoController@store');
         Route::delete('company-settings/{companySettingId}/logos', 'CompanySettingLogoController@destroy');
+
+        //system setting
+        Route::resource('system-settings','SystemSettingController');
     });
 
     Route::get('collection-summary','ReportController@collectionSummary');
     Route::get('collection-detailed','ReportController@collectionDetailed');
     Route::get('client-subsidiary-ledger', 'ReportController@clientSubsidiaryLedger');
     Route::get('accounts-receivable-report', 'ReportController@accountsReceivableReport');
+    Route::get('financial-position', 'ReportController@financialPosition');
+    Route::get('income-statement', 'ReportController@incomeStatement');
 });
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();

@@ -39,5 +39,5 @@ class Disbursement extends BaseModel
     public function approvedByPersonnel() {
         return $this->belongsTo(Personnel::class, 'approved_by', 'id');
     }
-    
+
 }

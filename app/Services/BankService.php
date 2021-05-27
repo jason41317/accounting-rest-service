@@ -15,6 +15,7 @@ class BankService
       $banks = $isPaginated
         ? Bank::paginate($perPage)
         : Bank::all();
+      $banks->load('accountTitle');
       return $banks;
     } catch (Exception $e) {
       Log::info('Error occured during BankService list method call: ');
@@ -29,6 +30,7 @@ class BankService
     try {
       $bank = Bank::create($data);
       DB::commit();
+      $bank->load('accountTitle');
       return $bank;
     } catch (Exception $e) {
       DB::rollback();
@@ -42,6 +44,7 @@ class BankService
   {
     try {
       $bank = Bank::find($id);
+      $bank->load('accountTitle');
       return $bank;
     } catch (Exception $e) {
       Log::info('Error occured during BankService get method call: ');
@@ -57,6 +60,7 @@ class BankService
       $bank = Bank::find($id);
       $bank->update($data);
       DB::commit();
+      $bank->load('accountTitle');
       return $bank;
     } catch (Exception $e) {
       DB::rollback();

@@ -43,7 +43,8 @@ class PaymentStoreRequest extends FormRequest
         return [
             'client_id' => 'client',
             'contract_id' => 'contract',
-            'bank_id' => 'bank'
+            'bank_id' => 'bank',
+            'ewallet_id' => 'e-wallet'
         ];
     }
 

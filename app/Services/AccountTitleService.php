@@ -29,7 +29,7 @@ class AccountTitleService
     DB::beginTransaction();
     try {
       $accountTitle = AccountTitle::create($data);
-      $accountTitle->load('accountClass');
+      $accountTitle->load(['accountClass', 'parentAccountTitle']);
       DB::commit();
       return $accountTitle;
     } catch (Exception $e) {
@@ -44,7 +44,7 @@ class AccountTitleService
   {
     try {
       $accountTitle = AccountTitle::find($id);
-      $accountTitle->load('accountClass');
+      $accountTitle->load(['accountClass', 'parentAccountTitle']);
       return $accountTitle;
     } catch (Exception $e) {
       Log::info('Error occured during AccountTitleService get method call: ');
@@ -59,7 +59,7 @@ class AccountTitleService
     try {
       $accountTitle = AccountTitle::find($id);
       $accountTitle->update($data);
-      $accountTitle->load('accountClass');
+      $accountTitle->load(['accountClass', 'parentAccountTitle']);
       DB::commit();
       return $accountTitle;
     } catch (Exception $e) {
@@ -75,7 +75,7 @@ class AccountTitleService
     DB::beginTransaction();
     try {
       $accountTitle = AccountTitle::find($id);
-      $accountTitle->secureDelete('parentAccountTitle', 'charges');
+      $accountTitle->secureDelete('parentAccountTitle', 'charges', 'banks', 'ewallets');
       DB::commit();
     } catch (Exception $e) {
       DB::rollback();

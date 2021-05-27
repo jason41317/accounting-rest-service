@@ -10,7 +10,7 @@ class Payment extends BaseModel
 {
 
     protected $guarded = ['id'];
-
+    protected $appends = ['account_title'];
     protected $hidden = [
         'created_at',
         'updated_at',
@@ -50,7 +50,7 @@ class Payment extends BaseModel
         return $this->belongsTo(Bank::class);
     }
 
-    public function eWallet()
+    public function ewallet()
     {
         return $this->belongsTo(Ewallet::class);
     }
@@ -85,5 +85,10 @@ class Payment extends BaseModel
     public function getOthersTotalAttribute()
     {
         return $this->charges()->where('charge_category_id', 4)->get()->sum('pivot.amount');
+    }
+
+    public function getAccountTitleAttribute()
+    {
+        return $this->charges()->get()->groupBy('account_title_id');
     }
 }

@@ -37,6 +37,7 @@ class PaymentService
       $payments = $isPaginated
         ? $query->paginate($perPage)
         : $query->get();
+
       return $payments;
     } catch (Exception $e) {
       Log::info('Error occured during PaymentService list method call: ');

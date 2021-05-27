@@ -35,7 +35,7 @@ class LocationController extends Controller
      */
     public function store(LocationStoreRequest $request)
     {
-        $locationService = new locationService();
+        $locationService = new LocationService();
         $location = $locationService->store($request->all());
         return (new LocationResource($location))
             ->response()
@@ -50,7 +50,7 @@ class LocationController extends Controller
      */
     public function show(int $id)
     {
-        $locationService = new locationService();
+        $locationService = new LocationService();
         $location = $locationService->get($id);
         return new LocationResource($location);
     }
@@ -64,7 +64,7 @@ class LocationController extends Controller
      */
     public function update(LocationUpdateRequest $request, int $id)
     {
-        $locationService = new locationService();
+        $locationService = new LocationService();
         $location = $locationService->update($request->all(), $id);
 
         return (new LocationResource($location))
@@ -80,7 +80,7 @@ class LocationController extends Controller
      */
     public function destroy(int $id)
     {
-        $locationService = new locationService();
+        $locationService = new LocationService();
         $locationService->delete($id);
         return response()->json([], 204);
     }
