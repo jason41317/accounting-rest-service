@@ -25,7 +25,6 @@ class ClosedBillingPeriodObserver
             ->where('year', $year)
             ->get();
 
-        $companySettings = CompanySetting::find(1);
         $systemSettings = SystemSetting::find(1);
 
         foreach ($billings as $billing) {
