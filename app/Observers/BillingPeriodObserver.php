@@ -3,13 +3,13 @@
 namespace App\Observers;
 
 use App\Models\Billing;
-use App\Models\ClosedBillingPeriod;
+use App\Models\BillingPeriod;
 use App\Models\CompanySetting;
 use App\Models\SystemSetting;
 use App\Services\JournalEntryService;
 use Illuminate\Support\Facades\Auth;
 
-class ClosedBillingPeriodObserver
+class BillingPeriodObserver
 {
     /**
      * Handle the Payment "creating" event.
@@ -17,12 +17,12 @@ class ClosedBillingPeriodObserver
      * @param  \App\Models\ClosedBillingPeriod  $closedBillingPeriod
      * @return void
      */
-    public function created(ClosedBillingPeriod $closedBillingPeriod) 
+    public function created(BillingPeriod $billingPeriod) 
     {
-        $monthId = $closedBillingPeriod->month_id;
-        $year = $closedBillingPeriod->year;
-        $billings = Billing::where('month_id', $monthId)
-            ->where('year', $year)
+        $monthId = $billingPeriod->month_id;
+        $year = $billingPeriod->year;
+        $billings = Billing::whereRaw('DATE(CONCAT(year,"-",month_id,"-",1)) != DATE(CONCAT('.$year.',"-",'.$monthId.',"-",1))')
+            ->whereDoesntHave('journalEntry')
             ->get();
 
         $systemSettings = SystemSetting::find(1);
@@ -35,6 +35,8 @@ class ClosedBillingPeriodObserver
                 'contract_id' => $billing->contract_id,
                 'client_id' => $billing->client_id,
                 'total_amount' => $billing->amount,
+                'journalable_id' => $billing->id,
+                'journalable_type' => 'App\Models\Billing'
             ];
             $accountTitles = [];
 
@@ -57,6 +59,6 @@ class ClosedBillingPeriodObserver
             $journalEntryService->store($data, $accountTitles);
         }
 
-        $closedBillingPeriod->created_by = Auth::id();
+        $billingPeriod->created_by = Auth::id();
     }
 }

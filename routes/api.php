@@ -19,6 +19,7 @@ Route::group(['prefix' => 'v1'], function () {
 
     Route::group(['middleware' => ['auth:api']], function () {
         Route::get('/me', 'AuthController@getAuthUser');
+        Route::post('/check-if-authorize', 'AuthController@checkIfAuthorize');
         Route::post('/logout', 'AuthController@logout');
         Route::resource('/service-categories', 'ServiceCategoryController');
         Route::resource('/services', 'ServiceController');
@@ -63,6 +64,9 @@ Route::group(['prefix' => 'v1'], function () {
 
         //system setting
         Route::resource('system-settings','SystemSettingController');
+
+        //billing period
+        Route::resource('billing-periods','BillingPeriodController');
     });
 
     Route::get('collection-summary','ReportController@collectionSummary');

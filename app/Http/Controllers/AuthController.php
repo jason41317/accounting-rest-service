@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
 use App\Http\Resources\UserResource;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 use Guzzle\Http\Exception\ClientErrorResponseException;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -47,6 +49,24 @@ class AuthController extends Controller
         }]);
 
         return new UserResource($user);
+    }
+
+    public function checkIfAuthorize(Request $request)
+    {
+        //filter disbursement status id
+        $data = $request->all();
+
+        $user = User::where('username', $data['username'])
+            ->where('user_group_id', 1)
+            ->first();
+
+        $result = 0;
+
+        if ($user) {
+            $result = Hash::check($data['password'], $user->getAuthPassword());
+        }
+        
+        return $result;
     }
 
     public function logout()

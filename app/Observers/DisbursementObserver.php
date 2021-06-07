@@ -10,6 +10,19 @@ use Illuminate\Support\Facades\Auth;
 class DisbursementObserver
 {
     /**
+     * Handle the Disbursement "creating" event.
+     *
+     * @param  \App\Models\Disbursement  $disbursement
+     * @return void
+     */
+    public function creating(Disbursement $disbursement)
+    {
+        // $approvedStatusId = 2;
+        //insert on journal entry
+        $count = Disbursement::count() + 1;
+        $disbursement->voucher_no = 'VN-' . date('Ym') . '-' . str_pad($count, 6, '0', STR_PAD_LEFT);
+    }
+    /**
      * Handle the Disbursement "updated" event.
      *
      * @param  \App\Models\Disbursement  $disbursement
@@ -17,13 +30,11 @@ class DisbursementObserver
      */
     public function updating(Disbursement $disbursement)
     {
-        $approvedStatusId = 2;
+        
 
-        if($disbursement->disbursement_status_id === $approvedStatusId) {
-            $disbursement->approved_by = Auth::id();
-            $disbursement->approved_at = Carbon::now();
+        $cancelledStatusId = 3;
 
-            //insert on journal entry
+        if($disbursement->disbursement_status_id === $cancelledStatusId) {
             $data = [
                 'reference_no' => $disbursement->voucher_no,
                 'transaction_date' => $disbursement->created_at,
@@ -37,25 +48,24 @@ class DisbursementObserver
             $accountTitles = $disbursement->summedAccountTitles()->get();
             $bank = $disbursement->bank;
 
-            foreach($accountTitles as $accountTitle) {
+            foreach ($accountTitles as $accountTitle) {
                 $items[] =
-                [
-                    'account_title_id' => $accountTitle['account_title_id'],
-                    'debit' => $accountTitle['debit'],
-                    'credit' => 0
-                ];
+                    [
+                        'account_title_id' => $accountTitle['account_title_id'],
+                        'debit' => 0,
+                        'credit' => $accountTitle['debit']
+                    ];
             }
 
             $items[] = [
                 'account_title_id' => $bank->account_title_id,
-                'debit' => 0,
-                'credit' => $disbursement->cheque_amount];
+                'debit' => $disbursement->cheque_amount,
+                'credit' => 0
+            ];
 
             // $journalEntry->accountTitles()->sync($journalEntriesData);
             $journalEntryService = new JournalEntryService();
             $journalEntryService->store($data, $items);
         }
-
-        $disbursement->updated_by = Auth::id();
     }
 }

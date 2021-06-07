@@ -19,6 +19,13 @@ class PaymentService
         return $q->where('payment_status_id', $paymentStatusId);
       });
 
+      $filterByUser = $filters['filter_by_user'] ?? false;
+      $query->when($filterByUser, function ($q) {
+        return $q->whereHas('contract', function ($query) {
+          return $query->filterByUser();
+        });
+      });
+
       $criteria = $filters['criteria'] ?? false;
       $query->when($criteria, function ($q) use ($criteria) {
         return $q->where(function ($q) use ($criteria) {
@@ -53,7 +60,7 @@ class PaymentService
       $payment = Payment::create($data);
       $count = Payment::count();
       $payment->update([
-        'payment_no' => 'PAY-' . date('Y') . '-' . str_pad($count, 6, '0', STR_PAD_LEFT)
+        'payment_no' => 'PAY-' . date('Ym') . '-' . str_pad($count, 6, '0', STR_PAD_LEFT)
       ]);
       if ($charges) {
         $items = [];

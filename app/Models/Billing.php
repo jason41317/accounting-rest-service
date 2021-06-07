@@ -36,4 +36,9 @@ class Billing extends BaseModel
         $totalAdjustmentCharges = $this->adjustmentCharges()->sum('amount');
         return $totalCharges + $totalAdjustmentCharges;
     }
+
+    public function journalEntry()
+    {
+        return $this->morphOne(JournalEntry::class, 'journalable');
+    }
 }

@@ -53,6 +53,8 @@ class DisbursementService
         }
       }
 
+      $this->journalEntries($disbursement);
+
       DB::commit();
       return $disbursement;
     } catch (Exception $e) {
@@ -121,5 +123,42 @@ class DisbursementService
       Log::info($e->getMessage());
       throw $e;
     }
+  }
+
+  public function journalEntries($disbursement)
+  {
+    $data = [
+      'reference_no' => $disbursement->voucher_no,
+      'transaction_date' => $disbursement->created_at,
+      'total_amount' => $disbursement->cheque_amount,
+      'bank_id' => $disbursement->bank_id,
+      'payment_reference_no' => $disbursement->cheque_no,
+      'payment_reference_date' => $disbursement->cheque_date,
+      'journalable_id' => $disbursement->id,
+      'journalable_type' => 'App\Models\Disbursement'
+    ];
+
+    $items = [];
+    $accountTitles = $disbursement->summedAccountTitles()->get();
+    $bank = $disbursement->bank;
+
+    foreach ($accountTitles as $accountTitle) {
+      $items[] =
+        [
+          'account_title_id' => $accountTitle['account_title_id'],
+          'debit' => $accountTitle['debit'],
+          'credit' => 0
+        ];
+    }
+
+    $items[] = [
+      'account_title_id' => $bank->account_title_id,
+      'debit' => 0,
+      'credit' => $disbursement->cheque_amount
+    ];
+
+    // $journalEntry->accountTitles()->sync($journalEntriesData);
+    $journalEntryService = new JournalEntryService();
+    $journalEntryService->store($data, $items);
   }
 }

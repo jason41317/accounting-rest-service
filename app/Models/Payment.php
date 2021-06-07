@@ -91,4 +91,9 @@ class Payment extends BaseModel
     {
         return $this->charges()->get()->groupBy('account_title_id');
     }
+
+    public function journalEntry()
+    {
+        return $this->morphOne(JournalEntry::class, 'journalable');
+    }
 }
