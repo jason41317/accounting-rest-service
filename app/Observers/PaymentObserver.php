@@ -39,6 +39,8 @@ class PaymentObserver
                 'bank_id' => $payment->bank_id,
                 'payment_reference_no' => $payment->reference_no,
                 'payment_reference_date' => $payment->reference_date,
+                'journalable_id' => $payment->id,
+                'journalable_type' => 'App\Models\Payment'
             ];
 
             $items = [];

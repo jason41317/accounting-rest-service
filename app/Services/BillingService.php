@@ -67,9 +67,11 @@ class BillingService
     DB::beginTransaction();
     try {
       $billing = Billing::create($data);
-      $count = Billing::count();
+      $count = Billing::where('year', $data['year'])
+        ->where('month_id', $data['month_id'])
+        ->count();
       $billing->update([
-        'billing_no' => 'BN-' . date('Y') . '-' . str_pad($count, 6, '0', STR_PAD_LEFT)
+        'billing_no' => 'BN-' . date('Ym', strtotime($data['year'].'-'.$data['month_id'].'-1')) . '-' . str_pad($count, 4, '0', STR_PAD_LEFT)
       ]);
       if ($charges) {
         $items = [];

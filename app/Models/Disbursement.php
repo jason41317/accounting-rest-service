@@ -40,4 +40,8 @@ class Disbursement extends BaseModel
         return $this->belongsTo(Personnel::class, 'approved_by', 'id');
     }
 
+    public function journalEntry()
+    {
+        return $this->morphOne(JournalEntry::class, 'journalable');
+    }
 }

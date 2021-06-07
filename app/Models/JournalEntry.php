@@ -20,4 +20,9 @@ class JournalEntry extends BaseModel
         return $this->belongsToMany(AccountTitle::class, 'journal_entry_account_titles', 'journal_entry_id', 'account_title_id')
             ->withPivot('debit', 'credit');
     }
+
+    public function journalable()
+    {
+        return $this->morphTo();
+    }
 }

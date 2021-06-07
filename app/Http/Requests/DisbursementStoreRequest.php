@@ -24,7 +24,7 @@ class DisbursementStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'voucher_no' => 'required|max:191|unique:disbursements,voucher_no,'.$this->id,
+            // 'voucher_no' => 'required|max:191|unique:disbursements,voucher_no,'.$this->id,
             'payee' => 'required|max:191',
             'address' => 'required',
             'bank_id' => 'required|not_in:0',

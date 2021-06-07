@@ -100,6 +100,7 @@ class ReportController extends Controller
         $data['disbursement'] = $disbursement;
         $data['amount_in_words'] = $formatter->format($disbursement->cheque_amount);
         $data['is_print_cheque'] = $request->is_print_cheque == 'true' ? 1 : 0;
+        $data['is_print_voucher'] = $request->is_print_voucher == 'true' ? 1 : 0;
         $data['company_setting'] = $companySetting;
 
         $mpdf = new Mpdf([

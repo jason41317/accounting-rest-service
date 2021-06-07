@@ -36,6 +36,7 @@ class PaymentUpdateRequest extends FormRequest
             'reference_date' => 'sometimes|required_unless:payment_type_id,1',
             'charges' => 'sometimes|array|min:1',
             'approved_notes' => 'sometimes|required',
+            'deposit_date' => 'sometimes|required|date',
             'payment_status_id' => 'sometimes|required',
         ];
     }
