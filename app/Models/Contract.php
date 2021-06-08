@@ -123,19 +123,6 @@ class Contract extends BaseModel
                 AND ISNULL(b.deleted_at)
                 GROUP BY bac.charge_id 
                 UNION ALL
-                SELECT 
-                    bc.charge_id,
-                    ch.name, 
-                    SUM(bc.amount) as debit, 
-                    0 as credit 
-                FROM billing_charges as bc 
-                LEFT JOIN billings as b ON bc.billing_id = b.id
-                LEFT JOIN contracts as c ON c.id = b.contract_id
-                LEFT JOIN charges as ch ON ch.id = bc.charge_id
-                WHERE c.id = ' . $this->id . '
-                AND ISNULL(b.deleted_at)
-                GROUP BY bc.charge_id 
-                UNION ALL
                 SELECT
                     pc.charge_id,
                     ch.name,
