@@ -28,7 +28,9 @@ class BillingPeriodObserver
         $systemSettings = SystemSetting::find(1);
 
         foreach ($billings as $billing) {
-            $accountTitleData = $billing->charges()->get()->groupBy('account_title_id');
+            $charges = $billing->charges()->get();
+            $adjustmentCharges = $billing->adjustmentCharges()->get();
+            $accountTitleData = $charges->mergeRecursive($adjustmentCharges)->groupBy('account_title_id');
             $data = [
                 'reference_no' => $billing->billing_no,
                 'transaction_date' => $billing->billing_date,

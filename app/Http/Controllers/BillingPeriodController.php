@@ -20,8 +20,9 @@ class BillingPeriodController extends Controller
     {
         $billingPeriodService = new BillingPeriodService();
         $perPage = $request->per_page ?? 20;
+        $filters = $request->all();
         $isPaginated = !$request->has('paginate') || $request->paginate === 'true';
-        $billingPeriods = $billingPeriodService->list($isPaginated, $perPage);
+        $billingPeriods = $billingPeriodService->list($isPaginated, $perPage, $filters);
         return BillingPeriodResource::collection(
             $billingPeriods
         );

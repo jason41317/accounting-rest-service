@@ -63,12 +63,23 @@ class JournalEntryService
     }
   }
 
-  public function update(array $data, int $id)
+  public function update(array $data, array $accountTitles, int $id)
   {
     DB::beginTransaction();
     try {
       $journalEntry = JournalEntry::find($id);
       $journalEntry->update($data);
+      if ($accountTitles) {
+        $items = [];
+        foreach ($accountTitles as $accountTitle) {
+          $items[$accountTitle['account_title_id']] = [
+            'debit' => $accountTitle['debit'],
+            'credit' => $accountTitle['credit']
+          ];
+        }
+        $journalEntry->accountTitles()->sync($items);
+      }
+      $journalEntry->load('accountTitles');
       DB::commit();
       return $journalEntry;
     } catch (Exception $e) {
