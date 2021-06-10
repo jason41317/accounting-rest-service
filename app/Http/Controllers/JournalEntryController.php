@@ -86,7 +86,9 @@ class JournalEntryController extends Controller
     public function update(Request $request, int $id)
     {
         $journalEntryService = new JournalEntryService();
-        $journalEntry = $journalEntryService->update($request->all(), $id);
+        $data = $request->except('account_titles');
+        $accountTitles = $request->accountTitles;
+        $journalEntry = $journalEntryService->update($data, $accountTitles, $id);
 
         return (new JournalEntryResource($journalEntry))
             ->response()

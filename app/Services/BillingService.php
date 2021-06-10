@@ -6,6 +6,7 @@ use App\Models\Billing;
 use App\Models\CompanySetting;
 use App\Models\Contract;
 use App\Models\Month;
+use App\Models\SystemSetting;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -150,7 +151,7 @@ class BillingService
         }
         $billing->adjustmentCharges()->sync($items);
       }
-
+      $this->journalEntry($billing);
       DB::commit();
       return $billing;
     } catch (Exception $e) {
@@ -236,5 +237,41 @@ class BillingService
     }
 
     return $billings;
+  }
+
+  public function journalEntry($billing)
+  {
+    $journalEntry = $billing->journalEntry;
+    if ($journalEntry) {
+      $systemSettings = SystemSetting::find(1);
+      $charges = $billing->charges()->get();
+      $adjustmentCharges = $billing->adjustmentCharges()->get();
+      $accountTitleData = $charges->mergeRecursive($adjustmentCharges)->groupBy('account_title_id');
+      $data = [
+        'reference_no' => $billing->billing_no,
+        'transaasdfction_date' => $billing->billing_date,
+        'sadfasdf' => $billing->contract_id,
+        'asdasdf' => $billing->client_id,
+        'total_amount' => $billing->amount,
+      ];
+      $accountTitles = [];
+
+      $accountTitles[] = [
+        'account_title_id' => $systemSettings->accounts_receivable_account_title_id,
+        'debit' => $billing->amount,
+        'credit' => 0
+      ];
+
+      foreach ($accountTitleData as $key => $value) {
+        $accountTitles[] = [
+          'account_title_id' => $key,
+          'debit' => 0,
+          'credit' => $value->sum('pivot.amount')
+        ];
+      }
+
+      $journalEntryService = new JournalEntryService();
+      $journalEntryService->update($data, $accountTitles, $journalEntry->id);
+    }
   }
 }

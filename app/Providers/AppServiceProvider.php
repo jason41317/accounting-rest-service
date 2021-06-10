@@ -2,12 +2,14 @@
 
 namespace App\Providers;
 
+use App\Models\Billing;
 use App\Models\BillingPeriod;
 use App\Models\ClosedBillingPeriod;
 use App\Models\Payment;
 use App\Models\Contract;
 use App\Models\ContractAssignee;
 use App\Models\Disbursement;
+use App\Observers\BillingObserver;
 use App\Observers\BillingPeriodObserver;
 use App\Observers\ContractAssigneeObserver;
 use App\Observers\PaymentObserver;
@@ -57,5 +59,6 @@ class AppServiceProvider extends ServiceProvider
         Payment::observe(PaymentObserver::class);
         ContractAssignee::observe(ContractAssigneeObserver::class);
         BillingPeriod::observe(BillingPeriodObserver::class);
+        // Billing::observe(BillingObserver::class);
     }
 }

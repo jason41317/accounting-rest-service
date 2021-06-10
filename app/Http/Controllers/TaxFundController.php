@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\BillingPeriodStoreRequest;
-use App\Http\Requests\BillingPeriodUpdateRequest;
-use App\Http\Resources\BillingPeriodResource;
-use App\Models\BillingPeriod;
+use App\Http\Requests\TaxFundStoreRequest;
+use App\Http\Requests\TaxFundUpdateRequest;
+use App\Http\Resources\TaxFundResource;
+use App\Models\TaxFund;
+use App\Services\TaxFundService;
 use Illuminate\Http\Request;
-use App\Services\BillingPeriodService;
 
-class BillingPeriodController extends Controller
+class TaxFundController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,13 +18,13 @@ class BillingPeriodController extends Controller
      */
     public function index(Request $request)
     {
-        $billingPeriodService = new BillingPeriodService();
+        $taxFundService = new TaxFundService();
         $perPage = $request->per_page ?? 20;
         $filters = $request->all();
         $isPaginated = !$request->has('paginate') || $request->paginate === 'true';
-        $billingPeriods = $billingPeriodService->list($isPaginated, $perPage, $filters);
-        return BillingPeriodResource::collection(
-            $billingPeriods
+        $taxFunds = $taxFundService->list($isPaginated, $perPage, $filters);
+        return TaxFundResource::collection(
+            $taxFunds
         );
     }
 
@@ -34,11 +34,11 @@ class BillingPeriodController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(BillingPeriodStoreRequest $request)
+    public function store(TaxFundStoreRequest $request)
     {
-        $billingPeriodService = new BillingPeriodService();
-        $billingPeriod = $billingPeriodService->store($request->all());
-        return (new BillingPeriodResource($billingPeriod))
+        $taxFundService = new TaxFundService();
+        $taxFund = $taxFundService->store($request->all());
+        return (new TaxFundResource($taxFund))
             ->response()
             ->setStatusCode(201);
     }
@@ -51,9 +51,9 @@ class BillingPeriodController extends Controller
      */
     public function show(int $id)
     {
-        $billingPeriodService = new BillingPeriodService();
-        $billingPeriod = $billingPeriodService->get($id);
-        return new BillingPeriodResource($billingPeriod);
+        $taxFundService = new TaxFundService();
+        $taxFund = $taxFundService->get($id);
+        return new TaxFundResource($taxFund);
     }
 
     /**
@@ -63,12 +63,12 @@ class BillingPeriodController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(BillingPeriodUpdateRequest $request, int $id)
+    public function update(TaxFundUpdateRequest $request, int $id)
     {
-        $billingPeriodService = new BillingPeriodService();
-        $billingPeriod = $billingPeriodService->update($request->all(), $id);
+        $taxFundService = new TaxFundService();
+        $taxFund = $taxFundService->update($request->all(), $id);
 
-        return (new BillingPeriodResource($billingPeriod))
+        return (new TaxFundResource($taxFund))
             ->response()
             ->setStatusCode(200);
     }
@@ -81,8 +81,8 @@ class BillingPeriodController extends Controller
      */
     public function destroy(int $id)
     {
-        $billingPeriodService = new BillingPeriodService();
-        $billingPeriodService->delete($id);
+        $taxFundService = new TaxFundService();
+        $taxFundService->delete($id);
         return response()->json([], 204);
     }
 }

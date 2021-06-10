@@ -59,7 +59,7 @@ class ContractService
           );
         }
         // $contracts->append(['is_billed']);
-        $contracts->append(['previous_balance']);
+        $contracts->append('previous_balance');
         // } else {
         //   foreach ($contracts as $contract) {
         //     $contract->previous_balance = $this->previousBalance(
@@ -137,7 +137,7 @@ class ContractService
         return $q->with('rdo');
       }]);
 
-      return $contract->append('grouped_files','charge_balances','current_assignee');
+      return $contract->append('grouped_files','charge_balances');
     } catch (Exception $e) {
       Log::info('Error occured during ContractService get method call: ');
       Log::info($e->getMessage());

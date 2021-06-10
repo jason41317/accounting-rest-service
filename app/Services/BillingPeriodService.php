@@ -3,19 +3,29 @@
 namespace App\Services;
 
 use App\Models\BillingPeriod;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class BillingPeriodService
 {
-  public function list(bool $isPaginated, int $perPage)
+  public function list(bool $isPaginated, int $perPage, array $filters)
   {
     try {
+      $query = BillingPeriod::with('month');
+
+      $asOfDate = $filters['as_of_date'] ?? false;
+
+      $query->when($asOfDate, function ($q) {
+        $now = Carbon::now();
+        $asOfDate = $now->year.'-'.$now->month.'-1';
+        return $q->whereRaw('DATE(CONCAT(year,"-",month_id,"-",1)) >= DATE("' . $asOfDate . '")');
+      });
+
       $billingPeriods = $isPaginated
-        ? BillingPeriod::paginate($perPage)
-        : BillingPeriod::all();
-      $billingPeriods->load('month');
+        ? $query->paginate($perPage)
+        : $query->get();
       return $billingPeriods;
     } catch (Exception $e) {
       Log::info('Error occured during BillingPeriodService list method call: ');
