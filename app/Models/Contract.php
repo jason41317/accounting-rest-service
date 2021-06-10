@@ -19,6 +19,7 @@ class Contract extends BaseModel
         'updated_by',
         'deleted_by'
     ];
+    protected $appends = ['current_assignee'];
 
     public function assignees() {
         return $this->hasMany(ContractAssignee::class);
@@ -27,7 +28,7 @@ class Contract extends BaseModel
     public function getCurrentAssigneeAttribute() {
         $assignee = $this->assignees()->latest()->first();
         if ($assignee) {
-           return $assignee->personnel()->first();
+            return $assignee->personnel()->first();
         }
         return null;
     }

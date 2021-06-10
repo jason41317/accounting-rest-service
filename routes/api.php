@@ -71,6 +71,8 @@ Route::group(['prefix' => 'v1'], function () {
         //credit memo
         Route::resource('credit-memos', 'CreditMemoController');
         Route::get('credit-memos/{creditMemoId}/charges', 'CreditMemoController@charges');
+        //tax fund
+        Route::resource('tax-funds', 'TaxFundController');
     });
 
     Route::get('collection-summary','ReportController@collectionSummary');
