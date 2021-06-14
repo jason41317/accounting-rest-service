@@ -97,62 +97,35 @@
         AS OF BALANCE ({{ date('M Y', strtotime($period)) }})
       </td>
       <td class="w-25 bordered text-right font-bold" style="padding: 5px;">
-         {{ number_format($previous_balance, 2) }}
+        {{ number_format($previous_balance, 2) }}
       </td>
     </tr>
-    @if(count($charges) <= 20)
+    @foreach ($billing['charges'] as $charge)
     <tr>
-      <td class="w-100 bordered" colspan="4"  style="height: 350px; padding: 4px; margin: 0;" valign="top">
-        
-          <table class="w-100 particulars-table" style="border-collapse: collapse; padding: 0;" >
-              @foreach ($charges as $charge)
-                <tr>
-                  <td class="w-75 particulars-td " colspan="3"  >
-                    {{ $charge->name }} 
-                  </td>
-                  <td class="w-25 particulars-td text-right"  >
-                  {{ number_format($charge->pivot->amount, 2) }} 
-                  </td>
-                </tr>
-              @endforeach
-          </table>
+      <td class="w-75 particulars-td b-left" colspan="3"  >
+        {{ $charge->name }} 
+      </td>
+      <td class="w-25 particulars-td b-right text-right"  >
+      {{ number_format($charge->pivot->amount, 2) }} 
       </td>
     </tr>
-    @else
+    @endforeach
+    @if (count($billing['adjustmentCharges']))
     <tr>
-      <td class="w-100 bordered" colspan="4"  style="height: 350px; padding: 4px; margin: 0;" valign="top">
-          <table class="w-100 particulars-table" style="border-collapse: collapse; padding: 0;" >
-              @for ($i = 0; $i <= 19; $i++)
-                <tr>
-                  <td class="w-75 particulars-td " colspan="3"  >
-                    {{ $charges[$i]->name }} 
-                  </td>
-                  <td class="w-25 particulars-td text-right"  >
-                  {{ number_format($charges[$i]->pivot->amount, 2) }} 
-                  </td>
-                </tr>
-              @endfor
-          </table>
+      <td class="w-75 border-y font-bold" colspan="4"  >
+        Credit Memo
       </td>
     </tr>
-
+    @foreach ($billing['adjustmentCharges'] as $charge)
     <tr>
-      <td class="w-100 bordered" colspan="4"  style="height: 350px; padding: 4px; margin: 0;" valign="top">
-
-          <table class="w-100 particulars-table" style="border-collapse: collapse; padding: 0;" >
-              @for ($i = 20; $i < count($charges); $i++)
-                <tr>
-                  <td class="w-75 particulars-td " colspan="3"  >
-                    {{ $charges[$i]->name }} 
-                  </td>
-                  <td class="w-25 particulars-td text-right "  >
-                    {{ number_format($charges[$i]->pivot->amount, 2) }} 
-                  </td>
-                </tr>
-              @endfor
-          </table>
+      <td class="w-75 particulars-td b-left" colspan="3"  >
+        {{ $charge->name }} 
+      </td>
+      <td class="w-25 particulars-td b-right text-right"  >
+      {{ number_format($charge->pivot->amount, 2) }} 
       </td>
     </tr>
+    @endforeach
     @endif
 
     <tr>
@@ -164,7 +137,6 @@
       <td class="w-50 b-left b-right" colspan="2" style="padding: 5px;" valign="top">
         RECEIVED BY: 
       </td>
-     
       <td class="w-50 bordered text-center" colspan="2" rowspan="2" style="height: 50px; padding: 5px;" valign="bottom" >
         ATUHORIZED SIGNATURE
       </td>
