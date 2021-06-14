@@ -2,12 +2,11 @@
 
 namespace App\Services;
 
-use Intervention\Image\Facades\Image As Image;
-use PHPUnit\Exception;
+use Image;
 use App\Models\PersonnelPhoto;
+use Exception;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Validation\ValidationException;
 
 class PersonnelPhotoService
 {
@@ -26,6 +25,7 @@ class PersonnelPhotoService
             $image = Image::make($file)->resize(null, 350, function ($constraint) {
                 $constraint->aspectRatio();
             });
+            
             //$path = $request->file('photo')->store('public');
             $path = 'public/personnels/' . $file->hashName();
             Storage::put($path, $image->stream());
@@ -41,7 +41,7 @@ class PersonnelPhotoService
 
             return $personnelPhoto;
         } catch (Exception $e) {
-            Log::info('Error occured during StudentPhotoService store method call: ');
+            Log::info('Error occured during PersonnelPhotoService store method call: ');
             Log::info($e->getMessage());
             throw $e;
         }
@@ -63,7 +63,7 @@ class PersonnelPhotoService
             }
             return false;
         } catch (Exception $e) {
-            Log::info('Error occured during PaymentReceiptFileService update method call: ');
+            Log::info('Error occured during PersonnelPhotoService delete method call: ');
             Log::info($e->getMessage());
             throw $e;
         }
