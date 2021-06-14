@@ -46,12 +46,12 @@ class ReportController extends Controller
 
 
         //merge charges and adjustment for looping
-        $charges = [];
-        array_push($charges, ...$billing->charges, ...$billing->adjustmentCharges);
+        // $charges = [];
+        // array_push($charges, ...$billing->charges, ...$billing->adjustmentCharges);
 
         // todo: get actual previous balance as of < billing date
         $data['previous_balance'] = $totalPreviousBalance - $totalPayment;
-        $data['charges'] = $charges;
+        // $data['charges'] = $charges;
         $data['billing'] = $billing;
         $data['period'] = $period;
         $data['company_setting'] = $companySetting;
@@ -62,7 +62,7 @@ class ReportController extends Controller
         ]);
 
         $mpdf->defaultfooterline = 0;
-        $mpdf->setFooter('{PAGENO} of {nbpg}');
+        // $mpdf->setFooter('{PAGENO} of {nbpg}');
         //$mpdf->AddPage('','','','','off','','','','','','','','','','','','','','','','A5');
         $mpdf->AddPageByArray(
             array(
