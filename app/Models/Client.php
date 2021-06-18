@@ -19,6 +19,17 @@ class Client extends BaseModel
 
     protected $appends = ['current_balance'];
 
+    // for audit
+    public $isAuditable = true;
+    public function auditing()
+    {
+        $auditing = [];
+        $auditing['alias'] = 'Client';
+        $auditing['key'] = $this->name .' ('.$this->trade_name.')';
+        return $auditing;
+    }
+    // end for audit
+
     public function contracts() {
         return $this->hasMany(Contract::class);
     }

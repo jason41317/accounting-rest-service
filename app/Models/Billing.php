@@ -9,6 +9,17 @@ class Billing extends BaseModel
     protected $guarded = ['id'];
     protected $appends = ['amount'];
 
+    // for audit
+    public $isAuditable = true;
+    public function auditing()
+    {
+        $auditing = [];
+        $auditing['alias'] = 'Billing';
+        $auditing['key'] = $this->billing_no;
+        return $auditing;
+    }
+    // end for audit
+
     public function contract() {
         return $this->belongsTo(Contract::class);
     }

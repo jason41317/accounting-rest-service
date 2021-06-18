@@ -16,6 +16,22 @@ class AccountTitle extends BaseModel
         'deleted_by'
     ];
 
+    // for audit
+    public $isAuditable = true;
+    public function auditing()
+    {
+        $auditing = [];
+        $auditing['alias'] = 'Account Title';
+        $auditing['key'] = $this->name;
+        return $auditing;
+    }
+    // end for audit
+
+    public function audits()
+    {
+        return $this->morphMany(Audit::class, 'auditable');
+    }
+
     public function accountClass()
     {
         return $this->belongsTo(AccountClass::class);
@@ -24,6 +40,11 @@ class AccountTitle extends BaseModel
     public function parentAccountTitle()
     {
         return $this->belongsTo(AccountTitle::class, 'parent_account_id');
+    }
+
+    public function childrenAccountTitles()
+    {
+        return $this->hasMany(AccountTitle::class, 'parent_account_id');
     }
 
 

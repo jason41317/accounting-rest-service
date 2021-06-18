@@ -16,6 +16,17 @@ class BusinessStyle extends BaseModel
         'deleted_by'
     ];
 
+    // for audit
+    public $isAuditable = true;
+    public function auditing()
+    {
+        $auditing = [];
+        $auditing['alias'] = 'Business Style';
+        $auditing['key'] = $this->name;
+        return $auditing;
+    }
+    // end for audit
+
     public function contracts() {
         return $this->hasMany(Contract::class);
     }

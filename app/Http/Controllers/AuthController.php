@@ -4,34 +4,34 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
 use App\Http\Resources\UserResource;
+use App\Models\Audit;
 use App\Models\User;
+use App\Services\AuditService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 use Guzzle\Http\Exception\ClientErrorResponseException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
     public function login(LoginRequest $request)
     {
         $data = $request->validated();
-        // try {
-            $http = new \GuzzleHttp\Client;
-            $response = $http->post(url('/') . '/oauth/token', [
-                'form_params' => [
-                    'grant_type' => 'password',
-                    'client_id' => Config::get('client.id'),
-                    'client_secret' => Config::get('client.secret'),
-                    'username' => $data['username'],
-                    'password' => $data['password'],
-                    'scope' => '',
-                ],
-            ]);
-            return json_encode(json_decode((string) $response->getBody(), true));
-        // } catch (ClientErrorResponseException $exception) {
-        //     $responseBody = $exception->getResponse()->getBody(true);
-        // }
+        $http = new \GuzzleHttp\Client;
+        $response = $http->post(url('/') . '/oauth/token', [
+            'form_params' => [
+                'grant_type' => 'password',
+                'client_id' => Config::get('client.id'),
+                'client_secret' => Config::get('client.secret'),
+                'username' => $data['username'],
+                'password' => $data['password'],
+                'scope' => '',
+            ],
+        ]);
+        return $response;
+        return json_encode(json_decode((string) $response->getBody(), true));
     }
 
     public function getAuthUser()
@@ -74,6 +74,11 @@ class AuthController extends Controller
         auth()->user()->tokens->each(function ($token, $key) {
             $token->delete();
         });
+
+        $auditService = new AuditService();
+        $data['event'] = 'Logout';
+        $data['user_id'] = auth()->id();
+        $auditService->store($data);
 
         return response()->json('Logged out successfully', 200);
     }

@@ -8,6 +8,7 @@ use App\Models\ClosedBillingPeriod;
 use App\Models\Payment;
 use App\Models\Contract;
 use App\Models\ContractAssignee;
+use App\Models\CreditMemo;
 use App\Models\Disbursement;
 use App\Observers\BillingObserver;
 use App\Observers\BillingPeriodObserver;
@@ -15,6 +16,7 @@ use App\Observers\ContractAssigneeObserver;
 use App\Observers\PaymentObserver;
 use Illuminate\Support\Facades\DB;
 use App\Observers\ContractObserver;
+use App\Observers\CreditMemoObserver;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Schema;
@@ -59,6 +61,7 @@ class AppServiceProvider extends ServiceProvider
         Payment::observe(PaymentObserver::class);
         ContractAssignee::observe(ContractAssigneeObserver::class);
         BillingPeriod::observe(BillingPeriodObserver::class);
-        // Billing::observe(BillingObserver::class);
+        Billing::observe(BillingObserver::class);
+        CreditMemo::observe(CreditMemoObserver::class);
     }
 }

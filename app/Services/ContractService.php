@@ -85,10 +85,7 @@ class ContractService
     DB::beginTransaction();
     try {
       $contract = Contract::create($data);
-      $count = Contract::count();
-      $contract->update([
-        'contract_no' => 'CN-' . date('Y') . '-' . str_pad($count, 6, '0', STR_PAD_LEFT)
-      ]);
+      
       if ($services) {
         $contract->services()->sync($services);
       }
@@ -196,7 +193,7 @@ class ContractService
     DB::beginTransaction();
     try {
       $contract = Contract::find($id);
-      $contract->secureDelete('billing', 'payment');
+      $contract->secureDelete('billings', 'payments');
       DB::commit();
     } catch (Exception $e) {
       DB::rollback();

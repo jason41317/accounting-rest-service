@@ -9,7 +9,18 @@ use Illuminate\Support\Facades\Auth;
 class ContractObserver
 {
     /**
-     * Handle the Contract "updated" event.
+     * Handle the Contract "creating" event.
+     *
+     * @param  \App\Models\Contract  $contract
+     * @return void
+     */
+    public function creating(Contract $contract)
+    {
+        $count = Contract::count() + 1;
+        $contract->contract_no = 'CN-' . date('Y') . '-' . str_pad($count, 6, '0', STR_PAD_LEFT);
+    }
+    /**
+     * Handle the Contract "updating" event.
      *
      * @param  \App\Models\Contract  $contract
      * @return void

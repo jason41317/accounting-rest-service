@@ -10,6 +10,17 @@ class CreditMemo extends BaseModel
     protected $guarded = ['id'];
     protected $appends = ['amount'];
 
+    // for audit
+    public $isAuditable = true;
+    public function auditing()
+    {
+        $auditing = [];
+        $auditing['alias'] = 'Credit Memo';
+        $auditing['key'] = $this->credit_memo_no . ' (' . $this->contract->contract_no . ' - ' . $this->client->name . ')';
+        return $auditing;
+    }
+    // end for audit
+
     public function contract()
     {
         return $this->belongsTo(Contract::class);

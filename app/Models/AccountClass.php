@@ -16,6 +16,17 @@ class AccountClass extends BaseModel
         'deleted_by'
     ];
 
+    // for audit
+    public $isAuditable = true;
+    public function auditing()
+    {
+        $auditing = [];
+        $auditing['alias'] = 'Account Class';
+        $auditing['key'] = $this->name;
+        return $auditing;
+    }
+    // end for audit
+
     public function accountType()
     {
         return $this->belongsTo(AccountType::class);

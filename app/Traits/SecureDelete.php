@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
 trait SecureDelete
@@ -16,6 +17,8 @@ trait SecureDelete
   {
     $hasRelation = false;
     foreach ($relations as $relation) {
+      Log::info($relation);
+      Log::info($this->$relation()->withTrashed()->get());
       if ($this->$relation()->withTrashed()->count()) {
         $hasRelation = true;
         break;

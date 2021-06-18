@@ -10,7 +10,7 @@ class Payment extends BaseModel
 {
 
     protected $guarded = ['id'];
-    protected $appends = ['account_title'];
+    // protected $appends = ['account_title'];
     protected $hidden = [
         'created_at',
         'updated_at',
@@ -19,6 +19,19 @@ class Payment extends BaseModel
         'updated_by',
         'deleted_by'
     ];
+
+    // for audit
+    public $isAuditable = true;
+    public function auditing()
+    {
+        $auditing = [];
+        $auditing['alias'] = 'Payment';
+        $auditing['key'] = $this->payment_no . ' (' . $this->contract->contract_no . ' - ' . $this->client->name .')';
+        $auditing['status_key'] = 'payment_status_id';
+        $auditing['statuses'] = collect([['id' => 2, 'event' => 'Post']]); //status ids to check in observer
+        return $auditing;
+    }
+    // end for audit
 
     public function client()
     {

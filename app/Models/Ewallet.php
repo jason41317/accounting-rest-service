@@ -16,6 +16,17 @@ class Ewallet extends BaseModel
     'deleted_by'
   ];
 
+  // for audit
+  public $isAuditable = true;
+  public function auditing()
+  {
+    $auditing = [];
+    $auditing['alias'] = 'E Wallet';
+    $auditing['key'] = $this->name;
+    return $auditing;
+  }
+  // end for audit
+
   public function payments()
   {
     return $this->hasMany(Payment::class);

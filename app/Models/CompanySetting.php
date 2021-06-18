@@ -17,6 +17,17 @@ class CompanySetting extends BaseModel
         'deleted_by'
     ];
 
+    // for audit
+    public $isAuditable = true;
+    public function auditing()
+    {
+        $auditing = [];
+        $auditing['alias'] = 'Company Setting';
+        $auditing['key'] = '';
+        return $auditing;
+    }
+    // end for audit
+
     protected $with = ['logo'];
 
     public function logo()

@@ -18,6 +18,17 @@ class ServiceCategory extends BaseModel
     
     protected $guarded = ['id'];
 
+    // for audit
+    public $isAuditable = true;
+    public function auditing()
+    {
+        $auditing = [];
+        $auditing['alias'] = 'Service Category';
+        $auditing['key'] = $this->name;
+        return $auditing;
+    }
+    // end for audit
+
     public function services()
     {
         return $this->hasMany(Service::class);

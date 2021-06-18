@@ -17,6 +17,17 @@ class Personnel extends BaseModel
         'deleted_by'
     ];
 
+    // for audit
+    public $isAuditable = true;
+    public function auditing()
+    {
+        $auditing = [];
+        $auditing['alias'] = 'Personnel';
+        $auditing['key'] = $this->name;
+        return $auditing;
+    }
+    // end for audit
+
     public function user()
     {
         return $this->morphOne(User::class, 'userable');
@@ -24,7 +35,7 @@ class Personnel extends BaseModel
 
     public function getNameAttribute()
     {
-        return ucFirst($this->first_name) . ' ' . ucFirst($this->middle_name) . ' ' . ucFirst($this->last_name);
+        return ucFirst($this->first_name) . ' ' . ($this->middle_name ? ucFirst($this->middle_name) . ' ' : '') . ucFirst($this->last_name);
     }
 
     public function photo() {

@@ -15,6 +15,17 @@ class Bank extends BaseModel
     'updated_by',
     'deleted_by'
   ];
+
+  // for audit
+  public $isAuditable = true;
+  public function auditing()
+  {
+    $auditing = [];
+    $auditing['alias'] = 'Bank';
+    $auditing['key'] = $this->name;
+    return $auditing;
+  }
+  // end for audit
   
   public function disbursements()
   {

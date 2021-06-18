@@ -62,10 +62,7 @@ class CreditMemoService
     DB::beginTransaction();
     try {
       $creditMemo = CreditMemo::create($data);
-      $count = CreditMemo::count();
-      $creditMemo->update([
-        'credit_memo_no' => 'CM-' . date('Ym', strtotime($data['year'] . '-' . $data['month_id'] . '-1')) . '-' . str_pad($count, 6, '0', STR_PAD_LEFT)
-      ]);
+      
       if ($charges) {
         $items = [];
         foreach ($charges as $charge) {

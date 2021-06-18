@@ -19,9 +19,21 @@ class Service extends BaseModel
     
     protected $guarded = ['id'];
 
-    public function contracts() {
+    // for audit
+    public $isAuditable = true;
+    public function auditing()
+    {
+        $auditing = [];
+        $auditing['alias'] = 'Service';
+        $auditing['key'] = $this->name;
+        return $auditing;
+    }
+    // end for audit
+
+    public function contracts() 
+    {
         return $this->belongsToMany(Contract::class, 'contract_services', 'service_id', 'contract_id');
- 	}
+    }
 
     public function serviceCategory()
     {

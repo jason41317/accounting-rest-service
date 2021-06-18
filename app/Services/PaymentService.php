@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Payment;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -58,10 +59,7 @@ class PaymentService
     DB::beginTransaction();
     try {
       $payment = Payment::create($data);
-      $count = Payment::count();
-      $payment->update([
-        'payment_no' => 'PAY-' . date('Ym') . '-' . str_pad($count, 6, '0', STR_PAD_LEFT)
-      ]);
+      
       if ($charges) {
         $items = [];
         foreach ($charges as $charge) {
@@ -141,5 +139,51 @@ class PaymentService
       Log::info($e->getMessage());
       throw $e;
     }
+  }
+
+  public function yearlyComparison(array $filters)
+  {
+    try {
+      $year = $filters['year'] ?? null;
+      $currentYear = $year ?? Carbon::now()->year;
+      $previousYear = $currentYear - 1;
+      $currentYearData = Payment::whereYear('created_at', $currentYear)->get()
+      ->groupBy(function ($val) {
+        return (int)Carbon::parse($val->created_at)->format('m');
+      })->map(function ($row) {
+        return $row->sum('amount');
+      });
+      $previousYearData = Payment::whereYear('created_at', $previousYear)->get()
+      ->groupBy(function ($val) {
+        return (int)Carbon::parse($val->created_at)->format('m');
+      })->map(function ($row) {
+        return $row->sum('amount');
+      });
+
+      $payment['current_year'] = $currentYearData;
+      $payment['previous_year'] = $previousYearData;
+
+      return $payment;
+    } catch (Exception $e) {
+      Log::info('Error occured during PaymentService yearlyComparison method call: ');
+      Log::info($e->getMessage());
+      throw $e;
+    }
+  }
+  
+  public function collectionBreakDown(array $filters)
+  {
+    $dateFrom = $filters['date_from'] ?? null;
+    $dateTo = $filters['date_to'] ?? null;
+    $payments = Payment::when($dateFrom && $dateTo, function ($q) use ($dateFrom, $dateTo) {
+      return $q->whereBetween('created_at', [date('Y-m-d', strtotime($dateFrom)), date('Y-m-d', strtotime($dateTo))]);
+    })
+    ->get()
+    ->groupBy('payment_type_id')
+    ->map(function($row) {
+      return $row->sum('amount');
+    });
+
+    return $payments;
   }
 }

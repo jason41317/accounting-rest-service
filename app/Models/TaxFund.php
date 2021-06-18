@@ -12,6 +12,17 @@ class TaxFund extends BaseModel
     protected $appends = ['previous_balance', 'balance'];
     protected $with = ['createdByUser'];
 
+    // for audit
+    public $isAuditable = true;
+    public function auditing()
+    {
+        $auditing = [];
+        $auditing['alias'] = 'Tax Fund';
+        $auditing['key'] = $this->description;
+        return $auditing;
+    }
+    // end for audit
+
     public function getPreviousBalanceAttribute()
     {
         $taxFunds = TaxFund::where('created_at', '<', $this->created_at)

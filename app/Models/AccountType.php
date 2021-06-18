@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\BaseModel;
+use stdClass;
 
 class AccountType extends BaseModel
 {
@@ -16,6 +17,17 @@ class AccountType extends BaseModel
         'updated_by',
         'deleted_by'
     ];
+
+    // for audit
+    public $isAuditable = true;
+    public function auditing()
+    {
+        $auditing = [];
+        $auditing['alias'] = 'Account Type';
+        $auditing['key'] = $this->name;
+        return $auditing;
+    }
+    // end for audit
 
     public function accountClasses()
     {

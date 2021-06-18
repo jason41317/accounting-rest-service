@@ -3,19 +3,23 @@
 namespace App\Observers;
 
 use App\Models\Billing;
-use App\Models\SystemSetting;
-use App\Services\JournalEntryService;
 
 class BillingObserver
 {
     /**
-     * Handle the Billing "updating" event.
+     * Handle the Billing "creating" event.
      *
      * @param  \App\Models\Billing  $billing
      * @return void
      */
-    public function updating(Billing $billing)
+    public function creating(Billing $billing)
     {
-        
+        $year = $billing->year;
+        $month = $billing->month_id;
+        $count = Billing::where('year', $year)
+        ->where('month_id', $month)
+        ->count() + 1;
+
+        $billing->billing_no = 'BN-' . date('Ym', strtotime($year . '-' . $month . '-1')) . '-' . str_pad($count, 4, '0', STR_PAD_LEFT);
     }
 }

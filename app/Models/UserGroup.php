@@ -17,6 +17,17 @@ class UserGroup extends BaseModel
         'deleted_by'
     ];
 
+    // for audit
+    public $isAuditable = true;
+    public function auditing()
+    {
+        $auditing = [];
+        $auditing['alias'] = 'User Group';
+        $auditing['key'] = $this->name;
+        return $auditing;
+    }
+    // end for audit
+
     public function permissions()
     {
         return $this->belongsToMany(Permission::class, 'user_group_permissions', 'user_group_id', 'permission_id');

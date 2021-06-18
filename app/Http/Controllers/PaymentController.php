@@ -7,6 +7,7 @@ use App\Http\Requests\PaymentUpdateRequest;
 use App\Http\Resources\PaymentResource;
 use App\Models\Payment;
 use App\Services\PaymentService;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 
 class PaymentController extends Controller
@@ -87,5 +88,21 @@ class PaymentController extends Controller
         $paymentService = new PaymentService();
         $paymentService->delete($id);
         return response()->json([], 204);
+    }
+
+    public function yearlyComparison(Request $request)
+    {
+        $filters = $request->all();
+        $paymentService = new PaymentService();
+        $payments = $paymentService->yearlyComparison($filters);
+        return $payments;
+    }
+
+    public function collectionBreakdown(Request $request)
+    {
+        $filters = $request->all();
+        $paymentService = new PaymentService();
+        $payments = $paymentService->collectionBreakdown($filters);
+        return $payments;
     }
 }

@@ -43,6 +43,8 @@ Route::group(['prefix' => 'v1'], function () {
         Route::resource('/banks', 'BankController');
         Route::resource('/e-wallets', 'EwalletController');
         Route::resource('/disbursements', 'DisbursementController');
+        Route::get('payments/yearly-comparison', 'PaymentController@yearlyComparison');
+        Route::get('payments/collection-breakdown', 'PaymentController@collectionBreakdown');
         Route::resource('payments','PaymentController');
         Route::resource('permission-groups','PermissionGroupController');
         Route::resource('company-settings','CompanySettingController');
@@ -73,6 +75,8 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('credit-memos/{creditMemoId}/charges', 'CreditMemoController@charges');
         //tax fund
         Route::resource('tax-funds', 'TaxFundController');
+        //audits
+        Route::resource('audits', 'AuditController');
     });
 
     Route::get('collection-summary','ReportController@collectionSummary');

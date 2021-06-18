@@ -12,8 +12,14 @@ use App\Services\JournalEntryService;
 
 class PaymentObserver
 {
+    public function creating(Payment $payment)
+    {
+        $count = Payment::count() + 1;
+        $payment->payment_no = 'PAY-' . date('Ym') . '-' . str_pad($count, 6, '0', STR_PAD_LEFT);
+    }
+
     /**
-     * Handle the Payment "updated" event.
+     * Handle the Payment "updating" event.
      *
      * @param  \App\Models\Payment  $payment
      * @return void

@@ -18,6 +18,19 @@ class Disbursement extends BaseModel
         'deleted_by'
     ];
 
+    // for audit
+    public $isAuditable = true;
+    public function auditing()
+    {
+        $auditing = [];
+        $auditing['alias'] = 'Disbursement';
+        $auditing['key'] = $this->voucher_no . ' (' . $this->payee . ')';
+        $auditing['status_key'] = 'disbursement_status_id';
+        $auditing['statuses'] = collect([['id' => 3, 'event' => 'Cancel']]); //status ids to check in observer
+        return $auditing;
+    }
+    // end for audit
+
     public function bank() {
         return $this->belongsTo(Bank::class);
     }

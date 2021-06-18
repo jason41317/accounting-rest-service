@@ -16,6 +16,17 @@ class Charge extends BaseModel
         'deleted_by'
     ];
 
+    // for audit
+    public $isAuditable = true;
+    public function auditing()
+    {
+        $auditing = [];
+        $auditing['alias'] = 'Charge';
+        $auditing['key'] = $this->name;
+        return $auditing;
+    }
+    // end for audit
+
     // protected $appends = ['chargeSchedules'];
 
     public function schedules() {

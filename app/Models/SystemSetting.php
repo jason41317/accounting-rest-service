@@ -16,4 +16,15 @@ class SystemSetting extends BaseModel
     'updated_by',
     'deleted_by'
   ];
+
+  // for audit
+  public $isAuditable = true;
+  public function auditing()
+  {
+    $auditing = [];
+    $auditing['alias'] = 'System Setting';
+    $auditing['key'] = '';
+    return $auditing;
+  }
+    // end for audit
 }

@@ -75,7 +75,7 @@ class AccountTitleService
     DB::beginTransaction();
     try {
       $accountTitle = AccountTitle::find($id);
-      $accountTitle->secureDelete('parentAccountTitle', 'charges', 'banks', 'ewallets');
+      $accountTitle->secureDelete('childrenAccountTitles', 'charges', 'banks', 'ewallets');
       DB::commit();
     } catch (Exception $e) {
       DB::rollback();

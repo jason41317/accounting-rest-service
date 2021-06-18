@@ -21,6 +21,19 @@ class Contract extends BaseModel
     ];
     protected $appends = ['current_assignee'];
 
+    // for audit
+    public $isAuditable = true;
+    public function auditing()
+    {
+        $auditing = [];
+        $auditing['alias'] = 'Contract';
+        $auditing['key'] = $this->contract_no .' ('.$this->client->name.')';
+        $auditing['status_key'] = 'contract_status_id';
+        $auditing['statuses'] = collect([['id' => 2, 'event' => 'Approve']]); //status ids to check in observer
+        return $auditing;
+    }
+    // end for audit
+
     public function assignees() {
         return $this->hasMany(ContractAssignee::class);
     }
