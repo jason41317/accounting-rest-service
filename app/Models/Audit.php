@@ -61,6 +61,9 @@ class Audit extends BaseModel
             case 'Login':
                 $desc = ' log in '. date('F d, Y h:i a', strtotime($this->created_at));
                 break;
+            case 'Logout':
+                $desc = ' log out ' . date('F d, Y h:i a', strtotime($this->created_at));
+                break;
         }
         $msg = $user . $desc . ($this->alias ?? '') . ($this->key ? ' - ' . $this->key : '');
         return $msg;
