@@ -17,6 +17,7 @@ class PermissionGroup extends BaseModel
 
     public function permissions()
     {
-        return $this->hasMany(Permission::class);
+        return $this->hasMany(Permission::class)
+        ->orderBy('sort_key', 'ASC');
     }
 }

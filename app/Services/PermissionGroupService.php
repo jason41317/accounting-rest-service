@@ -17,7 +17,7 @@ class PermissionGroupService
         ? PermissionGroup::paginate($perPage)
         : PermissionGroup::all();
       $permissionGroups->load('permissions');
-      return $permissionGroups;
+      return $permissionGroups->sortBy('sort_key');
     } catch (Exception $e) {
       Log::info('Error occured during PermissionGroupService list method call: ');
       Log::info($e->getMessage());
