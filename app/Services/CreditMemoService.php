@@ -145,7 +145,8 @@ class CreditMemoService
 
   public function charges(int $creditMemoId, array $filters) 
   {
-    $query = CreditMemo::with(['client', 'contract', 'month']);
+    $query = CreditMemo::with(['client', 'contract', 'month'])
+    ->where('is_applied', 0);
 
     $monthId = $filters['month_id'] ?? false;
     $query->when($monthId, function ($q) use ($monthId) {

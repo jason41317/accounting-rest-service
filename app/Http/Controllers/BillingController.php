@@ -41,7 +41,8 @@ class BillingController extends Controller
         $data = $request->except('charges','adjustmentCharges');
         $charges = $request->charges ?? [];
         $adjustmentCharges = $request->adjustment_charges ?? [];
-        $billing = $billingService->store($data, $charges, $adjustmentCharges);
+        $creditMemoIds = $request->credit_memo_ids ?? [];
+        $billing = $billingService->store($data, $charges, $adjustmentCharges, $creditMemoIds);
         return (new BillingResource($billing))
             ->response()
             ->setStatusCode(201);

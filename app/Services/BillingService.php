@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Billing;
 use App\Models\CompanySetting;
 use App\Models\Contract;
+use App\Models\CreditMemo;
 use App\Models\Month;
 use App\Models\SystemSetting;
 use Exception;
@@ -63,11 +64,19 @@ class BillingService
     }
   }
 
-  public function store(array $data, array $charges, array $adjustmentCharges)
+  public function store(array $data, array $charges, array $adjustmentCharges, array $creditMemoIds)
   {
     DB::beginTransaction();
     try {
       $billing = Billing::create($data);
+
+      if ($creditMemoIds) {
+        CreditMemo::whereIn('id', $creditMemoIds)
+          ->update([
+            'is_applied' => 1,
+            'billing_id' => $billing->id
+          ]);
+      }
       
       if ($charges) {
         $items = [];

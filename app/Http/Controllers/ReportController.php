@@ -137,12 +137,22 @@ class ReportController extends Controller
         $companySetting = CompanySetting::find(1);
         $dateFrom = $request->date_from ? date("Y-m-d", strtotime($request->date_from)) : false;
         $dateTo = $request->date_to ? date("Y-m-d", strtotime($request->date_to)) : false;
+        $personnelId = $request->personnel_id ?? false;
         $paymentApproveStatusId = 2;
 
         $collections = Payment::where('payment_status_id', $paymentApproveStatusId)
         ->when($dateFrom, function ($q) use ($dateFrom, $dateTo) {
             return $q->whereBetween('transaction_date', [$dateFrom, $dateTo]);
-        })->get();
+        })
+        ->when($personnelId, function ($q) use ($personnelId) {
+            return $q->whereHas('contract', function ($q) use ($personnelId) {
+                return $q->whereHas('assignees', function ($q) use ($personnelId){
+                    return $q->where('personnel_id', $personnelId)
+                        ->where('is_active', 1);
+                });
+            });
+        })
+        ->get();
 
         $collections->append(['retainers_fee_total', 'filing_total', 'remittance_total', 'others_total']);
 
