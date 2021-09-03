@@ -20,6 +20,7 @@ use App\Models\SystemSetting;
 use App\Services\ClientService;
 use App\Services\ContractService;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use PHPUnit\TextUI\XmlConfiguration\TestSuite;
 
 class ReportController extends Controller
@@ -44,11 +45,6 @@ class ReportController extends Controller
                     ->where('contract_id',$billing->contract_id)->get()
                     ->sum('amount');
 
-
-        //merge charges and adjustment for looping
-        // $charges = [];
-        // array_push($charges, ...$billing->charges, ...$billing->adjustmentCharges);
-
         // todo: get actual previous balance as of < billing date
         $data['previous_balance'] = $totalPreviousBalance - $totalPayment;
         // $data['charges'] = $charges;
@@ -62,19 +58,28 @@ class ReportController extends Controller
         ]);
 
         $mpdf->defaultfooterline = 0;
+        $mpdf->showWatermarkImage = 1;
+
+        $logo = $companySetting->logo ? $companySetting->logo->path : '';
+
+        $mpdf->SetWatermarkImage(
+            url('storage/'.$logo),
+            0.1,
+            array(90,90)
+        );
         // $mpdf->setFooter('{PAGENO} of {nbpg}');
         //$mpdf->AddPage('','','','','off','','','','','','','','','','','','','','','','A5');
-        $mpdf->AddPageByArray(
-            array(
-                'orientation' => 'P',
-                'suppress' => 'off',
-                'sheet-size' => 'A5',
-                'margin-left' => '7.62',
-                'margin-top' => '7.62',
-                'margin-bottom' => '7.62',
-                'margin-right' => '7.62'
-            )
-        );
+        // $mpdf->AddPageByArray(
+        //     array(
+        //         'orientation' => 'P',
+        //         'suppress' => 'off',
+        //         'sheet-size' => 'A5',
+        //         'margin-left' => '7.62',
+        //         'margin-top' => '7.62',
+        //         'margin-bottom' => '7.62',
+        //         'margin-right' => '7.62'
+        //     )
+        // );
 
         // return $data;
 
