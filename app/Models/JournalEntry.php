@@ -16,6 +16,10 @@ class JournalEntry extends BaseModel
         'deleted_by'
     ];
 
+    public function client() {
+        return $this->belongsTo(Client::class);
+    }
+
     public function accountTitles() {
         return $this->belongsToMany(AccountTitle::class, 'journal_entry_account_titles', 'journal_entry_id', 'account_title_id')
             ->withPivot('debit', 'credit');

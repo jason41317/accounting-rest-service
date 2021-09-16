@@ -10,6 +10,7 @@ use App\Models\Contract;
 use App\Models\ContractAssignee;
 use App\Models\CreditMemo;
 use App\Models\Disbursement;
+use App\Models\JournalEntry;
 use App\Observers\BillingObserver;
 use App\Observers\BillingPeriodObserver;
 use App\Observers\ContractAssigneeObserver;
@@ -21,6 +22,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Schema;
 use App\Observers\DisbursementObserver;
+use App\Observers\JournalEntryObserver;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -63,5 +65,6 @@ class AppServiceProvider extends ServiceProvider
         BillingPeriod::observe(BillingPeriodObserver::class);
         Billing::observe(BillingObserver::class);
         CreditMemo::observe(CreditMemoObserver::class);
+        JournalEntry::observe(JournalEntryObserver::class);
     }
 }

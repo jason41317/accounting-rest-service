@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\JournalEntryStoreRequest;
 use App\Http\Resources\JournalEntryResource;
 use App\Models\JournalEntry;
 use App\Services\JournalEntryService;
@@ -19,7 +20,8 @@ class JournalEntryController extends Controller
         $journalEntryService = new JournalEntryService();
         $perPage = $request->per_page ?? 20;
         $isPaginated = !$request->has('paginate') || $request->paginate === 'true';
-        $journalEntries = $journalEntryService->list($isPaginated, $perPage);
+        $filters = $request->except('per_page','paginate');
+        $journalEntries = $journalEntryService->list($isPaginated, $perPage, $filters);
         return JournalEntryResource::collection(
             $journalEntries
         );
@@ -41,11 +43,11 @@ class JournalEntryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(JournalEntryStoreRequest $request)
     {
         $journalEntryService = new JournalEntryService();
         $data = $request->except('account_titles');
-        $accountTitles = $request->accountTitles;
+        $accountTitles = $request->account_titles;
         $journalEntry = $journalEntryService->store($data, $accountTitles);
         return (new JournalEntryResource($journalEntry))
             ->response()
@@ -87,7 +89,7 @@ class JournalEntryController extends Controller
     {
         $journalEntryService = new JournalEntryService();
         $data = $request->except('account_titles');
-        $accountTitles = $request->accountTitles;
+        $accountTitles = $request->account_titles;
         $journalEntry = $journalEntryService->update($data, $accountTitles, $id);
 
         return (new JournalEntryResource($journalEntry))

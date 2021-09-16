@@ -3,19 +3,27 @@
 namespace App\Services;
 
 use App\Models\JournalEntry;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class JournalEntryService
 {
-  public function list(bool $isPaginated, int $perPage)
+  public function list(bool $isPaginated, int $perPage, array $filters)
   {
     try {
+      $query = JournalEntry::with(['accountTitles','client']);
+
+      //journal entry type
+      $journalEntryTypeId = $filters['journal_entry_type_id'] ?? false;
+      $query->when($journalEntryTypeId, function ($q) use ($journalEntryTypeId) {
+        return $q->where('journal_entry_type_id', $journalEntryTypeId);
+      });
+
       $journalEntries = $isPaginated
-        ? JournalEntry::paginate($perPage)
-        : JournalEntry::all();
-      $journalEntries->load('accountTitles');
+        ? $query->paginate($perPage)
+        : $query->get();
       return $journalEntries;
     } catch (Exception $e) {
       Log::info('Error occured during JournalEntryService list method call: ');
@@ -54,7 +62,7 @@ class JournalEntryService
   {
     try {
       $journalEntry = JournalEntry::find($id);
-      $journalEntry->load('accountTitles');
+      $journalEntry->load('accountTitles','client');
       return $journalEntry;
     } catch (Exception $e) {
       Log::info('Error occured during JournalEntryService get method call: ');
@@ -103,5 +111,14 @@ class JournalEntryService
       Log::info($e->getMessage());
       throw $e;
     }
+  }
+
+  public function generalJournalNo()
+  {
+    $now = Carbon::now();
+    $count = JournalEntry::where('journal_entry_type_id', 4)
+      ->count() + 1;
+
+    return 'GJ-' . date('Ym', strtotime($now->year . '-' . $now->month . '-1')) . '-' . str_pad($count, 4, '0', STR_PAD_LEFT);
   }
 }
