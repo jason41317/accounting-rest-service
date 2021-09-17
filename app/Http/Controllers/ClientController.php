@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ClientChangePasswordRequest;
 use App\Models\Client;
 use Illuminate\Http\Request;
 use App\Services\ClientService;
@@ -85,5 +86,15 @@ class ClientController extends Controller
         $clientService = new ClientService();
         $clientService->delete($id);
         return response()->json([], 204);
+    }
+
+    public function changePassword(ClientChangePasswordRequest $request, int $clientId)
+    {
+        $clientService = new ClientService();
+        $client = $clientService->changePassword($request->all(), $clientId);
+
+        return (new ClientResource($client))
+            ->response()
+            ->setStatusCode(200);
     }
 }

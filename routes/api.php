@@ -77,6 +77,9 @@ Route::group(['prefix' => 'v1'], function () {
         Route::resource('tax-funds', 'TaxFundController');
         //audits
         Route::resource('audits', 'AuditController');
+
+        //client change password
+        Route::put('clients/{id}/change-password', 'ClientController@changePassword');
     });
 
     Route::get('collection-summary','ReportController@collectionSummary');

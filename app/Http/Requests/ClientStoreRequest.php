@@ -27,7 +27,7 @@ class ClientStoreRequest extends FormRequest
             'code' => 'required|max:191|unique:clients,code,'.$this->id,
             'name' => 'required|max:191',
             'office_address' => 'required',
-            'email' => 'email|nullable|max:191',
+            'email' => 'required|email|nullable|max:191',
             'owner' => 'max:191',
             'contact_no' => 'max:191',
             'rdo_no' => 'max:191',

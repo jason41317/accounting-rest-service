@@ -27,7 +27,7 @@ class IsUserFound implements Rule
     public function passes($attribute, $value)
     {
         $user = User::where('username', $value)
-            ->where('userable_type', 'App\Models\Personnel')
+            // ->where('userable_type', 'App\Models\Personnel')
             ->first();
         return $user ? true : false;
     }

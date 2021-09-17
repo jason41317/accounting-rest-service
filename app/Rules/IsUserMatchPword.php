@@ -28,7 +28,7 @@ class IsUserMatchPword implements Rule
     public function passes($attribute, $value)
     {
         $user = User::where('username', $this->_username)
-            ->where('userable_type', 'App\Models\Personnel')
+            // ->where('userable_type', 'App\Models\Personnel')
             ->first();
         return $user && Hash::check($value, $user->password);
     }

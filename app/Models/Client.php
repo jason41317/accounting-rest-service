@@ -66,4 +66,9 @@ class Client extends BaseModel
     {
         $this->attributes['as_of_balance'] = $value;
     }
+
+    public function user()
+    {
+        return $this->morphOne(User::class, 'userable');
+    }
 }

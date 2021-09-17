@@ -9,6 +9,7 @@ use App\Models\Payment;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 
 class ClientService
@@ -52,6 +53,10 @@ class ClientService
     DB::beginTransaction();
     try {
       $client = Client::create($data);
+      $client->user()->create([
+        'username' => $client->email,
+        'password' => Hash::make('password')
+      ]);
       // $client->load(['businessStyle', 'businessType']);
       DB::commit();
       return $client;
@@ -128,5 +133,22 @@ class ClientService
       ->get()
       ->sum('amount');
     return $billings - $payments;
+  }
+
+  public function changePassword(array $data, int $clientId)
+  {
+    DB::beginTransaction();
+    try {
+      $client = Client::find($clientId);
+      $client->user()->update([
+        'password' => Hash::make($data['password'])
+      ]);
+      DB::commit();
+    } catch (Exception $e) {
+      DB::rollback();
+      Log::info('Error occured during ClientService changePassword method call: ');
+      Log::info($e->getMessage());
+      throw $e;
+    }
   }
 }

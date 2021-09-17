@@ -26,6 +26,11 @@ class ContractService
       $query->when($contractStatusId, function($q) use($contractStatusId) {
         return $q->where('contract_status_id', $contractStatusId);
       });
+
+      $clientId = $filters['client_id'] ?? false;
+      $query->when($clientId, function($q) use($clientId) {
+        return $q->where('client_id', $clientId);
+      });
       
 
       $criteria = $filters['criteria'] ?? null;

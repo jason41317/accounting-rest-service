@@ -25,6 +25,7 @@ class Audit extends BaseModel
     public function user()
     {
         return $this->belongsTo(User::class)
+            ->where('userable_type', 'App\\Models\\Personnel')
             ->with(['userable' => function ($q) {
                 return $q->withTrashed();
             }]);

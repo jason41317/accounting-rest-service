@@ -41,12 +41,15 @@ class AuthController extends Controller
         // $user->load(['userable' => function ($q) {
         //   return $q->with('photo');
         // }]);
-
-        $user->load(['userable' => function($query) {
-            $query->with('photo');
-        }, 'userGroup' => function ($query) {
-            $query->with(['permissions']);
-        }]);
+        if ($user->userable_type === 'App\Models\Personnel') {
+            $user->load(['userable' => function($query) {
+                $query->with('photo');
+            }, 'userGroup' => function ($query) {
+                $query->with(['permissions']);
+            }]);
+        } else {
+            $user->load(['userable']);
+        }
 
         return new UserResource($user);
     }
