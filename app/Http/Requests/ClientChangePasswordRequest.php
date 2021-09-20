@@ -25,7 +25,7 @@ class ClientChangePasswordRequest extends FormRequest
     public function rules()
     {
         return [
-            'old_password' => ['required', new IsOldPasswordMatched()],
+            'old_password' => ['sometimes', new IsOldPasswordMatched()],
             'password' => 'required|min:6|confirmed',
         ];
     }
