@@ -54,7 +54,7 @@ class ClientService
     try {
       $client = Client::create($data);
       $client->user()->create([
-        'username' => $client->email,
+        'username' => $client->code,
         'password' => Hash::make('password')
       ]);
       // $client->load(['businessStyle', 'businessType']);
