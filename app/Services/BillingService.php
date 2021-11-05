@@ -184,15 +184,15 @@ class BillingService
   public function batchStore(array $data)
   {
     $company = CompanySetting::find(1);
-    $query = Contract::whereHas('billings', function ($q) use ($data) {
-        return $q->whereRaw('CONCAT(year,"-",month_id,"-",1) != CONCAT('.$data['year'].',"-",'.$data['month_id'].',"-",1)');
-      })
-      ->orWhereDoesntHave('billings')
+    $query = Contract::withCount(['billings' => function ($q) use ($data) {
+        return $q->whereRaw('CONCAT(year,"-",month_id,"-",1) = CONCAT('.$data['year'].',"-",'.$data['month_id'].',"-",1)');
+      }])
       ->whereHas('charges', function ($q) use ($data) {
         return $q->whereHas('schedules', function ($q) use ($data) {
           return $q->where('month_id', $data['month_id']);
         });
-      });
+      })
+      ->having('billings_count', 0);
 
     $taxTypeId = $data['tax_type_id'] ?? null;
     $query->when($taxTypeId, function ($q) use ($taxTypeId) {
@@ -236,8 +236,51 @@ class BillingService
         );
       },
       $contract['charges']->all());
+      
+      $creditMemoService = new CreditMemoService();
+      $filters = array(
+        'paginate' => false,
+        'month_id' => $data['month_id'],
+        'year' => $data['year'],
+        'contract_id' => $contract['id']
+      );
+      $adjustmentChargesData = $creditMemoService->charges(0, $filters);
+      $creditMemoIds = [];
+      $adjustmentCharges = [];
 
-      $billings[] = $this->store($data, $charges, []);
+      foreach ($adjustmentChargesData as $charge) {
+        if(!(in_array($charge['pivot']['credit_memo_id'], $creditMemoIds))) {
+          $creditMemoIds[] = $charge['pivot']['credit_memo_id'];
+        }
+
+        $adjustmentCharge = collect($adjustmentCharges)->where('charge_id', $charge['id'])->first();
+        
+        if($adjustmentCharge) {
+          $adjustmentCharges[$charge['id']]['amount'] += $charge['pivot']['amount'];
+        } else {
+          $adjustmentCharges[$charge['id']] = [
+            'charge_id' => $charge['id'],
+            'notes' => '',
+            'amount' => $charge['pivot']['amount']
+          ];
+        }
+      }
+
+      // $adjustmentChargesData->reduce(function ($result, $charge) use ($creditMemoIds, $adjustmentCharges) {
+      //   $result = [];
+      //   if(!(in_array($charge->pivot->credit_memo_id, $creditMemoIds))) {
+      //     $creditMemoIds[] = $charge->pivot->credit_memo_id;
+      //   }
+      //   if (!isset($result[$charge->id])) {
+      //     $result[$charge->id] = $charge;
+      //     $adjustmentCharges[] = $charge;
+      //     return $result;
+      //   }
+      //   $amount = $result[$charge->id]->pivot->amount;
+      //   $result[$charge->id]->pivot->amount = $amount + $charge->pivot->amount;
+      //   return $result;
+      // });
+      $billings[] = $this->store($data, $charges, $adjustmentCharges, $creditMemoIds);
     }
 
     return $billings;
