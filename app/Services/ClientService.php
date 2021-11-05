@@ -27,13 +27,13 @@ class ClientService
           ->orWhere('office_address', 'like', '%' . $criteria . '%')
           ->orWhere('owner', 'like', '%' . $criteria . '%')
           ->orWhere('email', 'like', '%' . $criteria . '%')
-          ->orWhere('contact_no', 'like', '%' . $criteria . '%')
-          ->orWhereHas('businessStyle', function ($q) use ($criteria) {
-            return $q->where('name', 'like', '%' . $criteria . '%');
-          })
-          ->orWhereHas('businessType', function ($q) use ($criteria) {
-            return $q->where('name', 'like', '%' . $criteria . '%');
-          });
+          ->orWhere('contact_no', 'like', '%' . $criteria . '%');
+          // ->orWhereHas('businessStyle', function ($q) use ($criteria) {
+          //   return $q->where('name', 'like', '%' . $criteria . '%');
+          // })
+          // ->orWhereHas('businessType', function ($q) use ($criteria) {
+          //   return $q->where('name', 'like', '%' . $criteria . '%');
+          // });
       });
 
 
