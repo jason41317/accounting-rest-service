@@ -15,7 +15,6 @@ class Contract extends BaseModel
         'created_at',
         'deleted_at',
         'updated_at',
-        'created_by',
         'updated_by',
         'deleted_by'
     ];
@@ -172,7 +171,7 @@ class Contract extends BaseModel
             return $query->whereHas('assignees', function ($q) use ($user){
                 return $q->where('personnel_id', $user->userable->id)
                     ->where('is_active', 1);
-            });
+            })->orWhere('created_by', $user->id);
         }
     }
 
