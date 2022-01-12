@@ -37,6 +37,11 @@ class ClientService
       });
 
 
+      $sortKey = $filters['sort_key'] ?? 'id';
+      $sortDesc = $filters['sort_desc'] ?? 'DESC';;
+
+      $query->orderBy($sortKey, $sortDesc);
+
       $clients = $isPaginated
         ? $query->paginate($perPage)
         : $query->get();
