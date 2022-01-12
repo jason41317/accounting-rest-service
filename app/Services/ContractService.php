@@ -31,7 +31,7 @@ class ContractService
       $query->when($clientId, function($q) use($clientId) {
         return $q->where('client_id', $clientId);
       });
-      
+
 
       $criteria = $filters['criteria'] ?? null;
       $query->when($criteria, function($q) use ($criteria) {
@@ -44,7 +44,12 @@ class ContractService
       $query->when($filterByUser, function ($q) {
         return $q->filterByUser();
       });
-      
+
+      $sortKey = $filters['sort_key'] ?? 'id';
+      $sortDesc = $filters['sort_desc'] ?? 'DESC';;
+
+      $query->orderBy($sortKey, $sortDesc);
+
       $contracts = $isPaginated
         ? $query->paginate($perPage)
         : $query->get();
@@ -76,7 +81,7 @@ class ContractService
         //   $contracts->append(['previous_balance']);
         // }
       }
-      
+
       return $contracts;
     } catch (Exception $e) {
       Log::info('Error occured during ContractService list method call: ');
