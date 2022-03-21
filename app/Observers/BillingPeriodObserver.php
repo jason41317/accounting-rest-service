@@ -17,7 +17,7 @@ class BillingPeriodObserver
      * @param  \App\Models\ClosedBillingPeriod  $closedBillingPeriod
      * @return void
      */
-    public function created(BillingPeriod $billingPeriod) 
+    public function created(BillingPeriod $billingPeriod)
     {
         $monthId = $billingPeriod->month_id;
         $year = $billingPeriod->year;

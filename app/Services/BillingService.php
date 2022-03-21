@@ -297,8 +297,8 @@ class BillingService
       $data = [
         'reference_no' => $billing->billing_no,
         'transaasdfction_date' => $billing->billing_date,
-        'sadfasdf' => $billing->contract_id,
-        'asdasdf' => $billing->client_id,
+        'contract_id' => $billing->contract_id,
+        'client_id' => $billing->client_id,
         'total_amount' => $billing->amount,
       ];
       $accountTitles = [];
