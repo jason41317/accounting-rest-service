@@ -36,6 +36,7 @@
     .item-name {
       width: 40%;
       padding: 5px;
+      /* border: solid 1px black; */
     }
 
     .item-notes {
@@ -130,7 +131,7 @@
         </td>
       </tr>
       <tr rowspan="2">
-        <td class="w-100 b-left b-right b-bottom client-address" style="padding: 3px 5px;" colspan="4" valign="top">
+        <td class="w-100 b-left b-right b-bottom client-address" style="padding: 3px 5px; height: 25px;" colspan="4" valign="top">
           {{ $billing->contract->billing_address }}
         </td>
       </tr>
@@ -174,11 +175,11 @@
       $adjCharges = $adjChargeCount > 0 ? $billing['adjustmentCharges']->prepend(["id" => 0, "name" => "Credit Memo" , "pivot" => null]) : $billing['adjustmentCharges'] ;
       $allCharges = $regCharges->push(...$adjCharges);
       $allChargesCount = count($allCharges);
-      $fillersCount = $allChargesCount > 19 ? (21 - $allChargesCount) : (19 - $allChargesCount);
+      $fillersCount = $allChargesCount > 15 ? 0 : (15 - $allChargesCount);
     @endphp
   <table class="table-particulars" >
     <tbody>
-      @if ($allChargesCount < 19)
+      @if ($allChargesCount < 15)
         <!-- fit to 1 page -->
         @foreach($allCharges as $charge)
           <tr>
@@ -189,7 +190,7 @@
         @endforeach
         @for($i = 0; $i < $fillersCount; $i++)
           <tr>
-            <td class="item-name"></td>
+            <td class="item-name"><span>&emsp;</span></td>
             <td class="item-notes"></td>
             <td class="item-amount"></td>
           </tr>
