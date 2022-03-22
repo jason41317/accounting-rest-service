@@ -84,7 +84,9 @@ class ReportController extends Controller
         // return $data;
 
         //$data['organization'] = OrganizationSetting::find(1)->load('organizationLogo');
-        $content = view('reports.billingstatement')->with($data);
+
+        // return $data;
+        $content = view('reports.billingstatement2')->with($data);
         $mpdf->WriteHTML($content);
         return $mpdf->Output('', 'S');
     }

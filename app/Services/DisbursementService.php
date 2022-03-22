@@ -40,7 +40,6 @@ class DisbursementService
     DB::beginTransaction();
     try {
       $disbursement = Disbursement::create($data);
-      
       if ($disbursementDetails) {
         foreach ($disbursementDetails as $detail) {
           $disbursement->disbursementDetails()->create(
@@ -84,8 +83,6 @@ class DisbursementService
     try {
       $disbursement = Disbursement::find($id);
       $disbursement->update($data);
-
-      
 
       if ($disbursementDetails) {
         $disbursement->disbursementDetails()->delete();

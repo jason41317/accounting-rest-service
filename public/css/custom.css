@@ -54,6 +54,14 @@
     width: 10%;
   }
 
+  .w-40 {
+    width: 40%;
+  }
+
+  .w-35 {
+    width: 35%;
+  }
+
   .b-top {
     border-top: solid 1px black;
   }

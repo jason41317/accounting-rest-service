@@ -32,6 +32,7 @@
     .statement-info {
       width: 100%;
       margin-bottom: 10px;
+      table-layout: fixed;
     }
 
     .statement-info > td {
@@ -59,6 +60,7 @@
     .particulars-td {
       padding: 3px 5px;
       height: 15px;
+      max-height: 15px;
     }
 
     .footer-label {
@@ -78,6 +80,17 @@
       width: 50%;
       text-align: right;
     }
+
+    .item-notes {
+      font-size: 6pt;
+      font-style: italic;
+      /* overflow: hidden; */
+      height: 15px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      width: 25%;
+      max-width: 25%;
+    }
   </style>
 </head>
 <body>
@@ -86,12 +99,22 @@
   </htmlpageheader>
 
   <htmlpagefooter name="pageFooter" style="display:none">
-    <div class="footer-label footer-page">
+    <!-- <div class="footer-label footer-page">
       {DATE F j, Y, g:i A}
     </div>
     <div class="footer-label footer-date">
       Page {PAGENO} of {nb}
-    </div>
+    </div> -->
+    <table class="w-100">
+      <tr>
+        <td class="footer-label footer-page">
+          {DATE F j, Y, g:i A}
+        </td>
+        <td class="footer-label footer-date">
+          Page {PAGENO} of {nb}
+        </td>
+      </tr>
+    </table>
   </htmlpagefooter>
 
   <sethtmlpageheader name="pageHeader" value="on" show-this-page="1" />
@@ -162,13 +185,17 @@
       @for($i = 0; $i < 24; $i++)
         @if($i === 23)
           <tr>
-            <td class="w-75 particulars-td b-bottom b-left" colspan="3" > {{ $allCharges[$i]->name }} </td>
+            <td class="w-50 particulars-td b-bottom b-left" colspan="1" > {{ $allCharges[$i]->name }} </td>
+            <td class="w-25 particulars-td b-bottom b-left item-notes" > {{ $allCharges[$i]->name }} </td>
             <td class="w-25 particulars-td b-bottom b-right text-right" > {{ $allCharges[$i]->pivot->amount? number_format($allCharges[$i]->pivot->amount, 2) : '' }} </td>
           </tr>
         @else
           <tr>
-            <td class="w-75 particulars-td b-left" colspan="3"  >
+            <td class="w-50 particulars-td b-left" colspan="2"  >
               {{ $allCharges[$i]->name }}
+            </td>
+            <td class="w-25 particulars-td item-notes " >
+              {{ $allCharges[$i]->pivot->notes }}
             </td>
             <td class="w-25 particulars-td b-right text-right"  >
               {{ $allCharges[$i]->pivot->amount? number_format($allCharges[$i]->pivot->amount, 2) : '' }}
@@ -186,11 +213,14 @@
             </td>
             <td class="w-25 particulars-td b-right text-right"></td>
           @else
-            <td class="w-75 particulars-td b-left" colspan="3"  >
+            <td class="w-50 particulars-td b-left" colspan="2"  >
               {{ $charge['name'] }}
             </td>
+            <td class="w-25 particulars-td item-notes" >
+              {{ $charge->pivot ? $charge->pivot->notes : '' }}
+            </td>
             <td class="w-25 particulars-td b-right text-right"  >
-            {{ $charge['id'] == 0 ? 'test' : number_format($charge['pivot']->amount, 2) }}
+              {{ $charge['id'] == 0 ? 'test' : number_format($charge['pivot']->amount, 2) }}
             </td>
           @endif
         </tr>
@@ -260,8 +290,11 @@
       @for($i = 24; $i < $allChargesCount; $i++)
         @if($i === 24)
           <tr>
-            <td class="w-75 particulars-td b-top b-left" colspan="3" >
+            <td class="w-50 particulars-td b-top b-left" colspan="2" >
               {{ $allCharges[$i]->name }}
+            </td>
+            <td class="w-25 particulars-td b-top item-notes" >
+              {{ $allCharges[$i]->pivot ? $allCharges[$i]->pivot->notes : '' }}
             </td>
             <td class="w-25 particulars-td b-top b-right text-right" >
               {{ $allCharges[$i]->pivot->amount? number_format($allCharges[$i]->pivot->amount, 2) : '' }}
@@ -269,11 +302,14 @@
           </tr>
         @else
           <tr>
-            <td class="w-75 particulars-td b-left" colspan="3"  >
+            <td class="w-50 particulars-td b-left " colspan="2"  >
               {{ $allCharges[$i]->name }}
             </td>
+            <td class="w-25 particulars-td  item-notes" >
+              {{ $allCharges[$i]->pivot ? $allCharges[$i]->pivot->notes : '' }}
+            </td>
             <td class="w-25 particulars-td b-right text-right"  >
-              {{ $allCharges[$i]->pivot->amount? number_format($allCharges[$i]->pivot->amount, 2) : '' }}
+              {{ $allCharges[$i]->pivot->amount ? number_format($allCharges[$i]->pivot->amount, 2) : '' }}
             </td>
           </tr>
         @endif
