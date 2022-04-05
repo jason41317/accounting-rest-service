@@ -37,13 +37,18 @@ class ReportController extends Controller
         $billing->append('amount');
         $billing->load(['contract', 'charges', 'adjustmentCharges'])->get();
 
-        $totalPreviousBalance = Billing::whereRaw("DATE(CONCAT(year,'-',month_id,'-'," . "cutoff_day)) < DATE('" . $period . "')")
+        $totalPreviousBalance = Billing::whereRaw("DATE(CONCAT(year,'-',month_id,'-'," . "cutoff_day)) <= DATE('" . $period . "')")
+                            ->where('created_at', '<', $billing->created_at)
                             ->where('contract_id', $billing->contract_id)->get()
                             ->sum('amount');
 
-        $totalPayment = Payment::where('transaction_date', '<=', $period)
-                    ->where('contract_id',$billing->contract_id)->get()
+        $totalPayment = Payment::where('contract_id',$billing->contract_id)
+                    ->where('created_at', '<', $billing->created_at)
+                    ->where('payment_status_id', 2)
+                    ->get()
                     ->sum('amount');
+                    
+        //where('transaction_date', '<=', $period) temporary remove from payment filter
 
         // todo: get actual previous balance as of < billing date
         $data['previous_balance'] = $totalPreviousBalance - $totalPayment;
