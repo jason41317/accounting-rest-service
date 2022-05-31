@@ -85,4 +85,14 @@ class BillingPeriodController extends Controller
         $billingPeriodService->delete($id);
         return response()->json([], 204);
     }
+
+    public function setActive(int $id)
+    {
+        $billingPeriodService = new BillingPeriodService();
+        $billingPeriod = $billingPeriodService->setActive($id);
+
+        return (new BillingPeriodResource($billingPeriod))
+            ->response()
+            ->setStatusCode(200);
+    }
 }

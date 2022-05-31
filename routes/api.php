@@ -68,6 +68,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::resource('system-settings','SystemSettingController');
 
         //billing period
+        Route::patch('billing-periods/{id}/activate','BillingPeriodController@setActive');
         Route::resource('billing-periods','BillingPeriodController');
 
         //credit memo

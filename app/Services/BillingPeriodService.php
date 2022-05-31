@@ -104,4 +104,23 @@ class BillingPeriodService
         'is_active' => 0
       ]);
   }
+
+  public function setActive(int $id) {
+    $billingPeriod = BillingPeriod::find($id);
+
+    DB::beginTransaction();
+    try {
+      $billingPeriod->update([
+        'is_active' => 1
+      ]);
+      $this->setInactive($id);
+      DB::commit();
+      return $billingPeriod;
+    } catch (Exception $e) {
+      DB::rollback();
+      Log::info('Error occured during BillingPeriodService store method call: ');
+      Log::info($e->getMessage());
+      throw $e;
+    }
+  }
 }
