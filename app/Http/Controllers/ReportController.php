@@ -47,7 +47,7 @@ class ReportController extends Controller
                     ->where('payment_status_id', 2)
                     ->get()
                     ->sum('amount');
-                    
+
         //where('transaction_date', '<=', $period) temporary remove from payment filter
 
         // todo: get actual previous balance as of < billing date
@@ -210,10 +210,17 @@ class ReportController extends Controller
 
         $companySetting = CompanySetting::find(1);
         $paymentApproveStatusId = 2;
-        $collections = Payment::where('payment_status_id', $paymentApproveStatusId)
+
+        $orderBy = $request->order_by ?? 'transaction_date';
+        $orderDesc = $request->order_desc ?? 'ASC';
+
+        $collections = Payment::with('client')
+                ->where('payment_status_id', $paymentApproveStatusId)
                 ->when($dateFrom, function($q) use($dateFrom, $dateTo) {
                     return $q->whereBetween('transaction_date', [$dateFrom, $dateTo]);
-                })->get();
+                })
+                ->orderBy($orderBy, $orderDesc)
+                ->get();
 
         $collections->append(['retainers_fee_total', 'filing_total', 'remittance_total', 'others_total']);
 
@@ -435,5 +442,6 @@ class ReportController extends Controller
         // return $mpdf->Output('');
         return $mpdf->Output('', 'S');
     }
+
 }
 
