@@ -28,7 +28,7 @@ class Contract extends BaseModel
         $auditing['alias'] = 'Contract';
         $auditing['key'] = $this->contract_no .' ('.$this->client->name.')';
         $auditing['status_key'] = 'contract_status_id';
-        $auditing['statuses'] = collect([['id' => 2, 'event' => 'Approve']]); //status ids to check in observer
+        $auditing['statuses'] = collect([['id' => 2, 'event' => 'Approve'], ['id' => 3, 'event' => 'Inactive']]); //status ids to check in observer
         return $auditing;
     }
     // end for audit
@@ -81,8 +81,8 @@ class Contract extends BaseModel
 
     public function location() {
         return $this->belongsTo(Location::class);
-    }    
-        
+    }
+
     public function contractStatus() {
         return $this->belongsTo(ContractStatus::class);
     }
@@ -110,49 +110,49 @@ class Contract extends BaseModel
                 0 as amount
             FROM
             (
-            SELECT 
+            SELECT
                     bc.charge_id,
-                    ch.name, 
-                    SUM(bc.amount) as debit, 
-                    0 as credit 
-                FROM billing_charges as bc 
+                    ch.name,
+                    SUM(bc.amount) as debit,
+                    0 as credit
+                FROM billing_charges as bc
                 LEFT JOIN billings as b ON bc.billing_id = b.id
                 LEFT JOIN contracts as c ON c.id = b.contract_id
                 LEFT JOIN charges as ch ON ch.id = bc.charge_id
                 WHERE c.id = ' . $this->id . '
                 AND ISNULL(b.deleted_at)
-                GROUP BY bc.charge_id 
+                GROUP BY bc.charge_id
                 UNION ALL
-                SELECT 
+                SELECT
                     bac.charge_id,
-                    ch.name, 
-                    SUM(bac.amount) as debit, 
-                    0 as credit 
-                FROM billing_adjustment_charges as bac 
+                    ch.name,
+                    SUM(bac.amount) as debit,
+                    0 as credit
+                FROM billing_adjustment_charges as bac
                 LEFT JOIN billings as b ON bac.billing_id = b.id
                 LEFT JOIN contracts as c ON c.id = b.contract_id
                 LEFT JOIN charges as ch ON ch.id = bac.charge_id
                 WHERE c.id = ' . $this->id . '
                 AND ISNULL(b.deleted_at)
-                GROUP BY bac.charge_id 
+                GROUP BY bac.charge_id
                 UNION ALL
                 SELECT
                     pc.charge_id,
                     ch.name,
                     0 as debit,
-                    SUM(pc.amount) as credit 
-                FROM payment_charges as pc 
+                    SUM(pc.amount) as credit
+                FROM payment_charges as pc
                 LEFT JOIN payments as p ON p.id = pc.payment_id
                 LEFT JOIN contracts as c ON c.id = p.contract_id
                 LEFT JOIN charges as ch ON ch.id = pc.charge_id
-                WHERE c.id = ' . $this->id . ' 
+                WHERE c.id = ' . $this->id . '
                 AND ISNULL(p.deleted_at)
                 GROUP BY pc.charge_id
             ) AS A
             GROUP BY A.charge_id
             HAVING remaining_balance != 0
         ');
-            
+
         return $chargeBalances;
     }
 

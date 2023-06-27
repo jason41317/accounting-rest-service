@@ -95,7 +95,7 @@ class ContractService
     DB::beginTransaction();
     try {
       $contract = Contract::create($data);
-      
+
       if ($services) {
         $contract->services()->sync($services);
       }
@@ -118,7 +118,7 @@ class ContractService
         }
         $contract->charges()->sync($items);
       }
-      
+
       DB::commit();
       return $contract;
     } catch (Exception $e) {
@@ -213,10 +213,10 @@ class ContractService
     }
   }
 
-  public function getContractHistory(int $id, array $filters) 
+  public function getContractHistory(int $id, array $filters)
   {
     $filterDate = $filters['as_of_date'] ?? Carbon::now();
-    $year = $filters['year'] ?? null; 
+    $year = $filters['year'] ?? null;
     $monthId = $filters['month_id'] ?? null;
     $billingId = $filters['billing_id'] ?? null;
     if ($year && $monthId) {
@@ -228,7 +228,8 @@ class ContractService
         'id',
         'billing_no as reference_no',
         'billing_date as reference_date',
-        DB::raw('0 as payment_amount')
+        DB::raw('0 as payment_amount'),
+        DB::raw('1 as is_billing')
       )
       ->whereRaw('DATE(CONCAT(year,"-",month_id,"-",1)) <= DATE("' . $filterDate . '")')
       ->whereRaw('DATE(created_at) <= DATE("' . Carbon::now() . '")')
@@ -236,14 +237,15 @@ class ContractService
         return $q->where('id', '<', $billingId);
       })
       ->get();
-    
+
     $payments = Payment::where('contract_id', $id)
       ->select(
         'id',
         DB::raw('CONCAT(payment_no,"/",transaction_no) as reference_no'),
         'transaction_date as reference_date',
         'amount as payment_amount',
-        DB::raw('0 as amount')
+        DB::raw('0 as amount'),
+        DB::raw('0 as is_billing')
       )
       ->where('payment_status_id', 2)
       ->whereRaw('DATE(created_at) <= DATE("' . Carbon::now() . '")')

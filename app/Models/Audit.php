@@ -15,7 +15,7 @@ class Audit extends BaseModel
         'old_values',
         'new_values',
     ];
-    
+
     public function auditable()
     {
         return $this->morphTo()
@@ -58,6 +58,9 @@ class Audit extends BaseModel
                 break;
             case 'Cancel':
                 $desc = ' cancelled ';
+                break;
+            case 'Inactive':
+                $desc = ' inactivated ';
                 break;
             case 'Login':
                 $desc = ' log in '. date('F d, Y h:i a', strtotime($this->created_at));

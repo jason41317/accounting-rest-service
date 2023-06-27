@@ -26,7 +26,7 @@ class Disbursement extends BaseModel
         $auditing['alias'] = 'Disbursement';
         $auditing['key'] = $this->voucher_no . ' (' . $this->payee . ')';
         $auditing['status_key'] = 'disbursement_status_id';
-        $auditing['statuses'] = collect([['id' => 3, 'event' => 'Cancel']]); //status ids to check in observer
+        $auditing['statuses'] = collect([['id' => 3, 'event' => 'Cancel'], ['id' => 2, 'event' => 'Printed']]); //status ids to check in observer
         return $auditing;
     }
     // end for audit
