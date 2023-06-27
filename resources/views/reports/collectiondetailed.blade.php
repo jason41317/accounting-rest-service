@@ -52,13 +52,13 @@
         <th class="w-10 text-left bordered">
           DATE
         </th>
-        <th class="w-15 text-left bordered">
-          PAYMENT NO
+        <th class="w-25 text-left bordered">
+          CLIENT/PAYMENT NO
         </th>
-        <th class="w-15 text-left bordered">
+        <th class="w-10 text-left bordered">
           ACK RECEIPT
         </th>
-        <th class="w-15 text-right bordered">
+        <th class="w-10 text-right bordered">
           RETAINER'S FEE
         </th>
         <th class="w-10 text-right bordered">
@@ -70,7 +70,7 @@
         <th class="w-10 text-right bordered">
           OTHERS
         </th>
-        <th class="w-15 text-right bordered">
+        <th class="w-10 text-right bordered">
           TOTAL
         </th>
       </tr>
@@ -89,7 +89,8 @@
           {{ $collection->transaction_date }}
         </td>
         <td class="text-left p-5 border-y">
-          {{ $collection->payment_no }}
+            <div>{{ $collection->client ? $collection->client->name : '' }}</div>
+            <div>{{ $collection->payment_no }}</div>
         </td>
         <td class="text-left p-5 border-y">
           {{ $collection->transaction_no }}

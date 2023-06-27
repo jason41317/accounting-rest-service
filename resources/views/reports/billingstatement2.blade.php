@@ -137,7 +137,7 @@
       </tr>
       <tr>
         <td class="w-75 b-left b-bottom p-5 font-bold" colspan="3">
-          FORWARDED BALANCE ({{ date('M Y', strtotime($period)) }})
+          FORWARDED BALANCE
         </td>
         <td class="w-25 b-left b-bottom p-5 b-right text-right font-bold">
           {{ number_format($previous_balance, 2) }}
