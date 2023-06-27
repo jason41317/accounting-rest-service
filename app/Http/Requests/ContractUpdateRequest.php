@@ -37,7 +37,7 @@ class ContractUpdateRequest extends FormRequest
             // 'services' => 'sometimes|array|min:1',
             'charges' => 'sometimes|array|min:1',
             'assigned_to' => 'sometimes|required',
-            'approved_notes' => 'sometimes|required',
+            // 'approved_notes' => 'sometimes|required',
             'contract_status_id' => 'sometimes|required',
             'business_style_id' => 'sometimes|required|not_in:0',
             'business_type_id' => 'sometimes|required|not_in:0',
