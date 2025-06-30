@@ -45,6 +45,10 @@ class CreditMemoService
         });
       });
 
+      $sortKey = $filters['sort_key'] ?? 'id';
+      $sortDesc = $filters['sort_desc'] ?? 'DESC';
+      $query->orderBy($sortKey, $sortDesc);
+
 
       $creditMemos = $isPaginated
         ? $query->paginate($perPage)
@@ -62,7 +66,7 @@ class CreditMemoService
     DB::beginTransaction();
     try {
       $creditMemo = CreditMemo::create($data);
-      
+
       if ($charges) {
         $items = [];
         foreach ($charges as $charge) {
@@ -143,7 +147,7 @@ class CreditMemoService
     }
   }
 
-  public function charges(int $creditMemoId, array $filters) 
+  public function charges(int $creditMemoId, array $filters)
   {
     $query = CreditMemo::with(['client', 'contract', 'month'])
     ->where('is_applied', 0);

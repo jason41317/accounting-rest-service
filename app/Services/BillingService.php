@@ -51,6 +51,11 @@ class BillingService
         });
       });
 
+        $sortKey = $filters['sort_key'] ?? 'id';
+        $sortDesc = $filters['sort_desc'] ?? 'DESC';;
+
+        $query->orderBy($sortKey, $sortDesc);
+
 
       $billings = $isPaginated
         ? $query->paginate($perPage)
@@ -77,7 +82,7 @@ class BillingService
             'billing_id' => $billing->id
           ]);
       }
-      
+
       if ($charges) {
         $items = [];
         foreach ($charges as $charge) {
@@ -236,7 +241,7 @@ class BillingService
         );
       },
       $contract['charges']->all());
-      
+
       $creditMemoService = new CreditMemoService();
       $filters = array(
         'paginate' => false,
@@ -254,7 +259,7 @@ class BillingService
         }
 
         $adjustmentCharge = collect($adjustmentCharges)->where('charge_id', $charge['id'])->first();
-        
+
         if($adjustmentCharge) {
           $adjustmentCharges[$charge['id']]['amount'] += $charge['pivot']['amount'];
         } else {

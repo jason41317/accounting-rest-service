@@ -42,6 +42,11 @@ class PaymentService
         });
       });
 
+
+      $sortKey = $filters['sort_key'] ?? 'id';
+      $sortDesc = $filters['sort_desc'] ?? 'DESC';;
+      $query->orderBy($sortKey, $sortDesc);
+
       $payments = $isPaginated
         ? $query->paginate($perPage)
         : $query->get();
@@ -59,7 +64,7 @@ class PaymentService
     DB::beginTransaction();
     try {
       $payment = Payment::create($data);
-      
+
       if ($charges) {
         $items = [];
         foreach ($charges as $charge) {
@@ -170,7 +175,7 @@ class PaymentService
       throw $e;
     }
   }
-  
+
   public function collectionBreakDown(array $filters)
   {
     $dateFrom = $filters['date_from'] ?? null;
