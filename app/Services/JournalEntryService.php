@@ -21,6 +21,10 @@ class JournalEntryService
         return $q->where('journal_entry_type_id', $journalEntryTypeId);
       });
 
+      $sortKey = $filters['sort_key'] ?? 'id';
+      $sortDesc = $filters['sort_desc'] ?? 'DESC';
+      $query->orderBy($sortKey, $sortDesc);
+
       $journalEntries = $isPaginated
         ? $query->paginate($perPage)
         : $query->get();

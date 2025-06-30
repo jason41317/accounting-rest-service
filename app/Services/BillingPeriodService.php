@@ -23,6 +23,11 @@ class BillingPeriodService
         return $q->whereRaw('DATE(CONCAT(year,"-",month_id,"-",1)) >= DATE("' . $asOfDate . '")');
       });
 
+    $sortKey = $filters['sort_key'] ?? 'id';
+    $sortDesc = $filters['sort_desc'] ?? 'DESC';;
+
+    $query->orderBy($sortKey, $sortDesc);
+
       $billingPeriods = $isPaginated
         ? $query->paginate($perPage)
         : $query->get();
