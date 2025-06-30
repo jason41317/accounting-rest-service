@@ -18,6 +18,11 @@ class TaxFundService
       $query = TaxFund::when($dateFrom && $dateTo, function ($q) use ($dateFrom, $dateTo) {
         return $q->whereRaw('DATE(created_at) BETWEEN "'.$dateFrom.'" AND "'.$dateTo.'"');
       });
+
+      $sortKey = $filters['sort_key'] ?? 'id';
+      $sortDesc = $filters['sort_desc'] ?? 'DESC';
+      $query->orderBy($sortKey, $sortDesc);
+
       $TaxFunds = $isPaginated
         ? $query->paginate($perPage)
         : $query->get();

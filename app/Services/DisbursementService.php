@@ -23,6 +23,10 @@ class DisbursementService
         });
 
 
+        $sortKey = $filters['sort_key'] ?? 'id';
+        $sortDesc = $filters['sort_desc'] ?? 'DESC';
+        $query->orderBy($sortKey, $sortDesc);
+
         $disbursements = $isPaginated
             ? $query->paginate($perPage)
             : $query->get();
