@@ -8,6 +8,8 @@ use App\Models\Contract;
 use App\Models\Payment;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -40,10 +42,15 @@ class ContractService
         });
       });
 
-      $filterByUser = $filters['filter_by_user'] ?? null;
-      $query->when($filterByUser, function ($q) {
-        return $q->filterByUser();
-      });
+      $exemptedUserGroups = Config::get('constants.user_groups_exempted_on_filter');
+      $user = Auth::user();
+      if(in_array($user->user_group_id, $exemptedUserGroups)){
+        $filterByUser = $filters['filter_by_user'] ?? null;
+        $query->when($filterByUser, function ($q) {
+            return $q->filterByUser();
+        });
+      }
+
 
       $sortKey = $filters['sort_key'] ?? 'id';
       $sortDesc = $filters['sort_desc'] ?? 'DESC';;
