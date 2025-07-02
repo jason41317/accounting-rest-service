@@ -4,6 +4,8 @@ namespace App\Services;
 
 use App\Models\CreditMemo;
 use Exception;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -38,12 +40,16 @@ class CreditMemoService
         });
       });
 
-      $filterByUser = $filters['filter_by_user'] ?? false;
-      $query->when($filterByUser, function ($q) {
-        return $q->whereHas('contract', function ($query) {
-          return $query->filterByUser();
-        });
-      });
+        $exemptedUserGroups = Config::get('constants.user_groups_exempted_on_filter');
+        $user = Auth::user();
+        if(in_array($user->user_group_id, $exemptedUserGroups)){
+            $filterByUser = $filters['filter_by_user'] ?? false;
+            $query->when($filterByUser, function ($q) {
+                return $q->whereHas('contract', function ($query) {
+                return $query->filterByUser();
+                });
+            });
+        }
 
       $sortKey = $filters['sort_key'] ?? 'id';
       $sortDesc = $filters['sort_desc'] ?? 'DESC';

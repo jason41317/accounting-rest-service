@@ -5,6 +5,8 @@ namespace App\Services;
 use App\Models\Payment;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -20,12 +22,16 @@ class PaymentService
         return $q->where('payment_status_id', $paymentStatusId);
       });
 
-      $filterByUser = $filters['filter_by_user'] ?? false;
-      $query->when($filterByUser, function ($q) {
-        return $q->whereHas('contract', function ($query) {
-          return $query->filterByUser();
-        });
-      });
+        $exemptedUserGroups = Config::get('constants.user_groups_exempted_on_filter');
+        $user = Auth::user();
+        if(in_array($user->user_group_id, $exemptedUserGroups)){
+            $filterByUser = $filters['filter_by_user'] ?? false;
+            $query->when($filterByUser, function ($q) {
+                return $q->whereHas('contract', function ($query) {
+                return $query->filterByUser();
+                });
+            });
+        }
 
       $criteria = $filters['criteria'] ?? false;
       $query->when($criteria, function ($q) use ($criteria) {
