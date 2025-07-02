@@ -5,6 +5,7 @@ namespace App\Models;
 
 use App\Models\BaseModel;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 
 class Contract extends BaseModel
@@ -165,8 +166,9 @@ class Contract extends BaseModel
     }
 
     public function scopeFilterByUser($query) {
+        $exemptedUserGroups = Config::get('constants.user_groups_exempted_on_filter');
         $user = Auth::user();
-        if ($user->userGroup->id !== 1) //check if user is not super user
+        if (!(in_array($user->user_group_id, $exemptedUserGroups))) //check if user is not super user
         {
             return $query->whereHas('assignees', function ($q) use ($user){
                 return $q->where('personnel_id', $user->userable->id)
