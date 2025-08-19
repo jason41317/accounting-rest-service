@@ -149,7 +149,7 @@ class ContractService
         return $q->with('rdo');
       }]);
 
-      return $contract->append('grouped_files','charge_balances');
+      return $contract->append('grouped_files','charge_balances', 'previous_balance');
     } catch (Exception $e) {
       Log::info('Error occured during ContractService get method call: ');
       Log::info($e->getMessage());
@@ -280,4 +280,34 @@ class ContractService
       ->sum('amount');
     return $billings - $payments;
   }
+
+    public function getContractWithPreviousBalance(int $id, $year, $monthId, $billingId)
+    {
+        try {
+        $query = Contract::find($id);
+
+        $contract = $query->load(['services' => function ($q) {
+            return $q->with('serviceCategory');
+        }, 'charges' => function ($q) use ($id){
+            return $q->with('schedules', function($q) use ($id) {
+            $q->wherePivot('contract_id', $id);
+            });
+        },'businessType', 'businessStyle','approvedByPersonnel','files', 'client', 'taxType', 'contractStatus', 'location' => function($q) {
+            return $q->with('rdo');
+        }]);
+
+
+        $contract->previous_balance = $this->previousBalance(
+            $id,
+            $year,
+            $monthId,
+            $billingId
+        );
+        return $contract->append('grouped_files','charge_balances', 'previous_balance');
+        } catch (Exception $e) {
+        Log::info('Error occured during ContractService get method call: ');
+        Log::info($e->getMessage());
+        throw $e;
+        }
+    }
 }

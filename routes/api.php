@@ -32,6 +32,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::resource('/clients', 'ClientController');
         Route::resource('/contracts', 'ContractController');
         Route::get('contracts/{contractId}/history', 'ContractController@getContractHistory');
+        Route::get('contracts/{contractId}/with-balance', 'ContractController@getContractWithPreviousBalance');
         Route::resource('/charges', 'ChargeController');
         Route::resource('/billings', 'BillingController');
         Route::post('/billings/batch', 'BillingController@batchStore');

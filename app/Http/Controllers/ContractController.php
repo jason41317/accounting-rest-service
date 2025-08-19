@@ -8,6 +8,7 @@ use App\Models\Contract;
 use Illuminate\Http\Request;
 use App\Services\ContractService;
 use App\Http\Resources\ContractResource;
+use Illuminate\Support\Facades\Log;
 
 class ContractController extends Controller
 {
@@ -100,7 +101,7 @@ class ContractController extends Controller
     {
         $contractService = new ContractService();
         $contractService->delete($id);
-        return response()->json([], 204); 
+        return response()->json([], 204);
     }
 
     public function getContractHistory(int $id, Request $request)
@@ -111,5 +112,14 @@ class ContractController extends Controller
         return ContractResource::collection(
             $contractHistory
         );
+    }
+
+    public function getContractWithPreviousBalance(Int $id, Request $request)
+    {
+
+        $contractService = new ContractService();
+        $filters = $request->all();
+        $contract = $contractService->getContractWithPreviousBalance($id, $filters['year'], $filters['month_id'], $filters['billing_id']);
+        return new ContractResource($contract);
     }
 }
