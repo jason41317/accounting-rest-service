@@ -149,7 +149,7 @@ class ContractService
         return $q->with('rdo');
       }]);
 
-      return $contract->append('grouped_files','charge_balances', 'previous_balance');
+      return $contract->append('grouped_files','charge_balances');
     } catch (Exception $e) {
       Log::info('Error occured during ContractService get method call: ');
       Log::info($e->getMessage());
